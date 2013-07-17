@@ -1,0 +1,13 @@
+Customer1:
+  id: 1
+  tenant_id: 1
+  display_name: Susanna Rianna
+  created_at: 2012-07-15 11:02:57
+  updated_at: 2012-07-15 11:06:22
+
+Customer2:
+  id: 2
+  tenant_id: 1
+  display_name: Petra McGee
+  created_at: 2013-07-15 11:02:57
+  updated_at: 2013-07-15 11:06:22

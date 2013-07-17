@@ -1,0 +1,20 @@
+Message1:
+  id: 1
+  tenant_id: 1
+  conversation_id: 1
+  agent_id: 1
+  sent_by: twitter
+  text: This is the first message
+  created_at: 2012-07-15 11:02:57
+  updated_at: 2012-07-15 11:06:22
+
+Message2:
+  id: 2
+  tenant_id: 1
+  conversation_id: 1
+  agent_id: 1
+  sent_by: twitter
+  text: This is the second message
+  created_at: 2012-07-15 11:02:57
+  updated_at: 2012-07-15 11:06:22
+
