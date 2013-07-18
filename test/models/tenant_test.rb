@@ -5,4 +5,10 @@ class TenantTest < ActiveSupport::TestCase
     tenant = Tenant.new(:email => "tenant@gmail.com", :twitter_id => "tenant")
     assert tenant.save!
   end
+
+  test "that you can't create a tenant with a duplicate id" do
+    assert_raises ActiveRecord::RecordNotUnique do
+      Tenant.new(:id => 1).save!
+    end
+  end
 end

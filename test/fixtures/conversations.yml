@@ -2,7 +2,7 @@ Conv1:
   id: 1
   tenant_id: 1
   active: true
-  customer_id: 5
+  customer_id: 1
   referer_url: "http://mysite.com"
   location: "Breckenridge, CO"
   customer_data: ""
@@ -17,7 +17,7 @@ Conv2:
   id: 2
   tenant_id: 1
   active: true
-  customer_id: 5
+  customer_id: 1
   referer_url: "http://mysite.com"
   location: "Breckenridge, CO"
   customer_data: ""
