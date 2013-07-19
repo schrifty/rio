@@ -2,21 +2,21 @@ require 'test_helper'
 
 class CustomersControllerTest < ActionController::TestCase
   test "should get create" do
-    get :create, :customer => {:tenant_id => 1, :display_name => "Customer X"}
+    get :create, :customer => {:tenant_id => tenants(:Tenant1).id, :display_name => "Customer X"}
     assert_response :success
   end
 
-  test "should get update" do
-    get :update, :id => 1, :customer => {:display_name => "Customer Y"}
+  test "should update a valid customer" do
+    get :update, :id => customers(:Customer1).id, :customer => {:display_name => "Customer Y"}
     assert_response :success
   end
 
-  test "should get a customer" do
-    get :show, :id => 1
+  test "should get a valid customer" do
+    get :show, :id => customers(:Customer1).id
     assert_response :success
   end
 
-  test "should not find a nonexistent customer" do
+  test "should not get a nonexistent customer" do
     assert_raises ActiveRecord::RecordNotFound do
       get :show, :id => 999
     end

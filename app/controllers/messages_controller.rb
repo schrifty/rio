@@ -1,7 +1,12 @@
 class MessagesController < ApplicationController
   def create
-    Message.create!(message_params)
-    return render text: "Created", status: 201
+    new_message = Message.create!(message_params)
+    if params[:since]
+      messages = Message.by_tenant(new_message.tenant_id).by_conversation(new_message.conversation_id).since(params[:since])
+    else
+      messages = [ new_message ]
+    end
+    return render json: messages, status: 201
   end
 
   def show
@@ -10,7 +15,7 @@ class MessagesController < ApplicationController
   end
 
   def index
-    messages = Message.all
+    messages = Message.by_tenant(params[:tenant]).by_conversation(params[:conversation]).since(params[:since])
     return render json: messages
   end
 

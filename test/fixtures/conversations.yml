@@ -1,28 +1,40 @@
-Conv1:
-  id: 1
-  tenant_id: 1
+Tenant1Conversation1:
+  tenant: Tenant1
   active: true
-  customer_id: 1
+  customer: Customer1
   referer_url: "http://mysite.com"
   location: "Breckenridge, CO"
   customer_data: ""
-  first_customer_message: 1
-  engaged_agent: 1
+  first_customer_message: Tenant1Conversation1Message1
+  engaged_agent: Agent1
   preferred_response_channel: "twitter"
   preferred_response_channel_info: "twitter_handle"
   created_at: 2013-07-15 11:02:57
   updated_at: 2013-07-15 11:06:22
 
-Conv2:
-  id: 2
-  tenant_id: 1
+Tenant1Conversation2:
+  tenant: Tenant1
   active: true
-  customer_id: 1
+  customer: Customer1
   referer_url: "http://mysite.com"
   location: "Breckenridge, CO"
   customer_data: ""
-  first_customer_message: 1
-  engaged_agent: 1
+  first_customer_message: Tenant1Conversation2Message1
+  engaged_agent: Agent1
+  preferred_response_channel: "twitter"
+  preferred_response_channel_info: "twitter_handle"
+  created_at: 2013-07-16 11:02:57
+  updated_at: 2013-07-16 11:06:22
+
+Tenant2Conversation1:
+  tenant: Tenant2
+  active: true
+  customer: Customer2
+  referer_url: "http://mysite.com"
+  location: "Breckenridge, CO"
+  customer_data: ""
+  first_customer_message: Tenant2Conversation1Message1
+  engaged_agent: Agent2
   preferred_response_channel: "twitter"
   preferred_response_channel_info: "twitter_handle"
   created_at: 2013-07-16 11:02:57

@@ -1,26 +1,69 @@
 require 'test_helper'
 
 class MessagesControllerTest < ActionController::TestCase
-  test "should post create" do
-    post :create, :message => {:tenant_id => 1, :conversation_id => 1, :agent_id => 1, :sent_by => "twitter",
-                               :text => "This is the message"}
+  test 'should create a valid message and return it' do
+    post :create, :message => {:tenant_id => tenants(:Tenant1).id, :conversation_id => conversations(:Tenant1Conversation1).id, :agent_id => agents(:Agent1).id, :sent_by => 'twitter',
+                               :text => 'This is the message'}
     assert_response :success
   end
 
-  test "should get a message" do
-    get :show, :id => 1
+  test 'should create a valid message and return all messages since the last update' do
+    since = messages(:Tenant1Conv1Message2).created_at
+    post :create, :message => {:tenant_id => tenants(:Tenant1).id, :conversation_id => conversations(:Tenant1Conversation1).id, :agent_id => agents(:Agent1).id, :sent_by => 'twitter',
+                               :text => 'Yet another message'}, :since => since
     assert_response :success
+    messages = Message.where(:conversation_id => messages(:Tenant1Conv1Message1).conversation_id).where('created_at > ?', since)
+    validate_response_body(messages, json)
   end
 
-  test "should not find a nonexistent message" do
+  test 'should get a message' do
+    get :show, :id => messages(:Tenant1Conv1Message1).id
+    assert_response :success
+    assert json
+  end
+
+  test 'should not find a nonexistent message' do
     assert_raises ActiveRecord::RecordNotFound do
       get :show, :id => 999
     end
   end
 
-  test "should get index" do
-    get :index
+  test 'should filter messages by tenant and timestamp' do
+    since = messages(:Tenant1Conv1Message2).created_at
+    get :index, :tenant => messages(:Tenant1Conv1Message1).tenant_id, :since => since
     assert_response :success
+
+    # make sure that all messages you'd expect to be returned (and only those messages) have been returned
+    messages = Message.where(:tenant_id => messages(:Tenant1Conv1Message1).tenant_id).where('created_at > ?', since)
+    validate_response_body(messages, json)
   end
 
+  test 'should filter messages by conversation' do
+    since = messages(:Tenant1Conv1Message2).created_at
+    get :index, :conversation => messages(:Tenant1Conv1Message1).conversation_id
+    assert_response :success
+
+    # make sure that all messages you'd expect to be returned (and only those messages) have been returned
+    messages = Message.where(:conversation_id => messages(:Tenant1Conv1Message1).conversation_id)
+    validate_response_body(messages, json)
+  end
+
+  test 'should filter messages by conversation and timestamp' do
+    since = messages(:Tenant1Conv1Message2).created_at
+    get :index, :conversation => messages(:Tenant1Conv1Message1).conversation_id, :since => since
+    assert_response :success
+
+    # make sure that all messages you'd expect to be returned (and only those messages) have been returned
+    messages = Message.where(:conversation_id => messages(:Tenant1Conv1Message1).conversation_id).where('created_at > ?', since)
+    validate_response_body(messages, json)
+  end
+
+  private
+
+  def validate_response_body(messages, response_body)
+    assert_equal messages.size, response_body.size
+    messages.each {|m|
+      assert response_body.detect{|j| j['id'] == m['id']}
+    }
+  end
 end

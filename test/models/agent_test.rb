@@ -2,13 +2,13 @@ require 'test_helper'
 
 class AgentTest < ActiveSupport::TestCase
   test "should save a valid agent" do
-    agent = Agent.new({:tenant_id => 1, :display_name => "John Doe", :encrypted_password => "blech"})
+    agent = Agent.new({:tenant_id => tenants(:Tenant1).id, :display_name => "John Doe", :encrypted_password => "blech"})
     assert agent.save
   end
 
   test "that you can't create an agent with a duplicate id" do
     assert_raises ActiveRecord::RecordNotUnique do
-      Agent.new(:id => 1, :tenant_id => 1, :display_name => "John Doe", :encrypted_password => "blech").save!
+      Agent.new(:id => agents(:Agent1).id, :tenant_id => tenants(:Tenant1).id, :display_name => "John Doe", :encrypted_password => "blech").save!
     end
   end
 
@@ -23,12 +23,12 @@ class AgentTest < ActiveSupport::TestCase
   end
 
   test "should not save without a display name" do
-    agent = Agent.new({:tenant_id => 1, :encrypted_password => "blech"})
+    agent = Agent.new({:tenant_id => tenants(:Tenant1).id, :encrypted_password => "blech"})
     assert !agent.save
   end
 
   test "should not save without a password" do
-    agent = Agent.new({:tenant_id => 1, :display_name => "Jane Doe"})
+    agent = Agent.new({:tenant_id => tenants(:Tenant1).id, :display_name => "Jane Doe"})
     assert !agent.save
   end
 end

@@ -1,7 +1,7 @@
 Rio::Application.routes.draw do
   resources :invites, only: [:create, :destroy, :show, :index]
   resources :messages, only: [:create, :show, :index]
-  resources :conversations, only: [:create, :update, :show, :index]
+  resources :conversations, only: [:new, :create, :update, :show, :index]
   resources :agents, only: [:create, :update, :show, :index]
   resources :customers, only: [:create, :update, :show, :index]
   resources :tenants, only: [:create, :show, :update, :index]

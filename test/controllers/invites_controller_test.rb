@@ -1,28 +1,28 @@
 require 'test_helper'
 
 class InvitesControllerTest < ActionController::TestCase
-  test "should post create" do
-    post :create, :invite => {:tenant_id => 1, :recipient_email => "jdoe@gmail.com"}
+  test 'should post create' do
+    post :create, :invite => {:tenant_id => tenants(:Tenant1).id, :recipient_email => "jdoe@gmail.com"}
     assert_response :success
   end
 
-  test "should delete destroy" do
-    get :destroy, :id => 1
+  test 'should delete a valid invite' do
+    get :destroy, :id => invites(:Invite1).id
     assert_response :success
   end
 
-  test "should get an invite" do
-    get :show, :id => 1
+  test 'should get a valid invite' do
+    get :show, :id => invites(:Invite1).id
     assert_response :success
   end
 
-  test "should not find a nonexistent invite" do
+  test 'should not get a nonexistent invite' do
     assert_raises ActiveRecord::RecordNotFound do
       get :show, :id => 999
     end
   end
 
-  test "should get index" do
+  test 'should get all invites' do
     get :index
     assert_response :success
   end

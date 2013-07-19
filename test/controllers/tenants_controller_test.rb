@@ -8,12 +8,12 @@ class TenantsControllerTest < ActionController::TestCase
 
   test "should not allow deletes" do
     assert_raises(ActionController::UrlGenerationError) do
-      delete :destroy, :id => 1
+      delete :destroy, :id => tenants(:Tenant1).id
     end
   end
 
   test "should get update" do
-    put :update, :id => 1, :tenant => {:twitter_id => "peter", :email => "peter@gmail.com"}
+    put :update, :id => tenants(:Tenant1).id, :tenant => {:twitter_id => "peter", :email => "peter@gmail.com"}
     assert_response :success
   end
 
@@ -23,7 +23,7 @@ class TenantsControllerTest < ActionController::TestCase
   end
 
   test "should get a tenant" do
-    get :show, :id => 1
+    get :show, :id => tenants(:Tenant1).id
     assert_response :success
   end
 

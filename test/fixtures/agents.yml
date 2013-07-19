@@ -1,6 +1,5 @@
 Agent1:
- id: 1
- tenant_id: 1
+ tenant: Tenant1
  available: false
  engaged: false
  display_name: John Doe
@@ -11,8 +10,7 @@ Agent1:
  updated_at: 2013-07-16 11:06:22
 
 Agent2:
- id: 2
- tenant_id: 1
+ tenant: Tenant1
  available: false
  engaged: false
  display_name: Peter Bench

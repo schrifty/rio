@@ -15,6 +15,9 @@ class ConversationsController < ApplicationController
     return render json: conversation
   end
 
+  def new
+  end
+
   def index
     conversations = Conversation.all
     return render json: conversations
