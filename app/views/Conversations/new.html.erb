@@ -1,12 +1,49 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Hey</title>
-</head>
-<body>
-<div>
-  <textarea>lorem ipsum</textarea>
-  <button type="button" id="submit">submit</button>
+<body class="chat">
+
+<div id="top-bar" class="top-bar">
+  <span id="welcome-message">Welcome to replyCycle!</span>
+  <label>Enter your name:</label>
+  <input type="text" id="username" value="Jerry"/>
+  <label>Enter your agent ID:</label>
+  <input type="text" id="agent-id" value=""/>
+  <label>Enter your conversation ID:</label>
+  <input type="text" id="conversation-id" value=""/>
 </div>
+<div class="left-bar">
+</div>
+<div id="main-chat">
+  <div id="chat-div">
+    <table id="chat-table">
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <div id="input-div">
+    <form name="messageForm" onsubmit="Chat.sendMessage(); return false;">
+      <table width="100%" cellspacing="0">
+        <tbody>
+        <tr>
+          <td>
+            <div class="textwrapper">
+              <textarea autocomplete="off" id="new-message">lorem ipsum</textarea>
+            </div>
+          </td>
+          <td width="1%">
+            <button class="button" id="upload-button">
+              <img src="/paperclip.png" width="16" height="16"/>
+            </button>
+          </td>
+          <td width="1%">
+            <input class="button" id="post_button" type="submit" value="Send">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</div>
+
 </body>
 </html>
