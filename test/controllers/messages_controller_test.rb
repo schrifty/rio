@@ -5,6 +5,8 @@ class MessagesControllerTest < ActionController::TestCase
     post :create, :message => {:tenant_id => tenants(:Tenant1).id, :conversation_id => conversations(:Tenant1Conversation1).id, :agent_id => agents(:Agent1).id, :sent_by => 'twitter',
                                :text => 'This is the message'}
     assert_response :success
+    messages = Message.where(:text => 'This is the message')
+    validate_response_body(messages, response_json)
   end
 
   test 'should create a valid message and return all messages since the last update' do
@@ -13,13 +15,23 @@ class MessagesControllerTest < ActionController::TestCase
                                :text => 'Yet another message'}, :since => since
     assert_response :success
     messages = Message.where(:conversation_id => messages(:Tenant1Conv1Message1).conversation_id).where('created_at > ?', since)
-    validate_response_body(messages, json)
+    validate_response_body(messages, response_json)
+  end
+
+  test 'should create the message AND the conversation when we have no conversation id, and return the message with the new conversation id' do
+    post :create, :message => {:tenant_id => tenants(:Tenant1).id, :agent_id => agents(:Agent1).id, :sent_by => 'twitter',
+                               :text => 'This is the message', :display_name => "Peter Jackson"}
+    assert_response :success
+    messages = Message.where(:text => 'This is the message')
+    validate_response_body(messages, response_json)
+    assert messages.first.conversation
+    assert_equal messages.first.conversation.customer.display_name, "Peter Jackson"
   end
 
   test 'should get a message' do
     get :show, :id => messages(:Tenant1Conv1Message1).id
     assert_response :success
-    assert json
+    assert response_json
   end
 
   test 'should not find a nonexistent message' do
@@ -35,7 +47,7 @@ class MessagesControllerTest < ActionController::TestCase
 
     # make sure that all messages you'd expect to be returned (and only those messages) have been returned
     messages = Message.where(:tenant_id => messages(:Tenant1Conv1Message1).tenant_id).where('created_at > ?', since)
-    validate_response_body(messages, json)
+    validate_response_body(messages, response_json)
   end
 
   test 'should filter messages by conversation' do
@@ -45,7 +57,7 @@ class MessagesControllerTest < ActionController::TestCase
 
     # make sure that all messages you'd expect to be returned (and only those messages) have been returned
     messages = Message.where(:conversation_id => messages(:Tenant1Conv1Message1).conversation_id)
-    validate_response_body(messages, json)
+    validate_response_body(messages, response_json)
   end
 
   test 'should filter messages by conversation and timestamp' do
@@ -55,15 +67,7 @@ class MessagesControllerTest < ActionController::TestCase
 
     # make sure that all messages you'd expect to be returned (and only those messages) have been returned
     messages = Message.where(:conversation_id => messages(:Tenant1Conv1Message1).conversation_id).where('created_at > ?', since)
-    validate_response_body(messages, json)
+    validate_response_body(messages, response_json)
   end
 
-  private
-
-  def validate_response_body(messages, response_body)
-    assert_equal messages.size, response_body.size
-    messages.each {|m|
-      assert response_body.detect{|j| j['id'] == m['id']}
-    }
-  end
 end

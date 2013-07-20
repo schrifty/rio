@@ -1,7 +1,7 @@
 class ConversationsController < ApplicationController
   def create
-    Conversation.create!(conversation_params)
-    return render text: "Created", status: 201
+    conversations = [ Conversation.create!(conversation_params) ]
+    return render json: conversations, status: 201
   end
 
   def update
