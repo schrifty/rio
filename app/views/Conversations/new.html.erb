@@ -3,13 +3,17 @@
 <body class="chat">
 
 <div id="top-bar" class="top-bar">
-  <span id="welcome-message">Welcome to replyCycle!</span>
-  <label>Enter your name:</label>
-  <input type="text" id="username" value="Jerry"/>
-  <label>Enter your agent ID:</label>
-  <input type="text" id="agent-id" value=""/>
-  <label>Enter your conversation ID:</label>
-  <input type="text" id="conversation-id" value=""/>
+  <div class="topic-container">
+    <span id="welcome-message">
+        Welcome to replyCycle!
+        <label>Enter your name:</label>
+        <input type="text" id="username" value="Jerry"/>
+        <label>Enter your agent ID:</label>
+        <input type="text" id="agent-id" value=""/>
+        <label>Enter your conversation ID:</label>
+        <input type="text" id="conversation-id" value=""/>
+    </span>
+  </div>
 </div>
 <div class="left-bar">
 </div>
@@ -31,12 +35,12 @@
             </div>
           </td>
           <td width="1%">
-            <button class="button" id="upload-button">
-              <img src="/paperclip.png" width="16" height="16"/>
+            <button class="silver" id="upload-button">
+              <img src="/upload_button.png" width="16" height="16"/>
             </button>
           </td>
           <td width="1%">
-            <input class="button" id="post_button" type="submit" value="Send">
+            <input class="silver" id="post-button" type="submit" value="Send">
           </td>
         </tr>
         </tbody>

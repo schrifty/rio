@@ -5,6 +5,8 @@
 html {
   display: block;
   height: 100%;
+  font-family: "Lucida Grande",arial,sans-serif;
+  font-size: 13px;
 }
 
 body.chat {
@@ -14,17 +16,13 @@ body.chat {
   margin: 0;
 }
 
-div {
-  display: block;
-}
-
 // Left Bar
 .left-bar {
   margin-left: 0;
   position: absolute;
   top: 0;
   left: 0;
-  width: 12.5%;
+  width: 180px;
   height: 100%;
   background-color: #313949;
   overflow: auto;
@@ -33,19 +31,30 @@ div {
 // Top Bar
 .top-bar {
   margin-left: 180px;
-  left: 0;
-  background: url(/header_bg.png) repeat-x scroll 0 1px;
+  background: url(/header_background.png) repeat-x scroll 0 1px;
   height: 34px;
   position: absolute;
   z-index: 10;
   width: 100%;
 }
 
+.topic-container {
+  padding: 5px 10px 9px 10px;
+  line-height: 22px;
+}
+
+#welcome-message {
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 // Main chat
 #main-chat {
   width: 88%;
-  height: 100%;
-  margin-left: 12.5%;
+  height: 364px;
+  margin-left: 180px;
   margin-top: 33px;
   position: absolute;
   background-color: #eef;
@@ -61,7 +70,6 @@ div {
   background-color: #fff;
   border-bottom: 1px solid #c1c1c1;
   width: 100%;
-  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -151,8 +159,40 @@ div {
   font-size: 12px;
 }
 
+input[type=submit], input[type=button], button {
+  moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background: #738ecd url(/bg.png) repeat-x scroll left 0;
+  color: #fff;
+  border: 1px solid #2765a3;
+  border-top-color: #407bb6;
+  border-bottom-color: #17487c;
+  cursor: pointer;
+  padding: 3px 10px;
+  vertical-align: top;
+  font-size: 12px;
+  height: 25px;
+  font-family: "Lucida Grande",arial,sans-serif;
+}
+
+input[type=submit].silver {
+  background: #d9d9d9 url(/bg_silver.png) repeat-x scroll left 0;
+  border: 1px solid #AAABAB;
+  color: #333;
+}
+
+#upload-button {
+  background: #6f6f6f url(/big_background.png) repeat-x;
+  padding: 0 3px;
+  height: 47px;
+  margin-left: -1px;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+}
+
 #post-button {
-  background: #6f6f6f url(/bg_silver_big.png) repeat-x;
+  background: #6f6f6f url(/big_background.png) repeat-x;
   padding: 0 13px;
   height: 47px;
   margin-left: 5px;
