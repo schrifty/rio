@@ -2,30 +2,11 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-html {
-  display: block;
-  height: 100%;
-  font-family: "Lucida Grande",arial,sans-serif;
-  font-size: 13px;
-}
-
 body.chat {
   height: 100%;
   background-color: #f0f0f0;
   overflow: hidden;
   margin: 0;
-}
-
-// Left Bar
-.left-bar {
-  margin-left: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 180px;
-  height: 100%;
-  background-color: #313949;
-  overflow: auto;
 }
 
 // Top Bar
@@ -37,12 +18,10 @@ body.chat {
   z-index: 10;
   width: 100%;
 }
-
-.topic-container {
+#welcome-container {
   padding: 5px 10px 9px 10px;
   line-height: 22px;
 }
-
 #welcome-message {
   display: inline-block;
   white-space: nowrap;
@@ -59,8 +38,6 @@ body.chat {
   position: absolute;
   background-color: #eef;
 }
-
-// Chat stuff
 #chat-div {
   position: absolute;
   top: 0;
@@ -73,13 +50,11 @@ body.chat {
   overflow-y: auto;
   overflow-x: hidden;
 }
-
 .chat-div tbody {
   display: table-row-group;
   vertical-align: middle;
   border-color: inherit;
 }
-
 .chat-table {
   display: table;
   border-spacing: 0px;
@@ -89,17 +64,14 @@ body.chat {
   cellspacing: 0;
   cellpadding: 0;
 }
-
 .chat-div tr {
   display: table-row;
   vertical-align: inherit;
   border-color: inherit;
 }
-
 .chat-div td {
   padding: 3px 0;
 }
-
 .author-block {
   width: 110px;
   background-color: #f7f7f7;
@@ -109,7 +81,6 @@ body.chat {
   font-weight: bold;
   text-align: right;
 }
-
 .author-block p {
   color: #636363;
   width: 110px;
@@ -119,18 +90,13 @@ body.chat {
   font-weight: bold;
   margin-top: 0;
 }
-
 .message-block {
   border-left: 1px solid #e1e1e1;
 }
-
 .message-block p {
   margin-top: 0;
   clear: left;
 }
-
-// Upload/Post stuff
-
 #input-div {
   background-color: #e0e0e0;
   padding: 5px;
@@ -140,47 +106,21 @@ body.chat {
   left: 0;
   right: 0;
 }
-
 #input-div form {
   margin: 0
 }
-
 #input-div .textwrapper {
   border: 1px solid #9d9d9d;
   padding: 5px;
   background-color: #fff;
 }
-
-#new-message {
+#message-textarea {
   height: 35px;
   width: 100%;
   border: none;
   padding: 0;
   font-size: 12px;
 }
-
-input[type=submit], input[type=button], button {
-  moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  background: #738ecd url(/bg.png) repeat-x scroll left 0;
-  color: #fff;
-  border: 1px solid #2765a3;
-  border-top-color: #407bb6;
-  border-bottom-color: #17487c;
-  cursor: pointer;
-  padding: 3px 10px;
-  vertical-align: top;
-  font-size: 12px;
-  height: 25px;
-  font-family: "Lucida Grande",arial,sans-serif;
-}
-
-input[type=submit].silver {
-  background: #d9d9d9 url(/bg_silver.png) repeat-x scroll left 0;
-  border: 1px solid #AAABAB;
-  color: #333;
-}
-
 #upload-button {
   background: #6f6f6f url(/big_background.png) repeat-x;
   padding: 0 3px;
@@ -190,7 +130,6 @@ input[type=submit].silver {
   -webkit-border-radius: 0;
   border-radius: 0;
 }
-
 #post-button {
   background: #6f6f6f url(/big_background.png) repeat-x;
   padding: 0 13px;

@@ -36,4 +36,12 @@ class MessageTest < ActiveSupport::TestCase
     message = Message.new({:tenant_id => 1, :conversation_id => 1})
     assert !message.save
   end
+
+  test 'should update the conversation.engaged_agent_id if it is different that latest one' do
+    conversation = conversations(:Tenant2Conversation1_NoAgent)
+    assert_nil conversation.engaged_agent
+    Message.new({:tenant_id => tenants(:Tenant2).id, :conversation_id => conversation.id, :agent_id => agents(:Agent1).id, :text => 'ipsum lorem'}).save!
+    assert conversation.reload.engaged_agent
+    assert_equal conversation.engaged_agent.display_name, agents(:Agent1).display_name
+  end
 end

@@ -8,7 +8,8 @@ class CreateConversations < ActiveRecord::Migration
       t.string :location
       t.string :customer_data
       t.integer :first_customer_message
-      t.integer :engaged_agent
+      t.integer :target_agent_id
+      t.integer :engaged_agent_id
       t.string :preferred_response_channel
       t.string :preferred_response_channel_info
 

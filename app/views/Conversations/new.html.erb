@@ -3,7 +3,7 @@
 <body class="chat">
 
 <div id="top-bar" class="top-bar">
-  <div class="topic-container">
+  <div id="welcome-container">
     <span id="welcome-message">
         Welcome to replyCycle!
         <label>Enter your name:</label>
@@ -15,7 +15,9 @@
     </span>
   </div>
 </div>
-<div class="left-bar">
+<div id="agent-bar">
+  <ul id="agent-list">
+  </ul>
 </div>
 <div id="main-chat">
   <div id="chat-div">
@@ -31,7 +33,7 @@
         <tr>
           <td>
             <div class="textwrapper">
-              <textarea autocomplete="off" id="new-message">lorem ipsum</textarea>
+              <textarea autocomplete="off" id="message-textarea">lorem ipsum</textarea>
             </div>
           </td>
           <td width="1%">

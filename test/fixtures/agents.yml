@@ -1,6 +1,6 @@
 Agent1:
  tenant: Tenant1
- available: false
+ available: true
  engaged: false
  display_name: John Doe
  encrypted_password: blech
@@ -11,11 +11,22 @@ Agent1:
 
 Agent2:
  tenant: Tenant1
- available: false
+ available: true
  engaged: false
  display_name: Peter Bench
  encrypted_password: blech
  xid: 123
  admin: true
+ created_at: 2013-07-16 11:02:57
+ updated_at: 2013-07-16 11:06:22
+
+Agent3:
+ tenant: Tenant1
+ available: false
+ engaged: false
+ display_name: George Lucas
+ encrypted_password: blech
+ xid: 123
+ admin: false
  created_at: 2013-07-16 11:02:57
  updated_at: 2013-07-16 11:06:22

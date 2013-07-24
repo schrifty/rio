@@ -25,7 +25,6 @@ class MessagesController < ApplicationController
     return render json: messages
   end
 
-private
   def message_params
     params.require(:message).permit(:tenant_id, :conversation_id, :agent_id, :sent_by, :text)
   end

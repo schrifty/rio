@@ -1,3 +1,31 @@
+describe Agent do
+  before do
+    @tenant1 = Tenant.create!( {:email => 'tenant@gmail.com', :twitter_id => 'tenant'} )
+  end
+
+  describe '.create' do
+    before do
+      @agent1 = Agent.create!({:tenant => @tenant1, :display_name => 'John', :encrypted_password => 'xyzzy'})
+    end
+
+    it 'should not create an agent with a duplicate id' do
+      Agent.create!({:id => @agent1.id, :tenant => @tenant1, :display_name => 'James', :encrypted_password => 'bletch'})
+    end
+
+    it 'should not create an agent without a tenant id' do
+      Agent.create!({:display_name => 'James', :encrypted_password => 'bletch'})
+    end
+
+    it 'should not create an agent without a display name' do
+      Agent.create!({:tenant => @tenant1, :encrypted_password => 'bletch'})
+    end
+
+    it 'should not create an agent without a password' do
+      Agent.create!({:tenant => @tenant1, :display_name => 'James'})
+    end
+  end
+end
+
 require 'test_helper'
 
 class AgentTest < ActiveSupport::TestCase

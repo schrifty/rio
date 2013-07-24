@@ -10,7 +10,18 @@ class Message < ActiveRecord::Base
   scope :by_conversation, lambda {|conversation_id| where('conversation_id = ?', conversation_id) unless conversation_id.nil? }
   scope :since, lambda {|since| where('created_at > ?', since) unless since.nil? }
 
-  attr_reader :display_name;
+  after_create :update_engaged_agent
+
+  attr_reader :display_name
+
+  def update_engaged_agent
+    if self.agent && self.agent.id
+      unless conversation.engaged_agent && conversation.engaged_agent.id == self.agent.id
+        conversation.engaged_agent = self.agent
+        conversation.save!
+      end
+    end
+  end
 
   def display_name
     (agent && agent.display_name) || conversation.customer.display_name

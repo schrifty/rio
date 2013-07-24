@@ -25,7 +25,7 @@ class ConversationsController < ApplicationController
 
 private
   def conversation_params
-    params.require(:conversation).permit(:tenant_id, :active, :customer_id, :referer_url, :location, :customer_data, :first_customer_message, :engaged_agent, :preferred_response_channel, :preferred_response_channel_info)
+    params.require(:conversation).permit(:tenant_id, :active, :customer_id, :referer_url, :location, :customer_data, :first_customer_message, :engaged_agent_id, :preferred_response_channel, :preferred_response_channel_info)
   end
 
 end

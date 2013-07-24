@@ -63,7 +63,7 @@ Tenant1Conv2Message1:
 
 Tenant2Conv1Message1:
   tenant: Tenant2
-  conversation: Tenant2Conversation1
+  conversation: Tenant2Conversation1_NoAgent
   agent_id:
   sent_by: twitter
   text: This is the second message

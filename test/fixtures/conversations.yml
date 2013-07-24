@@ -23,19 +23,50 @@ Tenant1Conversation2:
   engaged_agent: Agent1
   preferred_response_channel: "twitter"
   preferred_response_channel_info: "twitter_handle"
-  created_at: 2013-07-16 11:02:57
-  updated_at: 2013-07-16 11:06:22
+  created_at: 2013-07-16 11:03:57
+  updated_at: 2013-07-16 11:07:22
 
-Tenant2Conversation1:
+Tenant1Conversation3:
+  tenant: Tenant1
+  active: true
+  customer: Customer1
+  referer_url: "http://mysite.com"
+  location: "Breckenridge, CO"
+  customer_data: ""
+  first_customer_message: Tenant1Conversation2Message1
+  engaged_agent:
+  preferred_response_channel: "twitter"
+  preferred_response_channel_info: "twitter_handle"
+  created_at: 2013-07-16 11:04:57
+  updated_at: 2013-07-16 11:08:22
+
+Tenant1Conversation4:
+  tenant: Tenant1
+  active: true
+  customer: Customer1
+  referer_url: "http://mysite.com"
+  location: "Breckenridge, CO"
+  customer_data: ""
+  first_customer_message: Tenant1Conversation2Message1
+  engaged_agent:
+  preferred_response_channel: "twitter"
+  preferred_response_channel_info: "twitter_handle"
+  created_at: 2013-07-16 11:05:57
+  updated_at: 2013-07-16 11:09:22
+
+Tenant2Conversation1_NoAgent:
   tenant: Tenant2
   active: true
   customer: Customer2
   referer_url: "http://mysite.com"
   location: "Breckenridge, CO"
-  customer_data: ""
+  customer_data:
   first_customer_message: Tenant2Conversation1Message1
-  engaged_agent: Agent2
+  engaged_agent:
   preferred_response_channel: "twitter"
   preferred_response_channel_info: "twitter_handle"
   created_at: 2013-07-16 11:02:57
   updated_at: 2013-07-16 11:06:22
+
+
+
