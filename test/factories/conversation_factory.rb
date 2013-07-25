@@ -4,6 +4,6 @@ FactoryGirl::define do
     active              1
     customer
     referer_url         { Faker::Internet.url }
-    location            { Faker::Lorem.Address.city }
+    location            { Faker::Address.city }
   end
 end
