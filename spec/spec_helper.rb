@@ -42,3 +42,15 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 end
+
+def response_json
+  ActiveSupport::JSON.decode @response.body
+end
+
+def validate_response_body(messages, response_body)
+  assert_equal messages.size, response_body.size
+  messages.each {|m|
+    assert response_body.detect{|j| j['id'] == m['id'] }
+  }
+end
+
