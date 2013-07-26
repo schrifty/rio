@@ -9,5 +9,8 @@ class CreateMessages < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index(:messages, :agent_id)
+    add_index(:messages, :updated_at)
+    add_index(:messages, [:conversation_id, :updated_at])
   end
 end

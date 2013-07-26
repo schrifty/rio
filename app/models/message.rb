@@ -14,6 +14,11 @@ class Message < ActiveRecord::Base
 
   attr_reader :display_name
 
+  # this query depends upon ids being sequential - if we convert the message id to a guid (no reason to think we would) this will break
+  def self.need_response(rows)
+    Message.find_by_sql("select b.* from (select MAX(id) as mid from messages where agent_id is null group by conversation_id) a join messages b on a.mid = b.id order by updated_at limit #{rows}")
+  end
+
   def update_engaged_agent
     if self.agent && self.agent.id
       unless conversation.engaged_agent && conversation.engaged_agent.id == self.agent.id
