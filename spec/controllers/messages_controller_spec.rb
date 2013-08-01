@@ -27,9 +27,8 @@ describe MessagesController do
       end
 
       it 'should not find a nonexistent message' do
-        assert_raises ActiveRecord::RecordNotFound do
-          get :show, :id => 999
-        end
+        get :show, :id => 999
+        expect(response.status).to eq(404)
       end
     end
 
@@ -38,7 +37,8 @@ describe MessagesController do
         expect {
           post :create, message: {:conversation => create(:conversation), :agent => create(:agent), :sent_by => 'twitter',
                                   :text => 'This is the message'}
-        }.to raise_error(ActiveRecord::RecordInvalid)
+        }.to change(Message, :count).by(0)
+        expect(response.status).to eq(422)
       end
     end
   end

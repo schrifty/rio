@@ -8,12 +8,21 @@ Tenant.emailPattern = /// ^ #begin of line
              ([a-zA-Z.]{2,6})  #followed by 2 to 6 letters or periods
              $ ///i #end of line and ignore case
 
-Tenant.checkPasswords = ->
-  return if Password.validate(Tenant.$password1) and (Tenant.$password1.val() == Tenant.$password2.val())
-    Tenant.$signupdiv.css("display", "block")
+Tenant.validatePasswords = ->
+  return Password.validate(Tenant.$password1) and (Tenant.$password1.val() == Tenant.$password2.val())
+
+Tenant.signup = ->
+  if Tenant.validatePasswords()
+    $('#signup-spinner').slideDown('slow')
+    tenant = API.createTenant(Tenant.$email)
+    agent = API.createAgent(tenant, Tenant.$email, "abcdefg", Tenant.$password1)
+    $('#signup-spinner').slideUp('slow')
+  else
+    Tenant.$signupButton.slideUp()
+    Tenant.$passwords.slideDown()
 
 $(document).ready ->
-  Tenant.$signupdiv = $('#signup-button-div')
+  Tenant.$signupButton = $('#signup-button')
   Tenant.$passwords = $('.passwords')
   Tenant.$password1 = $('#password1')
   Tenant.$password2 = $('#password2')
@@ -21,19 +30,10 @@ $(document).ready ->
 
   Tenant.$email.on 'keypress', (event) ->
     if Tenant.$email.val().match Tenant.emailPattern
-      Tenant.$signupdiv.css("display", "block")
-
-  Tenant.$signupdiv.on 'click', (event) ->
-    unless Tenant.checkPasswords()
-      Tenant.$signupdiv.slideUp()
-      Tenant.$passwords.slideDown()
-    else
-      $('#signup-spinner').slideDown('slow')
-      tenant = API.createTenant = (Tenant.$email)
-      agent = API.createAgent(tenant, Tenant.$email, "abcdefg", Tenant.$password1)
-      $('#signup-spinner').slideUp('slow')
-
+      Tenant.$signupButton.css("display", "block")
+  Tenant.$signupButton.on 'click', (event) ->
+    Tenant.signup()
   Tenant.$password1.on 'keyup', (event) ->
-    Tenant.checkPasswords()
+    Tenant.$signupButton.css("display", Tenant.validatePasswords() ? "block": "hidden")
   Tenant.$password2.on 'keyup', (event) ->
-    Tenant.checkPasswords()
+    Tenant.$signupButton.css("display", Tenant.validatePasswords() ? "block": "hidden")

@@ -20,6 +20,12 @@ describe CustomersController do
         expect(response.status).to eq(200)
       end
 
+      it 'updates a customer with invalid data' do
+        customer = create(:customer)
+        put :update, :customer => {:tenant_id => nil}, :id => customer.id
+        expect(response.status).to eq(422)
+      end
+
       it 'gets all customers' do
         get :index
         expect(response.status).to eq(200)
@@ -32,9 +38,8 @@ describe CustomersController do
       end
 
       it 'should not find a nonexistent customer' do
-        assert_raises ActiveRecord::RecordNotFound do
-          get :show, :id => 999
-        end
+        get :show, :id => 999
+        expect(response.status).to eq(404)
       end
     end
 
@@ -42,7 +47,8 @@ describe CustomersController do
       it 'should not create a customer' do
         expect {
           post :create, customer: {:display_name => 'Customer Z'}
-        }.to raise_error(ActiveRecord::RecordInvalid)
+        }.to change(Customer, :count).by(0)
+        expect(response.status).to eq(422)
       end
     end
   end

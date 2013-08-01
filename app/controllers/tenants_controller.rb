@@ -1,18 +1,30 @@
 class TenantsController < ApplicationController
   def create
-    Tenant.create!(tenant_params)
-    return render text: "Created", status: 201
+    begin
+      tenant = Tenant.create!(tenant_params)
+      return render json: [tenant], status: 201
+    rescue ActiveRecord::RecordInvalid => e
+      return render text: e.message, status: 422
+    end
   end
 
   def update
-    tenant = Tenant.find(params[:id])
-    tenant.update_attributes!(tenant_params)
-    return render text: "Successful", status: 200
+    begin
+      tenant = Tenant.find(params[:id])
+      tenant.update_attributes!(tenant_params)
+      return render json: tenant, status: 200
+    rescue ActiveRecord::RecordInvalid => e
+      return render text: e.message, status: 422
+    end
   end
 
   def show
-    tenant = Tenant.find(params[:id])
-    return render json: tenant
+    begin
+      tenant = Tenant.find(params[:id])
+      return render json: tenant
+    rescue ActiveRecord::RecordNotFound => e
+      return render text: e.message, status: 404
+    end
   end
 
   def index
@@ -21,7 +33,7 @@ class TenantsController < ApplicationController
   end
 
   private
-    def tenant_params
-      params.require(:tenant).permit(:twitter_id, :email)
-    end
+  def tenant_params
+    params.require(:tenant).permit(:twitter_id, :email, :display_name)
+  end
 end

@@ -21,9 +21,8 @@ describe InvitesController do
       end
 
       it 'throws a 404 when trying to delete a nonexistent invite' do
-        assert_raises ActiveRecord::RecordNotFound do
-          delete :destroy, :id => 999
-        end
+        delete :destroy, :id => 999
+        expect(response.status).to eq(404)
       end
 
       it 'gets all invites' do
@@ -38,9 +37,8 @@ describe InvitesController do
       end
 
       it 'should not find a nonexistent invite' do
-        assert_raises ActiveRecord::RecordNotFound do
-          get :show, :id => 999
-        end
+        get :show, :id => 999
+        expect(response.status).to eq(404)
       end
     end
 
@@ -48,7 +46,8 @@ describe InvitesController do
       it 'should not create an invite' do
         expect {
           post :create, invite: {:recipient_email => 'jane.doe@gmail.com'}
-        }.to raise_error(ActiveRecord::RecordInvalid)
+        }.to change(Invite, :count).by(0)
+        expect(response.status).to eq(422)
       end
     end
   end

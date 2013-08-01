@@ -66,7 +66,12 @@ ActiveRecord::Schema.define(version: 20130716205835) do
     t.datetime "updated_at"
   end
 
+  add_index "messages", ["agent_id"], name: "index_messages_on_agent_id", using: :btree
+  add_index "messages", ["conversation_id", "updated_at"], name: "index_messages_on_conversation_id_and_updated_at", using: :btree
+  add_index "messages", ["updated_at"], name: "index_messages_on_updated_at", using: :btree
+
   create_table "tenants", force: true do |t|
+    t.string   "display_name"
     t.string   "twitter_id"
     t.string   "email"
     t.datetime "created_at"

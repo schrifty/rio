@@ -1,18 +1,30 @@
 class CustomersController < ApplicationController
   def create
-    Customer.create!(customer_params)
-    return render text: "Created", status: 201
+    begin
+      customer = Customer.create!(customer_params)
+      return render json: [customer], status: 201
+    rescue ActiveRecord::RecordInvalid => e
+      return render text: e.message, status: 422
+    end
   end
 
   def update
-    customer = Customer.find(params[:id])
-    customer.update_attributes!(customer_params)
-    return render text: "Successful", status: 200
+    begin
+      customer = Customer.find(params[:id])
+      customer.update_attributes!(customer_params)
+      return render json: customer, status: 200
+    rescue ActiveRecord::RecordInvalid => e
+      return render text: e.message, status: 422
+    end
   end
 
   def show
-    customer = Customer.find(params[:id])
-    return render json: customer
+    begin
+      customer = Customer.find(params[:id])
+      return render json: customer
+    rescue ActiveRecord::RecordNotFound => e
+      return render text: e.message, status: 404
+    end
   end
 
   def index
@@ -20,7 +32,7 @@ class CustomersController < ApplicationController
     return render json: customers
   end
 
-private
+  private
   def customer_params
     params.require(:customer).permit(:tenant_id, :display_name)
   end

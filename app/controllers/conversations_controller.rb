@@ -1,18 +1,30 @@
 class ConversationsController < ApplicationController
   def create
-    conversations = [ Conversation.create!(conversation_params) ]
-    return render json: conversations, status: 201
+    begin
+      conversations = [ Conversation.create!(conversation_params) ]
+      return render json: conversations, status: 201
+    rescue ActiveRecord::RecordInvalid => e
+      return render text: e.message, status: 422
+    end
   end
 
   def update
-    conversation = Conversation.find(params[:id])
-    conversation.update_attributes!(conversation_params)
-    return render text: "Successful", status: 200
+    begin
+      conversation = Conversation.find(params[:id])
+      conversation.update_attributes!(conversation_params)
+      return render json: conversation, status: 200
+    rescue ActiveRecord::RecordInvalid => e
+      return render text: e.message, status: 422
+    end
   end
 
   def show
-    conversation = Conversation.find(params[:id])
-    return render json: conversation
+    begin
+      conversation = Conversation.find(params[:id])
+      return render json: conversation
+    rescue ActiveRecord::RecordNotFound => e
+      return render text: e.message, status: 404
+    end
   end
 
   def new

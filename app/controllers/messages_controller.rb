@@ -1,24 +1,38 @@
 class MessagesController < ApplicationController
   def create
-    unless params[:message][:conversation_id] && !params[:message][:conversation_id].empty?
-      display_name = params[:message][:display_name].empty? ? "Unknown" : params[:message][:display_name]
-      customer = Customer.create!({:tenant_id => params[:message][:tenant_id], :display_name => display_name})
-      conversation = Conversation.create!({:tenant_id => params[:message][:tenant_id], :customer_id => customer.id, :active => true, :referer_url => params[:message][:referer_url]})
-      params[:message][:conversation_id] = conversation.id
-    end
+    Message.transaction do
+      begin
+        unless params[:message][:conversation_id] && !params[:message][:conversation_id].empty?
+          display_name = params[:message][:display_name] || "Unknown"
+          customer = Customer.create!({:tenant_id => params[:message][:tenant_id], :display_name => display_name})
+          conversation = Conversation.create!({:tenant_id => params[:message][:tenant_id], :customer_id => customer.id, :active => true, :referer_url => params[:message][:referer_url]})
+          params[:message][:conversation_id] = conversation.id
+        end
 
-    new_message = Message.create!(message_params)
-    if params[:message][:since]
-      messages = Message.by_tenant(new_message.tenant_id).by_conversation(new_message.conversation_id).since(params[:message][:since])
-    else
-      messages = [ new_message ]
+        new_message = Message.create!(message_params)
+        if params[:message][:since]
+          messages = Message.by_tenant(new_message.tenant_id).by_conversation(new_message.conversation_id).since(params[:message][:since])
+        else
+          messages = [new_message]
+        end
+        return render json: messages, status: 201
+      rescue ActiveRecord::RecordInvalid => e
+        render text: e.message, status: 422
+        raise ActiveRecord::Rollback
+      rescue Exception => e
+        render text: e.message, status: 500
+        raise ActiveRecord::Rollback
+      end
     end
-    return render json: messages, status: 201
   end
 
   def show
-    message = Message.find(params[:id])
-    return render json: message
+    begin
+      message = Message.find(params[:id])
+      return render json: message
+    rescue ActiveRecord::RecordNotFound => e
+      return render text: e.message, status: 404
+    end
   end
 
   def index
