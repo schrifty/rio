@@ -11,29 +11,13 @@
  *= require_self
  *= require_tree .
  */
-html {
-    display: block;
-    height: 100%;
-    font-family: "Lucida Grande",arial,sans-serif;
+body {
+    font-family: "Lato", arial, sans-serif;
     font-size: 13px;
-}
-
-input[type=submit], input[type=button], button {
-    moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    color: #fff;
-    border: 1px solid #2765a3;
-    border-top-color: #407bb6;
-    border-bottom-color: #17487c;
-    cursor: pointer;
-    padding: 3px 10px;
-    vertical-align: top;
-    font-size: 12px;
-    height: 25px;
-    font-family: "Lucida Grande",arial,sans-serif;
-}
-
-input[type=submit].silver {
-    border: 1px solid #AAABAB;
-    color: #333;
+    font-weight: 400;
+    font-style: normal;
+    background: url("/assets/questionmark.jpg");
+    background-size: 380px;
+    background-repeat: no-repeat;
+    overflow: hidden;
 }

@@ -1,0 +1,28 @@
+#tenant-main {
+  #login {
+    span {
+      text-transform: uppercase;
+    }
+    #login-link {
+      vertical-align: top;
+      text-align: right;
+    }
+    #email {
+      margin-top: 90px;
+      margin-bottom: 6px;
+    }
+    .passwords {
+      display: none;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    #signup-button-div {
+      display: none;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+    #signup-spinner {
+      display:none;
+    }
+  }
+}

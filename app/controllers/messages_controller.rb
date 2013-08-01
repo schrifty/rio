@@ -1,7 +1,8 @@
 class MessagesController < ApplicationController
   def create
     unless params[:message][:conversation_id] && !params[:message][:conversation_id].empty?
-      customer = Customer.create!({:tenant_id => params[:message][:tenant_id], :display_name => params[:message][:display_name]})
+      display_name = params[:message][:display_name].empty? ? "Unknown" : params[:message][:display_name]
+      customer = Customer.create!({:tenant_id => params[:message][:tenant_id], :display_name => display_name})
       conversation = Conversation.create!({:tenant_id => params[:message][:tenant_id], :customer_id => customer.id, :active => true, :referer_url => params[:message][:referer_url]})
       params[:message][:conversation_id] = conversation.id
     end

@@ -4,7 +4,7 @@ Rio::Application.routes.draw do
   resources :conversations, only: [:new, :create, :update, :show, :index]
   resources :agents, only: [:create, :update, :show, :index]
   resources :customers, only: [:create, :update, :show, :index]
-  resources :tenants, only: [:create, :show, :update, :index]
+  resources :tenants, only: [:new, :create, :show, :update, :index]
   resources :updates, only: [:index]
 
   # The priority is based upon order of creation: first created -> highest priority.
