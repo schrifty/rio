@@ -4,7 +4,7 @@ describe AgentsController do
   describe 'POST create without tenant' do
     subject { -> {
       post :create, :agent => {:email => 'carlos.danger@acme.com', :available => true, :engaged => true, :display_name => 'Johnny',
-                               :encrypted_password => 'blech', :xid => 'abc', :admin => true}
+                               :password => 'blechball', :xid => 'abc', :admin => true}
     }}
 
     it { should change(Tenant, :count).by(1) }
@@ -15,7 +15,7 @@ describe AgentsController do
   describe 'POST create without tenant and without display name' do
     subject { -> {
       post :create, :agent => {:email => 'carlos.danger@acme.com', :available => true, :engaged => true,
-                               :encrypted_password => 'blech', :xid => 'abc', :admin => true}
+                               :password => 'blechball', :xid => 'abc', :admin => true}
     }}
 
     it { should change(Tenant, :count).by(0) }
@@ -32,7 +32,7 @@ describe AgentsController do
       it 'creates an agent' do
         expect {
           post :create, :agent => {:tenant_id => @tenant.id, :available => true, :engaged => true, :display_name => 'Johnny',
-                                   :encrypted_password => 'blech', :xid => 'abc', :admin => true}
+                                   :password => 'blechball', :email => 'schrifty@gmail.com', :xid => 'abc', :admin => true}
         }.to change(Agent, :count).by(1)
         expect(response.status).to eq(201)
       end
@@ -67,10 +67,17 @@ describe AgentsController do
     end
 
     context 'with invalid attributes' do
+      it 'should not create an agent without an email' do
+        expect {
+          post :create, agent: {:available => true, :engaged => true, :display_name => 'Bob',
+                                   :password => 'blechball', :xid => 'abc', :admin => true}
+        }.to change(Agent, :count).by(0)
+        expect(response.status).to eq(422)
+      end
       it 'should not create an agent without a display name' do
         expect {
           post :create, agent: {:available => true, :engaged => true,
-                                   :encrypted_password => 'blech', :xid => 'abc', :admin => true}
+                                :password => 'blechball', :xid => 'abc', :admin => true}
         }.to change(Agent, :count).by(0)
         expect(response.status).to eq(422)
       end

@@ -14,8 +14,7 @@ Tenant.validatePasswords = ->
 Tenant.signup = ->
   if Tenant.validatePasswords()
     $('#signup-spinner').slideDown('slow')
-    tenant = API.createTenant(Tenant.$email)
-    agent = API.createAgent(tenant, Tenant.$email, "abcdefg", Tenant.$password1)
+    agent = API.createTenantAndAgent(Tenant.$email.val(), "abcdefg", Tenant.$password1.val())
     $('#signup-spinner').slideUp('slow')
   else
     Tenant.$signupButton.slideUp()
@@ -34,6 +33,6 @@ $(document).ready ->
   Tenant.$signupButton.on 'click', (event) ->
     Tenant.signup()
   Tenant.$password1.on 'keyup', (event) ->
-    Tenant.$signupButton.css("display", Tenant.validatePasswords() ? "block": "hidden")
+    Tenant.$signupButton.css("display", if Tenant.validatePasswords() then "block" else "hidden")
   Tenant.$password2.on 'keyup', (event) ->
-    Tenant.$signupButton.css("display", Tenant.validatePasswords() ? "block": "hidden")
+    Tenant.$signupButton.css("display", if Tenant.validatePasswords() then "block" else "hidden")

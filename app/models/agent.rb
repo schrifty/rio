@@ -1,4 +1,9 @@
 class Agent < ActiveRecord::Base
+  # Include default devise modules. Others available are:
+  # :token_authenticatable, :confirmable,
+  # :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable
+
   belongs_to :tenant
   validates_presence_of :tenant
   validates_presence_of :display_name, :encrypted_password

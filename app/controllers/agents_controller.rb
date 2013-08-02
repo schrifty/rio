@@ -7,7 +7,6 @@ class AgentsController < ApplicationController
           tenant = Tenant.create({:display_name => display_name})
           params[:agent][:tenant_id] = tenant.id
         end
-
         agent = Agent.create!(agent_params)
         return render json: [ agent ], status: 201
       rescue ActiveRecord::RecordInvalid => e
@@ -46,7 +45,7 @@ class AgentsController < ApplicationController
 
 private
   def agent_params
-    params.require(:agent).permit(:tenant_id, :email, :available, :engaged, :display_name, :encrypted_password, :xid, :admin)
+    params.require(:agent).permit(:tenant_id, :email, :available, :engaged, :display_name, :password, :xid, :admin)
   end
 
 end

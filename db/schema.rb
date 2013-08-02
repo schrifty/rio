@@ -11,20 +11,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130716205835) do
+ActiveRecord::Schema.define(version: 20130801222756) do
 
   create_table "agents", force: true do |t|
-    t.string   "tenant_id"
-    t.string   "email"
-    t.string   "encrypted_password"
-    t.string   "display_name"
-    t.integer  "available"
-    t.boolean  "engaged"
+    t.string   "tenant_id",                              null: false
+    t.string   "email",                                  null: false
+    t.string   "encrypted_password",                     null: false
+    t.string   "display_name",                           null: false
+    t.integer  "available",              default: 0,     null: false
+    t.boolean  "engaged",                default: false, null: false
+    t.boolean  "admin",                  default: false, null: false
     t.string   "xid"
-    t.boolean  "admin"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
   end
+
+  add_index "agents", ["confirmation_token"], name: "index_agents_on_confirmation_token", unique: true, using: :btree
+  add_index "agents", ["email"], name: "index_agents_on_email", unique: true, using: :btree
+  add_index "agents", ["reset_password_token"], name: "index_agents_on_reset_password_token", unique: true, using: :btree
 
   create_table "conversations", force: true do |t|
     t.string   "tenant_id"

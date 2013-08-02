@@ -4,9 +4,10 @@ API.conversation_id = null
 API.since = null
 
 API.createTenant = (email) ->
-  tenant = { "email" : email}
+  tenant = { "email" : email }
   $.ajax '/tenants',
     data: { "tenant" : tenant }
+    type: 'POST'
     dataType: 'json'
     error: (jqXHR, textStatus, errorThrown) ->
       console.log(textStatus)
@@ -15,9 +16,22 @@ API.createTenant = (email) ->
       return true
 
 API.createAgent = (tenant, email, displayName, password) ->
-  agent = {"tenant" : tenant, "email" : email, "display_name" : displayName, "encrypted_password" : password }
+  agent = {"tenant" : tenant, "email" : email, "display_name" : displayName, "password" : password }
   $.ajax '/agents',
     data: { "agent" : agent }
+    type: 'POST'
+    dataType: 'json'
+    error: (jqXHR, textStatus, errorThrown) ->
+      console.log(textStatus)
+      return false
+    success: (data) ->
+      return true
+
+API.createTenantAndAgent = (email, displayName, password) ->
+  agent = {"email" : email, "display_name" : displayName, "password" : password }
+  $.ajax '/agents',
+    data: { "agent" : agent }
+    type: 'POST'
     dataType: 'json'
     error: (jqXHR, textStatus, errorThrown) ->
       console.log(textStatus)

@@ -38,8 +38,6 @@ describe UpdatesController do
 
     # verify the agents array
     agents = Agent.by_tenant(@tenant1).available
-    puts "agents.size=#{agents.size}"
-    puts json.inspect
     json['agents'].size.should == agents.size
     agents.each {|a|
       assert json['agents'].detect{|j| j['display_name'] == a['display_name'] }

@@ -5,7 +5,7 @@ FactoryGirl::define do
     engaged             0
     email               { Faker::Internet.safe_email }
     display_name        { Faker::Name.first_name }
-    encrypted_password  { Faker::Lorem.characters(12) }
+    password            { Faker::Lorem.characters(12) }
     xid                 { Faker::Lorem.characters(20) }
     admin               0
   end
