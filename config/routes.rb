@@ -1,11 +1,11 @@
 Rio::Application.routes.draw do
   devise_for :agents
   resources :invites, only: [:create, :destroy, :show, :index]
-  resources :messages, only: [:create, :show, :index, :updates]
+  resources :messages, only: [:create, :update, :show, :index ]
   resources :conversations, only: [:new, :create, :update, :show, :index]
-  resources :agents, only: [:create, :update, :show, :index]
+  resources :agents, only: [:create, :destroy, :update, :show, :index]
   resources :customers, only: [:create, :update, :show, :index]
-  resources :tenants, only: [:new, :create, :show, :update, :index]
+  resources :tenants, only: [:new, :create, :update, :show, :index]
   resources :updates, only: [:index]
 
   root 'tenants#new'

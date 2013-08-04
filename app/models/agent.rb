@@ -12,10 +12,19 @@ class Agent < ActiveRecord::Base
   STATUS_AVAILABLE = 1
   STATUS_NONRESPONSIVE = 2
 
+  scope :by_email, lambda {|email| where('email = ?', email) }
   scope :by_tenant, lambda {|tenant| where('tenant_id = ?', tenant.id) }
   scope :unavailable, lambda {|| where('available = ?', STATUS_UNAVAILABLE) }
   scope :available, lambda {|| where('available = ?', STATUS_AVAILABLE) }
   scope :nonresponsive, lambda {|| where('available = ?', STATUS_NONRESPONSIVE) }
+
+  before_validation :ensure_tenant
+
+  def ensure_tenant
+    unless self.tenant
+      self.tenant = Tenant.create({:display_name => self.display_name, :email => self.email})
+    end
+  end
 
   # contact the agent by whatever means necessary
   def contact

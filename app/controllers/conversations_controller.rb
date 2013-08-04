@@ -1,8 +1,8 @@
 class ConversationsController < ApplicationController
   def create
     begin
-      conversations = [ Conversation.create!(conversation_params) ]
-      return render json: conversations, status: 201
+      @conversations = [ Conversation.create!(conversation_params) ]
+      return render json: @conversations, status: 201
     rescue ActiveRecord::RecordInvalid => e
       return render text: e.message, status: 422
     end
@@ -10,9 +10,9 @@ class ConversationsController < ApplicationController
 
   def update
     begin
-      conversation = Conversation.find(params[:id])
-      conversation.update_attributes!(conversation_params)
-      return render json: conversation, status: 200
+      @conversation = Conversation.find(params[:id])
+      @conversation.update_attributes!(conversation_params)
+      return render json: @conversation, status: 200
     rescue ActiveRecord::RecordInvalid => e
       return render text: e.message, status: 422
     end
@@ -20,8 +20,8 @@ class ConversationsController < ApplicationController
 
   def show
     begin
-      conversation = Conversation.find(params[:id])
-      return render json: conversation
+      @conversation = Conversation.find(params[:id])
+      return render json: @conversation
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
     end
@@ -31,8 +31,8 @@ class ConversationsController < ApplicationController
   end
 
   def index
-    conversations = Conversation.all
-    return render json: conversations
+    @conversations = Conversation.all
+    return render json: @conversations
   end
 
 private

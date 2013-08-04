@@ -11,11 +11,11 @@ class MessagesController < ApplicationController
 
         new_message = Message.create!(message_params)
         if params[:message][:since]
-          messages = Message.by_tenant(new_message.tenant_id).by_conversation(new_message.conversation_id).since(params[:message][:since])
+          @messages = Message.by_tenant(new_message.tenant_id).by_conversation(new_message.conversation_id).since(params[:message][:since])
         else
-          messages = [new_message]
+          @messages = [new_message]
         end
-        return render json: messages, status: 201
+        return render json: @messages, status: 201
       rescue ActiveRecord::RecordInvalid => e
         render text: e.message, status: 422
         raise ActiveRecord::Rollback
@@ -28,16 +28,16 @@ class MessagesController < ApplicationController
 
   def show
     begin
-      message = Message.find(params[:id])
-      return render json: message
+      @message = Message.find(params[:id])
+      return render json: @message
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
     end
   end
 
   def index
-    messages = Message.by_tenant(params[:tenant]).by_conversation(params[:conversation]).since(params[:since])
-    return render json: messages
+    @messages = Message.by_tenant(params[:tenant]).by_conversation(params[:conversation]).since(params[:since])
+    return render json: @messages
   end
 
   def message_params

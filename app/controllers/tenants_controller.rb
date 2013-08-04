@@ -1,8 +1,8 @@
 class TenantsController < ApplicationController
   def create
     begin
-      tenant = Tenant.create!(tenant_params)
-      return render json: [tenant], status: 201
+      @tenant = Tenant.create!(tenant_params)
+      return render json: [@tenant], status: 201
     rescue ActiveRecord::RecordInvalid => e
       return render text: e.message, status: 422
     end
@@ -10,9 +10,9 @@ class TenantsController < ApplicationController
 
   def update
     begin
-      tenant = Tenant.find(params[:id])
-      tenant.update_attributes!(tenant_params)
-      return render json: tenant, status: 200
+      @tenant = Tenant.find(params[:id])
+      @tenant.update_attributes!(tenant_params)
+      return render json: @tenant, status: 200
     rescue ActiveRecord::RecordInvalid => e
       return render text: e.message, status: 422
     end
@@ -20,16 +20,16 @@ class TenantsController < ApplicationController
 
   def show
     begin
-      tenant = Tenant.find(params[:id])
-      return render json: tenant
+      @tenant = Tenant.find(params[:id])
+      return render json: @tenant
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
     end
   end
 
   def index
-    tenants = Tenant.all
-    return render json: tenants
+    @tenants = Tenant.all
+    return render json: @tenants
   end
 
   private

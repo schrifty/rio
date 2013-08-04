@@ -1,8 +1,8 @@
 class InvitesController < ApplicationController
   def create
     begin
-      invite = Invite.create!(invite_params)
-      return render json: [invite], status: 201
+      @invite = Invite.create!(invite_params)
+      return render json: [@invite], status: 201
     rescue ActiveRecord::RecordInvalid => e
       return render text: e.message, status: 422
     end
@@ -10,9 +10,9 @@ class InvitesController < ApplicationController
 
   def destroy
     begin
-      invite = Invite.find(params[:id])
-      invite.destroy
-      return render json: invite, status: 200
+      @invite = Invite.find(params[:id])
+      @invite.destroy
+      return render json: @invite, status: 200
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
     end
@@ -20,16 +20,16 @@ class InvitesController < ApplicationController
 
   def show
     begin
-      invite = Invite.find(params[:id])
-      return render json: invite
+      @invite = Invite.find(params[:id])
+      return render json: @invite
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
     end
   end
 
   def index
-    invites = Invite.all
-    return render json: invites
+    @invites = Invite.all
+    return render json: @invites
   end
 
   private

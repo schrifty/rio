@@ -2,13 +2,8 @@ class AgentsController < ApplicationController
   def create
     Agent.transaction do
       begin
-        unless params[:agent][:tenant_id] && !params[:agent][:tenant_id].empty?
-          display_name = params[:agent][:email]
-          tenant = Tenant.create({:display_name => display_name})
-          params[:agent][:tenant_id] = tenant.id
-        end
-        agent = Agent.create!(agent_params)
-        return render json: [ agent ], status: 201
+        @agent = Agent.create!(agent_params)
+        return render json: [ @agent ], status: 201
       rescue ActiveRecord::RecordInvalid => e
         render text: e.message, status: 422
         raise ActiveRecord::Rollback
@@ -20,10 +15,10 @@ class AgentsController < ApplicationController
   end
 
   def update
-    agent = Agent.find(params[:id])
+    @agent = Agent.find(params[:id])
     begin
-      agent.update_attributes!(agent_params)
-      return render json: agent, status: 200
+      @agent.update_attributes!(agent_params)
+      return render json: @agent, status: 200
     rescue ActiveRecord::RecordInvalid => e
       return render text: e.message, status: 422
     end
@@ -31,18 +26,35 @@ class AgentsController < ApplicationController
 
   def show
     begin
-      agent = Agent.find(params[:id])
-      return render json: agent
+      @agent = Agent.find(params[:id])
+      if request.head?
+        return render status: 200
+      else
+        return render json: @agent
+      end
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
     end
   end
 
   def index
-    agents = Agent.all
-    return render json: agents
+    if params[:email]
+      @agents = Agent.by_email(params[:email])
+    else
+      @agents = Agent.all
+    end
+    return render json: @agents
   end
 
+  def destroy
+    begin
+      @agent = Agent.find(params[:id])
+      @agent.destroy
+      return render json: @agent, status: 200
+    rescue ActiveRecord::RecordNotFound => e
+      return render text: e.message, status: 404
+    end
+  end
 private
   def agent_params
     params.require(:agent).permit(:tenant_id, :email, :available, :engaged, :display_name, :password, :xid, :admin)
