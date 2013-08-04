@@ -2,7 +2,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
 while true do
-  if conversation = Conversation.needs_assignment.first
+  if conversation = Conversation.by_tenant(Tenant.find(1)).needs_assignment.first
     puts "Found an unengaged conversation [#{conversation.id}]"
     agents = Agent.by_tenant(conversation.tenant).available
     unless agents.empty?

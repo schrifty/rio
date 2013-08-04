@@ -3,8 +3,8 @@ window.API or= {}
 API.conversation_id = null
 API.since = null
 
-API.createTenant = (email) ->
-  tenant = { "email" : email }
+API.createTenant = (email, display_name) ->
+  tenant = { "email" : email, "display_name" : display_name }
   $.ajax '/tenants',
     data: { "tenant" : tenant }
     type: 'POST'
@@ -27,17 +27,16 @@ API.createAgent = (tenant, email, displayName, password) ->
     success: (data) ->
       return true
 
-API.createTenantAndAgent = (email, displayName, password) ->
-  agent = {"email" : email, "display_name" : displayName, "password" : password }
+API.headAgentByEmail = (email, callback) ->
   $.ajax '/agents',
-    data: { "agent" : agent }
-    type: 'POST'
+    data: { "email" : email }
+    type: 'HEAD'
     dataType: 'json'
     error: (jqXHR, textStatus, errorThrown) ->
-      console.log(textStatus)
-      return false
-    success: (data) ->
-      return true
+      console.log(errorThrown)
+      callback(false)
+    success: (data, textStatus, jqXHR) ->
+      callback(true)
 
 API.getUpdates = ->
   if (API.conversation_id)

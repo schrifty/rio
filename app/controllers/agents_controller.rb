@@ -40,6 +40,9 @@ class AgentsController < ApplicationController
   def index
     if params[:email]
       @agents = Agent.by_email(params[:email])
+      if request.head? && @agents.empty?
+        return render status: 404
+      end
     else
       @agents = Agent.all
     end
