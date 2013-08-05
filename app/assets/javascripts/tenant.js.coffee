@@ -8,63 +8,72 @@ Tenant.emailPattern = /// ^ #begin of line
              ([a-zA-Z.]{2,6})  #followed by 2 to 6 letters or periods
              $ ///i #end of line and ignore case
 
+Tenant.checkSignInState = ->
+  if !Tenant.$email.val() || !Tenant.$password.val()
+    Tenant.$signinButton.attr('disabled', 'disabled')
+  else
+    Tenant.$signinButton.removeAttr('disabled')
+
+Tenant.checkSignUpState = ->
+  if Tenant.emailValidation() && Tenant.validatePasswordConfirmation()
+    Tenant.$signupButton.removeAttr('disabled')
+  else
+    Tenant.$signupButton.attr('disabled', 'disabled')
+
+Tenant.emailValidation = ->
+  b = Tenant.emailPattern.test Tenant.$emailNew.val()
+  console.log b + " : " + Tenant.$emailNew.val()
+  return b
+
 Tenant.validatePasswordConfirmation = ->
-  return Password.validate(Tenant.$password1) and (Tenant.$password1.val() == Tenant.$password2.val())
+  return Password.validate(Tenant.$passwordNew) and (Tenant.$passwordNew.val() == Tenant.$passwordConfirm.val())
 
 Tenant.signIn = ->
-  API.createAgentSession(Tenant.$email.val(), Tenant.$password.val(), ((authed) ->
-    $('#signup-spinner').slideUp('fast')
-    if authed
-      console.log "Signed In"
-    else
-      console.log "Not Signed In"
-  ))
-  $('#signup-spinner').slideDown('fast')
-
-Tenant.register = ->
-  Tenant.$signupButton.slideUp()
-  API.createAgent(null, Tenant.$email.val(), "abcdefg", Tenant.$password1.val(), ((agent) ->
-    $('#signup-spinner').slideUp('slow')
-    if agent
-      console.log "Registered: " + agent
-    else
-      console.log "Not registered: " + agent
-  ))
-  $('#signup-spinner').slideDown('slow')
-
-
-Tenant.emailKeyUp = ->
-  if Tenant.$email.val().match Tenant.emailPattern
-    $('#email-spinner').slideDown('fast')
-    API.headAgentByEmail(Tenant.$email.val(), ((found) ->
-      $('#email-spinner').slideUp('fast')
-      if found
-
-        $('#password-confirm-div').slideUp()
-        Tenant.$signupButton.slideUp()
-        $('#password-div').slideDown()
-        Tenant.$signinButton.slideDown()
+  console.log "signing in!"
+  if Tenant.$signinButton.enabled
+    API.createAgentSession(Tenant.$email.val(), Tenant.$password.val(), ((authed) ->
+      $('#signin-spinner').slideUp('fast')
+      if authed
+        console.log "Signed In"
       else
-        $('#password-div').slideUp()
-        Tenant.$signinButton.slideUp()
-        $('#password-confirm-div').slideDown()
-        Tenant.$signupButton.slideDown()
+        console.log "Not Signed In"
     ))
+    $('#signin-spinner').slideDown('fast')
 
-Tenant.passwordConfirmKeyUp = ->
-  Tenant.$signupButton.css("disabled", if Tenant.validatePasswordConfirmation() then "" else "disabled")
+Tenant.signUp = ->
+  console.log "signing up!"
+  if Tenant.$signupButton.enabled
+    API.createAgent(null, Tenant.$email.val(), "abcdefg", Tenant.$password1.val(), ((agent) ->
+      $('#signup-spinner').slideUp('fast')
+      if agent
+        console.log "Registered: " + agent
+      else
+        console.log "Not registered: " + agent
+    ))
+    $('#signup-spinner').slideDown('fast')
 
 $(document).ready ->
-  Tenant.$signinButton = $('#signin-button')
-  Tenant.$signupButton = $('#signup-button')
-  Tenant.$passwords = $('.passwords')
-  Tenant.$password = $('#password')
-  Tenant.$password1 = $('#password1')
-  Tenant.$password2 = $('#password2')
   Tenant.$email = $('#email')
+  Tenant.$password = $('#password')
+  Tenant.$signinButton = $('#signin-button')
 
-  Tenant.$email.on 'keyup', (event) -> Tenant.emailKeyUp()
-  Tenant.$signinButton.on 'click', (event) -> Tenant.signIn()
-  Tenant.$signupButton.on 'click', (event) -> Tenant.register()
-  Tenant.$password1.on 'keyup', (event) -> Tenant.passwordConfirmKeyUp()
-  Tenant.$password2.on 'keyup', (event) -> Tenant.passwordConfirmKeyUp()
+  Tenant.$emailNew = $('#email-new')
+  Tenant.$passwordNew = $('#password-new')
+  Tenant.$passwordConfirm = $('#password-confirm')
+  Tenant.$signupButton = $('#signup-button')
+
+  Tenant.$email.on 'keyup', (event) ->
+    Tenant.checkSignInState()
+  Tenant.$password.on 'keyup', (event) ->
+    Tenant.checkSignInState()
+  Tenant.$signinButton.on 'click', (event) ->
+    Tenant.signIn()
+
+  Tenant.$emailNew.on 'keyup', (event) ->
+    Tenant.checkSignUpState()
+  Tenant.$passwordNew.on 'keyup', (event) ->
+    Tenant.checkSignUpState()
+  Tenant.$passwordConfirm.on 'keyup', (event) ->
+    Tenant.checkSignUpState()
+  Tenant.$signupButton.on 'click', (event) ->
+    Tenant.signUp()

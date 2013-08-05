@@ -3,24 +3,43 @@
     span {
       text-transform: uppercase;
     }
-    #signup-spinner,#email-spinner,#password-div,#password-confirm-div,#signup-button,#signin-button {
+    .flash .error, .flash .alert {
+      border: 1px solid #fbb;
+      background-color: #fdd;
+    }
+    i {
+      text-align: center;
+    }
+    #signin-spinner,#signup-spinner {
       display: none;
     }
-    #login-link {
-      vertical-align: top;
-      text-align: right;
-    }
     #email {
-      margin-top: 90px;
+      margin-top: 50px;
       margin-bottom: 6px;
     }
-    .passwords {
-      margin-top: 6px;
+    #password {
       margin-bottom: 6px;
     }
-    #signup-button {
-      margin-top: 6px;
+    #signin-button-div {
+      margin-bottom: 30px;
+    }
+    #signin-spinner {
+      text-align: center;
+    }
+    #email-new {
       margin-bottom: 6px;
+    }
+    #password-new {
+      margin-bottom: 6px;
+    }
+    #password-confirm {
+      margin-bottom: 6px;
+    }
+    #signup-button-div {
+      margin-bottom: 6px;
+    }
+    #signup-spinner {
+      text-align: center;
     }
   }
 }
