@@ -11,38 +11,60 @@ Tenant.emailPattern = /// ^ #begin of line
 Tenant.validatePasswordConfirmation = ->
   return Password.validate(Tenant.$password1) and (Tenant.$password1.val() == Tenant.$password2.val())
 
-Tenant.register = ->
-  if Tenant.validatePasswordConfirmation()
-    $('#signup-spinner').slideDown('slow')
-    agent = API.createAgent(null, Tenant.$email.val(), "abcdefg", Tenant.$password1.val())
-    $('#signup-spinner').slideUp('slow')
-  else
-    Tenant.$signupButton.slideUp()
-    Tenant.$passwords.slideDown()
+Tenant.signIn = ->
+  API.createAgentSession(Tenant.$email.val(), Tenant.$password.val(), ((authed) ->
+    $('#signup-spinner').slideUp('fast')
+    if authed
+      console.log "Signed In"
+    else
+      console.log "Not Signed In"
+  ))
+  $('#signup-spinner').slideDown('fast')
 
-Tenant.emailKeyPress = ->
+Tenant.register = ->
+  Tenant.$signupButton.slideUp()
+  API.createAgent(null, Tenant.$email.val(), "abcdefg", Tenant.$password1.val(), ((agent) ->
+    $('#signup-spinner').slideUp('slow')
+    if agent
+      console.log "Registered: " + agent
+    else
+      console.log "Not registered: " + agent
+  ))
+  $('#signup-spinner').slideDown('slow')
+
+
+Tenant.emailKeyUp = ->
   if Tenant.$email.val().match Tenant.emailPattern
     $('#email-spinner').slideDown('fast')
     API.headAgentByEmail(Tenant.$email.val(), ((found) ->
-      console.log "callback called: " + found
+      $('#email-spinner').slideUp('fast')
       if found
+
+        $('#password-confirm-div').slideUp()
+        Tenant.$signupButton.slideUp()
         $('#password-div').slideDown()
+        Tenant.$signinButton.slideDown()
       else
+        $('#password-div').slideUp()
+        Tenant.$signinButton.slideUp()
         $('#password-confirm-div').slideDown()
+        Tenant.$signupButton.slideDown()
     ))
-    $('#email-spinner').slideUp('fast')
 
 Tenant.passwordConfirmKeyUp = ->
-  Tenant.$signupButton.css("display", if Tenant.validatePasswordConfirmation() then "block" else "hidden")
+  Tenant.$signupButton.css("disabled", if Tenant.validatePasswordConfirmation() then "" else "disabled")
 
 $(document).ready ->
+  Tenant.$signinButton = $('#signin-button')
   Tenant.$signupButton = $('#signup-button')
   Tenant.$passwords = $('.passwords')
+  Tenant.$password = $('#password')
   Tenant.$password1 = $('#password1')
   Tenant.$password2 = $('#password2')
   Tenant.$email = $('#email')
 
-  Tenant.$email.on 'keypress', (event) -> Tenant.emailKeyPress()
+  Tenant.$email.on 'keyup', (event) -> Tenant.emailKeyUp()
+  Tenant.$signinButton.on 'click', (event) -> Tenant.signIn()
   Tenant.$signupButton.on 'click', (event) -> Tenant.register()
   Tenant.$password1.on 'keyup', (event) -> Tenant.passwordConfirmKeyUp()
   Tenant.$password2.on 'keyup', (event) -> Tenant.passwordConfirmKeyUp()

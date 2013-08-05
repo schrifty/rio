@@ -1,5 +1,6 @@
 Rio::Application.routes.draw do
-  devise_for :agents
+  devise_for :agents, :controllers => {registrations: 'registrations', sessions: 'sessions'}
+
   resources :invites, only: [:create, :destroy, :show, :index]
   resources :messages, only: [:create, :update, :show, :index ]
   resources :conversations, only: [:new, :create, :update, :show, :index]

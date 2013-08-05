@@ -15,7 +15,7 @@ API.createTenant = (email, display_name) ->
     success: (data) ->
       return true
 
-API.createAgent = (tenant, email, displayName, password) ->
+API.createAgent = (tenant, email, displayName, password, oncomplete) ->
   agent = {"tenant" : tenant, "email" : email, "display_name" : displayName, "password" : password }
   $.ajax '/agents',
     data: { "agent" : agent }
@@ -23,9 +23,21 @@ API.createAgent = (tenant, email, displayName, password) ->
     dataType: 'json'
     error: (jqXHR, textStatus, errorThrown) ->
       console.log(textStatus)
-      return false
+      oncomplete(null)
     success: (data) ->
-      return true
+      oncomplete(data)
+
+API.createAgentSession = (email, password, oncomplete) ->
+  agent = {"email" : email, "password" : password }
+  $.ajax '/agents/sign_in',
+    data: { "agent" : agent }
+    type: 'POST'
+    dataType: 'json'
+    error: (jqXHR, textStatus, errorThrown) ->
+      console.log(textStatus)
+      oncomplete(false)
+    success: (data) ->
+      oncomplete(true)
 
 API.headAgentByEmail = (email, callback) ->
   $.ajax '/agents',
@@ -33,7 +45,7 @@ API.headAgentByEmail = (email, callback) ->
     type: 'HEAD'
     dataType: 'json'
     error: (jqXHR, textStatus, errorThrown) ->
-      console.log(errorThrown)
+      console.log(textStatus)
       callback(false)
     success: (data, textStatus, jqXHR) ->
       callback(true)
@@ -67,7 +79,6 @@ API.sendMessage = (text_selector) ->
       console.log(textStatus)
     success: (data) ->
       console.log data
-      #      $('#username'}.val(data)
       Display.update({messages: data})
 
 $(document).ready ->
