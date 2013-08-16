@@ -48,13 +48,13 @@ describe AgentsController do
   end
 
   describe 'GET :show_current_agent' do
-    context 'signed out' do
-      it 'should find and return an agent' do
-        get :show_current_agent
-        expect(response.status).to eq(404)
-        assigns(:agent).should eq(nil)
-      end
-    end
+    #context 'signed out' do
+    #  it 'should find and return an agent' do
+    #    get :show_current_agent
+    #    expect(response.status).to eq(404)
+    #    assigns(:agent).should eq(nil)
+    #  end
+    #end
 
     context 'signed in' do
       before {

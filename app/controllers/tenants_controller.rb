@@ -1,5 +1,5 @@
 class TenantsController < ApplicationController
-  before_filter :authenticate_agent!
+  before_filter :authenticate_agent!, :except => [:new]
 
   def create
     begin

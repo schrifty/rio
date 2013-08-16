@@ -3,6 +3,17 @@ window.API or= {}
 API.conversation_id = null
 API.since = null
 
+# Validates whether the current user is authenticated or not
+API.isAuthenticated = (onsuccess, onfail) ->
+  $.ajax '/current_agent',
+    type: 'HEAD'
+    dataType: 'json'
+    error: (jqXHR, textStatus, errorThrown) ->
+      console.log(errorThrown)
+      onfail()
+    success: (data, textStatus, jqXHR) ->
+      onsuccess()
+
 API.createTenant = (email, display_name) ->
   tenant = { "email" : email, "display_name" : display_name }
   $.ajax '/tenants',

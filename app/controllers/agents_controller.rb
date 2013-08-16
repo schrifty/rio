@@ -40,15 +40,11 @@ class AgentsController < ApplicationController
   end
 
   def show_current_agent
-    if current_agent
-      @agent = current_agent
-      if request.head?
-        return render status: 200
-      else
-        return render json: @agent
-      end
+    @agent = current_agent
+    if request.head?
+      return render text: 'OK', status: 200
     else
-      return render text: "Not Found", status: 404
+      return render json: @agent
     end
   end
 

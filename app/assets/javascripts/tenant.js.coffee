@@ -54,12 +54,10 @@ $(document).ready ->
   Tenant.$email = $('#email')
   Tenant.$password = $('#password')
   Tenant.$signinButton = $('#signin-button')
-
   Tenant.$emailNew = $('#email-new')
   Tenant.$passwordNew = $('#password-new')
   Tenant.$passwordConfirm = $('#password-confirm')
   Tenant.$signupButton = $('#signup-button')
-
 
   Tenant.$email.on 'keyup', (event) ->
     Tenant.checkSignInState()
@@ -70,12 +68,11 @@ $(document).ready ->
       (->
         $('#signin').slideUp()
         $('#menu').slideDown()
-        console.log("Auth Success callback!")
       ),
       (->
-        console.log("Auth Fail Callback"))
+        console.log("Auth Fail Callback")
+      )
     )
-
   Tenant.$emailNew.on 'keyup', (event) ->
     Tenant.checkSignUpState()
   Tenant.$passwordNew.on 'keyup', (event) ->
@@ -84,3 +81,15 @@ $(document).ready ->
     Tenant.checkSignUpState()
   Tenant.$signupButton.on 'click', (event) ->
     Tenant.signUp()
+
+  # make sure the correct panel is displayed when the page is first loaded
+  API.isAuthenticated(
+    ( ->
+      console.log("User is authenticated")
+      $('#menu').slideDown()
+    ),
+    ( ->
+      console.log("User is not authenticated")
+      $('#signin').slideDown()
+    )
+  )
