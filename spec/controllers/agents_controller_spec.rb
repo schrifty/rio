@@ -6,24 +6,37 @@ describe AgentsController do
   before {
     controller.stub(:authenticate_agent!).and_return true
     @tenant1 = create(:tenant)
+    @tenant2 = create(:tenant)
+    @tenant3 = create(:tenant)
   }
 
   describe 'GET :index' do
     before {
-      @agents = (1..3).map { |n| create(:agent, :tenant => @tenant1) }
+      @agent1 = create(:agent, :tenant => @tenant2)
+      @agent2 = create(:agent, :tenant => @tenant3)
+      @agents = [@agent1, @agent2] + (1..10).map { |n|
+        create(:agent, :tenant =>  [@tenant1, @tenant2, @tenant3][rand(3)])
+      }
+      sign_in @agent1
     }
 
-    it 'should get all agents' do
+    it 'should get all agents the user is permitted to see' do
       get :index
       expect(response.status).to eq(200)
-      assigns(:agents).map { |a| a.id }.should eq @agents.map { |a| a.id }
+      assigns(:agents).map { |a| a.id }.should eq @agents.select{|a| a.tenant == @agent1.tenant}.map { |a| a.id }
     end
 
     it 'should return an agent by email' do
-      get :index, :email => @agents[0].email
+      get :index, :email => @agent1.email
       expect(response.status).to eq(200)
       expect(assigns(:agents).size).to eq(1)
-      expect(assigns(:agents)[0].email).to eq(@agents[0].email)
+      expect(assigns(:agents)[0].email).to eq(@agent1.email)
+    end
+
+    it 'should not return an agent from another tenant' do
+      get :index, :email => @agent2.email
+      expect(response.status).to eq(200)
+      expect(assigns(:agents).size).to eq(0)
     end
 
     it 'should return a 404 when looking for an unregistered email' do
@@ -33,12 +46,23 @@ describe AgentsController do
   end
 
   describe 'GET :show' do
+    before {
+      @agent1 = create(:agent, :tenant => @tenant1)
+      @agent2 = create(:agent, :tenant => @tenant2)
+      sign_in @agent1
+    }
+
     let (:agents) { (1..3).map { |n| create(:agent, :tenant => @tenant1) } }
 
     it 'should find and return an agent' do
-      get :show, :id => agents[0].id
+      get :show, :id => @agent1.id
       expect(response.status).to eq(200)
-      assigns(:agent).should eq(agents[0])
+      assigns(:agent).should eq(@agent1)
+    end
+
+    it 'should not find and return an agent from another tenant' do
+      get :show, :id => @agent2.id
+      expect(response.status).to eq(404)
     end
 
     it 'should return a 404 when looking for a nonexistent agent' do
@@ -71,11 +95,20 @@ describe AgentsController do
   end
 
   describe 'HEAD show' do
-    let (:agent) { create(:agent, :tenant => @tenant1) }
+    before {
+      @agent1 = create(:agent, :tenant => @tenant1)
+      @agent2 = create(:agent, :tenant => @tenant2)
+      sign_in @agent1
+    }
 
-    it 'should return one agent' do
-      head :show, :id => agent.id
+    it 'should find an agent' do
+      head :show, :id => @agent1.id
       expect(response.status).to eq(200)
+    end
+
+    it 'should return a 404 when searching for an agent from another tenant' do
+      head :show, :id => @agent2.id
+      expect(response.status).to eq(404)
     end
 
     it 'should return a 404 when looking for a nonexistent agent' do
@@ -169,28 +202,37 @@ describe AgentsController do
   end
 
   describe 'PUT update' do
-    let (:agent) { create(:agent, :tenant => @tenant1) }
+    before {
+      @agent1 = create(:agent, :tenant => @tenant1)
+      @agent2 = create(:agent, :tenant => @tenant2)
+      sign_in @agent1
+    }
 
     context 'with valid attributes' do
       it 'should find the agent' do
-        put :update, :agent => {:available => false}, :id => agent.id
-        assigns(:agent).should eq(agent)
+        put :update, :agent => {:available => false}, :id => @agent1.id
+        assigns(:agent).should eq(@agent1)
         expect(response.status).to eq(200)
       end
 
       it 'should update agent attributes' do
-        put :update, :agent => {:available => false, :display_name => 'Carlos', :engaged => true}, :id => agent.id
-        agent.reload
-        agent.available.should eq 0
-        agent.display_name.should eq 'Carlos'
-        agent.engaged.should eq true
+        put :update, :agent => {:available => false, :display_name => 'Carlos', :engaged => true}, :id => @agent1.id
+        @agent1.reload
+        @agent1.available.should eq 0
+        @agent1.display_name.should eq 'Carlos'
+        @agent1.engaged.should eq true
         expect(response.status).to eq(200)
+      end
+
+      it 'should not find an agent from another tenant' do
+        put :update, :agent => {:available => false}, :id => @agent2.id
+        expect(response.status).to eq(404)
       end
     end
 
     context 'with invalid attributes' do
       it 'should not update an agent with invalid data' do
-        put :update, :agent => {:display_name => nil}, :id => agent.id
+        put :update, :agent => {:display_name => nil}, :id => @agent1.id
         expect(response.status).to eq(422)
       end
     end
@@ -198,13 +240,21 @@ describe AgentsController do
 
   describe 'DELETE destroy' do
     before {
-      @agent = create(:agent, :tenant => @tenant1)
+      @agent1 = create(:agent, :tenant => @tenant1)
+      @agent2 = create(:agent, :tenant => @tenant2)
+      sign_in @agent1
     }
 
     it 'should delete the agent' do
       expect {
-        delete :destroy, :id => @agent.id
+        delete :destroy, :id => @agent1.id
       }.to change(Agent, :count).by(-1)
+    end
+
+    it 'should not delete an agent from another tenant' do
+      expect {
+        delete :destroy, :id => @agent2.id
+      }.to change(Agent, :count).by(0)
     end
   end
 end

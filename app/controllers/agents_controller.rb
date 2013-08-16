@@ -17,10 +17,12 @@ class AgentsController < ApplicationController
   end
 
   def update
-    @agent = Agent.find(params[:id])
     begin
+      @agent = Agent.by_tenant(current_agent.tenant).find(params[:id])
       @agent.update_attributes!(agent_params)
       return render json: @agent, status: 200
+    rescue ActiveRecord::RecordNotFound => e
+      return render text: e.message, status: 404
     rescue ActiveRecord::RecordInvalid => e
       return render text: e.message, status: 422
     end
@@ -28,7 +30,7 @@ class AgentsController < ApplicationController
 
   def show
     begin
-      @agent = Agent.find(params[:id])
+      @agent = Agent.by_tenant(current_agent.tenant).find(params[:id])
       if request.head?
         return render status: 200
       else
@@ -50,19 +52,19 @@ class AgentsController < ApplicationController
 
   def index
     if params[:email]
-      @agents = Agent.by_email(params[:email])
+      @agents = Agent.by_tenant(current_agent.tenant).by_email(params[:email])
       if request.head? && @agents.empty?
         return render status: 404
       end
     else
-      @agents = Agent.all
+      @agents = Agent.by_tenant(current_agent.tenant)
     end
     return render json: @agents
   end
 
   def destroy
     begin
-      @agent = Agent.find(params[:id])
+      @agent = Agent.by_tenant(current_agent.tenant).find(params[:id])
       @agent.destroy
       return render json: @agent, status: 200
     rescue ActiveRecord::RecordNotFound => e
