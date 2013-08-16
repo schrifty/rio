@@ -28,29 +28,27 @@ Tenant.emailValidation = ->
 Tenant.validatePasswordConfirmation = ->
   return Password.validate(Tenant.$passwordNew) and (Tenant.$passwordNew.val() == Tenant.$passwordConfirm.val())
 
-Tenant.signIn = ->
+Tenant.signIn = (onsuccess, onfail) ->
   console.log "signing in!"
-  if Tenant.$signinButton.enabled
-    API.createAgentSession(Tenant.$email.val(), Tenant.$password.val(), ((authed) ->
-      $('#signin-spinner').slideUp('fast')
-      if authed
-        console.log "Signed In"
-      else
-        console.log "Not Signed In"
-    ))
-    $('#signin-spinner').slideDown('fast')
+  API.createAgentSession(Tenant.$email.val(), Tenant.$password.val(), ((authed) ->
+    $('#signin-spinner').slideUp('fast')
+    if authed
+      onsuccess()
+    else
+      onfail()
+  ))
+  $('#signin-spinner').slideDown('fast')
 
 Tenant.signUp = ->
-  console.log "signing up!"
-  if Tenant.$signupButton.enabled
-    API.createAgent(null, Tenant.$email.val(), "abcdefg", Tenant.$password1.val(), ((agent) ->
-      $('#signup-spinner').slideUp('fast')
-      if agent
-        console.log "Registered: " + agent
-      else
-        console.log "Not registered: " + agent
-    ))
-    $('#signup-spinner').slideDown('fast')
+  console.log "signing up! " + Tenant.$emailNew.val()
+  API.createAgent(null, Tenant.$emailNew.val(), "abcdefg", Tenant.$passwordNew.val(), ((agent) ->
+    $('#signup-spinner').slideUp('fast')
+    if agent
+      console.log "Registered: " + agent
+    else
+      console.log "Not registered: " + agent
+  ))
+  $('#signup-spinner').slideDown('fast')
 
 $(document).ready ->
   Tenant.$email = $('#email')
@@ -62,12 +60,21 @@ $(document).ready ->
   Tenant.$passwordConfirm = $('#password-confirm')
   Tenant.$signupButton = $('#signup-button')
 
+
   Tenant.$email.on 'keyup', (event) ->
     Tenant.checkSignInState()
   Tenant.$password.on 'keyup', (event) ->
     Tenant.checkSignInState()
   Tenant.$signinButton.on 'click', (event) ->
-    Tenant.signIn()
+    Tenant.signIn(
+      (->
+        $('#signin').slideUp()
+        $('#menu').slideDown()
+        console.log("Auth Success callback!")
+      ),
+      (->
+        console.log("Auth Fail Callback"))
+    )
 
   Tenant.$emailNew.on 'keyup', (event) ->
     Tenant.checkSignUpState()

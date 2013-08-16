@@ -1,17 +1,25 @@
 #tenant-main {
-  #login {
-    span {
-      text-transform: uppercase;
-    }
-    .flash .error, .flash .alert {
-      border: 1px solid #fbb;
-      background-color: #fdd;
-    }
-    i {
-      text-align: center;
-    }
-    #signin-spinner,#signup-spinner {
+  .flash .error, .flash .alert {
+    border: 1px solid #fbb;
+    background-color: #fdd;
+  }
+  #menu {
+    display: none;
+    margin-top: 50px;
+  }
+
+  #signin {
+    display: none;
+
+    //span {
+    //  text-transform: uppercase;
+    //}
+    //i {
+    //  text-align: center;
+    //}
+    #signin-spinner {
       display: none;
+      text-align: center;
     }
     #email {
       margin-top: 50px;
@@ -23,7 +31,13 @@
     #signin-button-div {
       margin-bottom: 30px;
     }
-    #signin-spinner {
+  }
+
+  #signup {
+    display: none;
+
+    #signup-spinner {
+      display: none;
       text-align: center;
     }
     #email-new {
@@ -37,9 +51,6 @@
     }
     #signup-button-div {
       margin-bottom: 6px;
-    }
-    #signup-spinner {
-      text-align: center;
     }
   }
 }

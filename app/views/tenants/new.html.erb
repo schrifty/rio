@@ -17,42 +17,55 @@
 </head>
 <body>
 <div id="tenant-main">
-  <div id="login">
+  <div id="signin">
 
     <!-- SIGN IN -->
     <div class="row">
-      <input id="email" class="col-lg-4 col-offset-4" type="text" placeholder="Email"/>
+      <input id="email" class="col-offset-4 col-lg-4" type="text" placeholder="Email"/>
     </div>
     <div class="row passwords" id="password-div">
-      <input id="password" class="col-lg-4 col-offset-4" type="password" placeholder="Password"/>
+      <input id="password" class="col-offset-4 col-lg-4" type="password" placeholder="Password"/>
     </div>
     <div class="row" id="signin-button-div">
-      <button class="col-lg-4 col-offset-4 btn btn-large btn-primary" id="signin-button" disabled="disabled">
+      <button class="col-offset-4 col-lg-4 btn btn-large btn-primary" id="signin-button" disabled="disabled">
         SIGN IN
       </button>
     </div>
     <div class="row" id="signin-spinner">
-      <i class="icon-spinner icon-spin icon-large col-lg-4 col-offset-4"></i>
+      <i class="col-offset-4 col-lg-4 icon-spinner icon-spin icon-large"></i>
     </div>
+   </div>
 
     <!-- SIGN UP -->
+  <div id="signup">
     <div class="row">
-      <input id="email-new" class="col-lg-4 col-offset-4" type="text" placeholder="Email"/>
+      <input id="email-new" class="col-offset-6 col-lg-3" type="text" placeholder="Email"/>
     </div>
     <div class="row passwords">
-      <input id="password-new" class="col-lg-4 col-offset-4" type="password" placeholder="Password"/>
+      <input id="password-new" class="col-offset-6 col-lg-3" type="password" placeholder="Password"/>
     </div>
     <div class="row passwords">
-      <input id="password-confirm" class="col-lg-4 col-offset-4" type="password" placeholder="Password"/>
+      <input id="password-confirm" class="col-offset-6 col-lg-3" type="password" placeholder="Password"/>
     </div>
     <div class="row" id="signup-button-div">
-      <button class="col-lg-4 col-offset-4 btn btn-large btn-primary" id="signup-button" disabled="disabled">
+      <button class="col-offset-6 col-lg-3 btn btn-large btn-primary" id="signup-button" disabled="disabled">
         SIGN UP
       </button>
     </div>
     <div class="row" id="signup-spinner">
-      <i class="icon-spinner icon-spin icon-large col-lg-4 col-offset-4"></i>
+      <i class="icon-spinner icon-spin icon-large col-offset-6 col-lg-3"></i>
     </div>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu">
+    <ul class="col-offset-4 col-lg-4 nav nav-pills">
+      <li class="active"><a href="#">Questions</a></li>
+      <li><a href="#">Profile</a></li>
+      <li><a href="#">Users</a></li>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="#">Settings</a></li>
+    </ul>
   </div>
 </div>
 <div id="#main">
