@@ -30,6 +30,7 @@ gem 'jbuilder', '~> 1.2'
 gem 'devise'
 
 group :development, :test do
+  gem 'ruby-debug-base19x'
   gem 'ruby-debug-ide'
   gem 'rspec-rails'
   gem 'factory_girl_rails', "~> 4.0"
