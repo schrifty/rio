@@ -1,4 +1,6 @@
 class ConversationsController < ApplicationController
+  before_filter :authenticate_agent!
+
   def create
     begin
       @conversations = [ Conversation.create!(conversation_params) ]

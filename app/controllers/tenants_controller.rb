@@ -1,4 +1,6 @@
 class TenantsController < ApplicationController
+  before_filter :authenticate_agent!
+
   def create
     begin
       @tenant = Tenant.create!(tenant_params)

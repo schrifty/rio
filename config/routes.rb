@@ -4,10 +4,12 @@ Rio::Application.routes.draw do
   resources :invites, only: [:create, :destroy, :show, :index]
   resources :messages, only: [:create, :update, :show, :index ]
   resources :conversations, only: [:new, :create, :update, :show, :index]
-  resources :agents, only: [:create, :destroy, :update, :show, :index]
+  resources :agents, only: [:create, :destroy, :update, :show, :index, :current_agent]
   resources :customers, only: [:create, :update, :show, :index]
   resources :tenants, only: [:new, :create, :update, :show, :index]
   resources :updates, only: [:index]
+
+  get '/current_agent' => 'agents#show_current_agent'
 
   root 'tenants#new'
 

@@ -1,4 +1,6 @@
 class CustomersController < ApplicationController
+  before_filter :authenticate_agent!
+
   def create
     begin
       @customer = Customer.create!(customer_params)

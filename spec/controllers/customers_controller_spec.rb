@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe CustomersController do
+  include Devise::TestHelpers
+
   before {
+    controller.stub(:authenticate_agent!).and_return true
     @tenant1 = create(:tenant)
   }
 

@@ -1,4 +1,6 @@
 class UpdatesController < ApplicationController
+  before_filter :authenticate_agent!
+
   def index
     return render text: "Conversation ID is required", status: 422 unless params[:conversation]
 

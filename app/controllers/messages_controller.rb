@@ -1,4 +1,6 @@
 class MessagesController < ApplicationController
+  before_filter :authenticate_agent!
+
   def create
     Message.transaction do
       begin

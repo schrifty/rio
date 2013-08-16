@@ -1,9 +1,11 @@
 class AgentsController < ApplicationController
+  before_filter :authenticate_agent!
+
   def create
     Agent.transaction do
       begin
         @agent = Agent.create!(agent_params)
-        return render json: [ @agent ], status: 201
+        return render json: [@agent], status: 201
       rescue ActiveRecord::RecordInvalid => e
         render text: e.message, status: 422
         raise ActiveRecord::Rollback
@@ -37,6 +39,19 @@ class AgentsController < ApplicationController
     end
   end
 
+  def show_current_agent
+    if current_agent
+      @agent = current_agent
+      if request.head?
+        return render status: 200
+      else
+        return render json: @agent
+      end
+    else
+      return render text: "Not Found", status: 404
+    end
+  end
+
   def index
     if params[:email]
       @agents = Agent.by_email(params[:email])
@@ -58,7 +73,8 @@ class AgentsController < ApplicationController
       return render text: e.message, status: 404
     end
   end
-private
+
+  private
   def agent_params
     params.require(:agent).permit(:tenant_id, :email, :available, :engaged, :display_name, :password, :xid, :admin)
   end

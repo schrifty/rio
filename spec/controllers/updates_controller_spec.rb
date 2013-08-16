@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe UpdatesController do
+  include Devise::TestHelpers
+
   before do
+    controller.stub(:authenticate_agent!).and_return true
     @tenant1 = create(:tenant)
     @tenant2 = create(:tenant)
     @agent1 = create(:agent, available: 1)

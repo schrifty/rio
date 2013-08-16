@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe AgentsController do
+  include Devise::TestHelpers
+
   before {
+    controller.stub(:authenticate_agent!).and_return true
     @tenant1 = create(:tenant)
   }
 
@@ -41,6 +44,29 @@ describe AgentsController do
     it 'should return a 404 when looking for a nonexistent agent' do
       get :show, :id => 999
       expect(response.status).to eq(404)
+    end
+  end
+
+  describe 'GET :show_current_agent' do
+    context 'signed out' do
+      it 'should find and return an agent' do
+        get :show_current_agent
+        expect(response.status).to eq(404)
+        assigns(:agent).should eq(nil)
+      end
+    end
+
+    context 'signed in' do
+      before {
+        @agent1 = create(:agent, :tenant => @tenant1)
+        sign_in @agent1
+      }
+
+      it 'should find and return an agent' do
+        get :show_current_agent
+        expect(response.status).to eq(200)
+        assigns(:agent).should eq(@agent1)
+      end
     end
   end
 

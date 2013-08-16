@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe MessagesController do
+  include Devise::TestHelpers
+
   before {
+    controller.stub(:authenticate_agent!).and_return true
     @tenant1 = create(:tenant)
     @conversation1 = create(:conversation)
   }

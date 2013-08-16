@@ -1,6 +1,12 @@
 require 'spec_helper'
 
 describe TenantsController do
+  include Devise::TestHelpers
+
+  before {
+    controller.stub(:authenticate_agent!).and_return true
+  }
+
   describe 'GET :index' do
     before {
       @tenants = (1..3).map { |n| create(:tenant) }

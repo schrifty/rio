@@ -13,6 +13,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
 RSpec.configure do |config|
+  config.include Devise::TestHelpers, :type => :controller
+
   # ## Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -52,5 +54,10 @@ def validate_response_body(messages, response_body)
   messages.each {|m|
     assert response_body.detect{|j| j['id'] == m['id'] }
   }
+end
+
+# for integration tests
+def login(agent)
+  post_via_redirect agent_session_path, 'agent[email]' => agent.email, 'agent[password]' => agent.password
 end
 

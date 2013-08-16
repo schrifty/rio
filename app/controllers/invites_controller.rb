@@ -1,4 +1,6 @@
 class InvitesController < ApplicationController
+  before_filter :authenticate_agent!
+
   def create
     begin
       @invite = Invite.create!(invite_params)
