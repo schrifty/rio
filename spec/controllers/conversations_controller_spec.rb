@@ -10,6 +10,7 @@ describe ConversationsController do
     @tenant3 = create(:tenant)
 
     @agent1 = create(:agent, :tenant => @tenant1)
+    @agent2 = create(:agent, :tenant => @tenant2)
 
     @customer1 = create(:customer, :tenant => @tenant1)
     @customer2 = create(:customer, :tenant => @tenant2)
@@ -72,15 +73,30 @@ describe ConversationsController do
     it 'should not create a conversation without a tenant' do
       expect {
         post :create, conversation: {:customer_id => @customer1.id, :active => true, :referer_url => 'http:'}
-      }.to change(Conversation, :count).by(0)
-      expect(response.status).to eq(422)
+      }.to change(Conversation, :count).by 0
+      expect(response.status).to eq 422
     end
 
+    it 'should not create a conversation with a forbidden engaged_agent' do
+      expect {
+        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :active => true, :engaged_agent_id => @agent2.id}
+      }.to change(Conversation, :count).by 0
+      expect(response.status).to eq 422
+    end
+
+    it 'should not create a conversation with a forbidden target_agent' do
+      expect {
+        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :active => true, :target_agent_id => @agent2.id}
+      }.to change(Conversation, :count).by 0
+      expect(response.status).to eq 422
+    end
+
+    # FYI how does this work?
     it 'should not create a conversation with a forbidden tenant' do
       expect {
         post :create, conversation: {:tenant_id => @tenant2.id, :customer_id => @customer1.id, :active => true, :referer_url => 'http:'}
-      }.to change(Conversation, :count).by(0)
-      expect(response.status).to eq(422)
+      }.to change(Conversation, :count).by 0
+      expect(response.status).to eq 422
     end
 
     it 'should not create a conversation with a forbidden customer' do
@@ -116,13 +132,18 @@ describe ConversationsController do
       expect(response.status).to eq 403
     end
 
-    it 'should not update a conversation without a customer' do
-      put :update, :conversation => {:customer_id => nil}, :id => @conversation1.id
+    it 'should not allow a conversation customer to be updated' do
+      put :update, :conversation => {:customer_id => @customer2.id}, :id => @conversation1.id
+      expect(@conversation1.reload.customer.id).to eq @customer1.id
+    end
+
+    it 'should not allow a conversation to be updated with an invalid engaged_agent' do
+      put :update, :conversation => {:engaged_agent_id => @agent2.id}, :id => @conversation1.id
       expect(response.status).to eq 422
     end
 
-    it 'should not update a conversation with a forbidden customer' do
-      put :update, :conversation => {:customer_id => @customer2.id}, :id => @conversation1.id
+    it 'should not allow a conversation to be updated with an invalid target_agent' do
+      put :update, :conversation => {:target_agent_id => @agent2.id}, :id => @conversation1.id
       expect(response.status).to eq 422
     end
   end

@@ -20,7 +20,7 @@ class ConversationsController < ApplicationController
     Conversation.transaction do
       begin
         @conversation = Conversation.by_tenant(current_agent.tenant).find(params[:id])
-        @conversation.update!(conversation_params)
+        @conversation.update!(update_params)
         return render json: @conversation, status: 200
       rescue ActiveRecord::RecordInvalid => e
         render text: e.message, status: 422
@@ -55,7 +55,14 @@ class ConversationsController < ApplicationController
 
   private
   def conversation_params
-    params.require(:conversation).permit(:tenant_id, :active, :customer_id, :referer_url, :location, :customer_data, :first_customer_message, :engaged_agent_id, :preferred_response_channel, :preferred_response_channel_info)
+    params.require(:conversation).permit(:tenant_id, :active, :customer_id, :referer_url, :location, :customer_data,
+                                         :first_customer_message, :engaged_agent_id, :target_agent_id,
+                                         :preferred_response_channel, :preferred_response_channel_info)
   end
 
+  def update_params
+    params.require(:conversation).permit(:active, :referer_url, :location, :customer_data,
+                                         :first_customer_message, :engaged_agent_id, :target_agent_id,
+                                         :preferred_response_channel, :preferred_response_channel_info)
+  end
 end
