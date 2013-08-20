@@ -20,10 +20,10 @@ describe AgentsController do
       sign_in @agent1
     }
 
-    it 'should get all agents the user is permitted to see' do
+    it 'should get all and only all of the agents the user is permitted to see' do
       get :index
-      expect(response.status).to eq(200)
-      assigns(:agents).map { |a| a.id }.should eq @agents.select{|a| a.tenant == @agent1.tenant}.map { |a| a.id }
+      expect(response.status).to eq 200
+      (assigns(:agents).map { |a| a.id } - @agents.select{|a| a.tenant == @agent1.tenant}.map { |a| a.id }).should eq []
     end
 
     it 'should return an agent by email' do

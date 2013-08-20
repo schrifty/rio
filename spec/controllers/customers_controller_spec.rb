@@ -81,7 +81,7 @@ describe CustomersController do
     it 'should update customer attributes' do
       put :update, :customer => {:display_name => 'Customer Z'}, :id => @customer1.id
       @customer1.reload
-      @customer1.display_name.should eq 'Customer Y'
+      @customer1.display_name.should eq 'Customer Z'
     end
 
     it 'should not update a customer with an empty display_name' do

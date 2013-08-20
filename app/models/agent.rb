@@ -8,9 +8,13 @@ class Agent < ActiveRecord::Base
   validates_presence_of :tenant
   validates_presence_of :display_name, :encrypted_password
 
+  # the status of the agent
   STATUS_UNAVAILABLE = 0
   STATUS_AVAILABLE = 1
   STATUS_NONRESPONSIVE = 2
+
+  # the max number of simultaneous conversations an agent is capable of fielding
+  MAX_CONV_COUNT = 3
 
   scope :by_email, lambda {|email| where('email = ?', email) }
   scope :by_tenant, lambda {|tenant| where('tenant_id = ?', tenant.id) }
@@ -18,7 +22,33 @@ class Agent < ActiveRecord::Base
   scope :available, lambda {|| where('available = ?', STATUS_AVAILABLE) }
   scope :nonresponsive, lambda {|| where('available = ?', STATUS_NONRESPONSIVE) }
 
+  default_scope order("if(available = #{STATUS_AVAILABLE}, 0, if(available = #{STATUS_NONRESPONSIVE}, 1, 2))")
+
   before_validation :ensure_tenant
+
+  def as_json(options = nil)
+    super(:methods => [:last_sign_in_at, :customer_count, :status] )
+  end
+
+  attr_reader :status
+  def status
+    if self.available == STATUS_AVAILABLE
+      if self.customer_count > MAX_CONV_COUNT
+        "engaged"
+      else
+        "available"
+      end
+    elsif self.available == STATUS_NONRESPONSIVE
+      "nonresponsive"
+    else
+      "unavailable"
+    end
+  end
+
+  attr_reader :customer_count
+  def customer_count
+    [0, rand(20) - 10].max
+  end
 
   def ensure_tenant
     unless self.tenant

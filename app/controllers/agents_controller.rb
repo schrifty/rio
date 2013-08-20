@@ -19,7 +19,7 @@ class AgentsController < ApplicationController
   def update
     begin
       @agent = Agent.by_tenant(current_agent.tenant).find(params[:id])
-      @agent.update_attributes!(agent_params)
+      @agent.update!(agent_params)
       return render json: @agent, status: 200
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
