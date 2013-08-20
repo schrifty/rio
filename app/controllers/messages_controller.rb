@@ -30,7 +30,7 @@ class MessagesController < ApplicationController
 
   def show
     begin
-      @message = Message.find(params[:id])
+      @message = Message.by_tenant(current_agent.tenant).find(params[:id])
       return render json: @message
     rescue ActiveRecord::RecordNotFound => e
       return render text: e.message, status: 404
@@ -38,7 +38,7 @@ class MessagesController < ApplicationController
   end
 
   def index
-    @messages = Message.by_tenant(params[:tenant]).by_conversation(params[:conversation]).since(params[:since])
+    @messages = Message.by_tenant(current_agent.tenant).by_conversation(params[:conversation]).since(params[:since])
     return render json: @messages
   end
 
