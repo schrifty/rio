@@ -1,0 +1,26 @@
+$turquoise: #47B8B8;
+$light-turquoise: #33cdc7;
+$beige: #B2C2A6;
+$white: #FFFFFF;
+
+$color1: #D74B4B;
+$color2: #DCDDD8;
+$color3: #475F77;
+$color4: #354B5E;
+
+#panel-users {
+  display: none;
+  height: 400px;
+  overflow: scroll;
+}
+
+#panel-users {
+  border-width: 6px;
+  tr {
+    background-color: $color2;
+  }
+}
+
+//.available {
+//  background-color: $color2;
+//}

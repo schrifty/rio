@@ -1,0 +1,133 @@
+$turquoise: #47B8B8;
+$light-turquoise: #33cdc7;
+$beige: #B2C2A6;
+$white: #FFFFFF;
+
+$color1: #D74B4B;
+$color2: #DCDDD8;
+$color3: #475F77;
+$color4: #354B5E;
+
+#header {
+  h1 {
+    font-family: "Tw Cen MT", arial, sans-serif;
+    margin-left: 180px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    text-align: left;
+    overflow: visible;
+    font-size: 75px;
+    color: $color1;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+}
+
+body {
+  font-family: "Lato", arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: normal;
+  //background: url('/assets/dark_wood.png');
+  background-color: $color2;
+  overflow: hidden;
+}
+
+label {
+  color: $color2;
+}
+
+#tenant-main {
+  .flash .error, .flash .alert {
+    border: 1px solid #fbb;
+    background-color: #fdd;
+  }
+
+  #menu {
+    display: none;
+    margin-bottom: 12px;
+  }
+
+  .nav-pills {
+    li {
+      a {
+        color: $white;
+      }
+      a:hover, a:focus {
+        background-color: $color3;
+      }
+    }
+
+    li.active {
+      a {
+        color: $white;
+        background-color: $color1;
+      }
+    }
+  }
+
+  #panel-questions {
+    display: none
+  }
+
+  #panel-profile {
+    display: none;
+    #profile-name-div {
+      margin-top: 20px;
+    }
+  }
+
+  #panel-dashboard {
+    display: none
+  }
+
+  #panel-settings {
+    display: none
+  }
+
+  #signin {
+    display: none;
+
+    //span {
+    //  text-transform: uppercase;
+    //}
+    //i {
+    //  text-align: center;
+    //}
+    #signin-spinner {
+      display: none;
+      text-align: center;
+    }
+    #email {
+      margin-top: 50px;
+      margin-bottom: 6px;
+    }
+    #password {
+      margin-bottom: 6px;
+    }
+    #signin-button-div {
+      margin-bottom: 30px;
+    }
+  }
+
+  #signup {
+    display: none;
+
+    #signup-spinner {
+      display: none;
+      text-align: center;
+    }
+    #email-new {
+      margin-bottom: 6px;
+    }
+    #password-new {
+      margin-bottom: 6px;
+    }
+    #password-confirm {
+      margin-bottom: 6px;
+    }
+    #signup-button-div {
+      margin-bottom: 6px;
+    }
+  }
+}
