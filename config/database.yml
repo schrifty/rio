@@ -24,6 +24,6 @@ production:
   encoding: utf8
   database: rio
   username: root
-  password: cheyenne
+  password: password12
   host:
   port:
