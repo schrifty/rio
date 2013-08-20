@@ -2,41 +2,46 @@ require 'spec_helper'
 
 describe Message do
   context 'creation' do
-    let(:message) { create(:message) }
+    before {
+      @tenant1 = create(:tenant)
+      @customer1 = create(:customer, :tenant => @tenant1)
+      @conversation1 = create(:conversation, :tenant => @tenant1, :customer => @customer1)
+      @agent1 = create(:agent, :tenant => @tenant1)
+      @message1 = create(:message, :tenant => @tenant1, :conversation => @conversation1, :agent => @agent1)
+    }
 
     it 'should be valid' do
-      message.should be_valid
+      @message1.should be_valid
     end
 
     it 'should not be valid without a tenant' do
-      message.tenant = nil
-      message.should_not be_valid
+      @message1.tenant = nil
+      @message1.should_not be_valid
     end
 
     it 'should not be valid with an invalid tenant id' do
-      message.tenant_id = 999
-      message.should_not be_valid
+      @message1.tenant_id = 999
+      @message1.should_not be_valid
     end
 
     it 'should not be valid without a conversation' do
-      message.conversation = nil
-      message.should_not be_valid
+      @message1.conversation = nil
+      @message1.should_not be_valid
     end
 
     it 'should not be valid with an invalid conversation' do
-      message.conversation_id = 999
-      message.should_not be_valid
+      @message1.conversation_id = 999
+      @message1.should_not be_valid
     end
 
     it 'should not be valid without text' do
-      message.text = nil
-      message.should_not be_valid
+      @message1.text = nil
+      @message1.should_not be_valid
     end
 
-    it 'should update the conversations engaged agent when the agent changes' do
-      new_agent = create(:agent)
-      create(:message, tenant: message.tenant, conversation: message.conversation, agent: new_agent)
-      message.conversation.engaged_agent.should == new_agent
+    it 'should update the engaged agent when the agent changes' do
+      create(:message, tenant: @message1.tenant, conversation: @message1.conversation, agent: @agent1)
+      @message1.conversation.engaged_agent.should == @agent1
     end
   end
 end
