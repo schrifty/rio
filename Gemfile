@@ -29,6 +29,10 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'devise'
 
+#linux?
+gem 'highline'
+gem 'net-ssh'
+
 group :development, :test do
   gem 'ruby-debug-base19x'
   gem 'ruby-debug-ide'
