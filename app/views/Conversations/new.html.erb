@@ -26,7 +26,7 @@
         <textarea id="question" rows="3" class="col-lg-4 col-offset-2" placeholder="Question"></textarea>
       </div>
       <div class="row">
-        <button id="submit-button" class="col-lg-4 col-offset-2 btn btn-large btn-primary" onclick="API.sendMessage('#question')">Get
+        <button id="submit-button" class="col-lg-4 col-offset-2 btn btn-large btn-primary" onclick="MessageAPI.sendMessage('#question')">Get
           an answer!
         </button>
       </div>
@@ -66,7 +66,7 @@
               </button>
             </td>
             <td>
-              <input id="send-message-button" type="submit" onclick="API.sendMessage('#post-bar textarea')" value="send"/>
+              <input id="send-message-button" type="submit" onclick="MessageAPI.sendMessage('#post-bar textarea')" value="send"/>
             </td>
           </tr>
         </tbody>

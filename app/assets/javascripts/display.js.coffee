@@ -28,7 +28,7 @@ Display.update = (data) ->
       else
         button_class = 'btn-success'
         button_icon = ''
-      html = html + "<li id=\"" + agent['id'] + "\"><a class=\"btn btn-large\ " + button_class + "\" onclick=\"API.sendMessage\"><i class=\"" + button_icon + "\"></i> " + agent['display_name'] + '</a></li>';
+      html = html + "<li id=\"" + agent['id'] + "\"><a class=\"btn btn-large\ " + button_class + "\" onclick=\"MessageAPI.sendMessage\"><i class=\"" + button_icon + "\"></i> " + agent['display_name'] + '</a></li>';
     $('#agent-list').html(html)
 
   $('#chat-table-div').css("display", "block")

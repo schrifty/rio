@@ -1,31 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>Quinstantly</title>
+<title>Moxie-CWT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <head>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :all %>
-
-  <!--<%= stylesheet_link_tag "bootstrap.min" %>-->
-  <!--<%= stylesheet_link_tag "font-awesome-3.2.1" %>-->
-  <!--<%= stylesheet_link_tag "site-bootstrap-overrides" %>-->
-  <!--<%= stylesheet_link_tag "header" %>-->
-  <!--<%= stylesheet_link_tag "main" %>-->
-  <!--<%= stylesheet_link_tag "users" %>-->
-  <!--<%= javascript_include_tag "bootstrap.min" %>-->
-
-  <!--<link href="/assets/bootstrap.min.css" rel="stylesheet">-->
-  <!--<link href="/assets/font-awesome-3.2.1.css" rel="stylesheet">-->
-  <!--<link href="/assets/site-bootstrap-overrides.css.scss" rel="stylesheet">-->
-  <!--<link href="/assets/header.css.scss" rel="stylesheet">-->
-  <!--<link href="/assets/main.css.scss" rel="stylesheet">-->
-  <!--<link href="/assets/users.css.scss" rel="stylesheet">-->
-  <!--<script src="/assets/bootstrap.min.js"></script>-->
   <div id="header">
     <div class="row">
+      <a class="col-md-offset-0 col-md-1" id="signout-link">Sign Out</a>
       <hgroup>
-        <h1>Quinstantly!</h1>
+        <h1>Moxie-CWT</h1>
       </hgroup>
     </div>
   </div>
@@ -46,6 +29,14 @@
         SIGN IN
       </button>
     </div>
+    <div class="row col-md-offset-4 col-md-4 the-big-or">
+      OR
+    </div>
+    <div class="row">
+      <button class="col-md-offset-4 col-md-4 btn btn-large btn-primary" id="show-signup-button">
+        SIGN UP
+      </button>
+    </div>
     <div class="row" id="signin-spinner">
       <i class="col-md-offset-4 col-md-4 icon-spinner icon-spin icon-large"></i>
     </div>
@@ -54,17 +45,25 @@
   <!-- SIGN UP -->
   <div id="signup">
     <div class="row">
-      <input id="email-new" class="col-md-offset-6 col-md-3" type="text" placeholder="Email"/>
+      <input id="email-new" class="col-md-offset-4 col-md-4" type="text" placeholder="Email"/>
     </div>
     <div class="row passwords">
-      <input id="password-new" class="col-md-offset-6 col-md-3" type="password" placeholder="Password"/>
+      <input id="password-new" class="col-md-offset-4 col-md-4" type="password" placeholder="Password"/>
     </div>
     <div class="row passwords">
-      <input id="password-confirm" class="col-md-offset-6 col-md-3" type="password" placeholder="Password"/>
+      <input id="password-confirm" class="col-md-offset-4 col-md-4" type="password" placeholder="Password"/>
     </div>
     <div class="row" id="signup-button-div">
-      <button class="col-md-offset-6 col-md-3 btn btn-large btn-primary" id="signup-button" disabled="disabled">
+      <button class="col-md-offset-4 col-md-4 btn btn-large btn-primary" id="signup-button" disabled="disabled">
         SIGN UP
+      </button>
+    </div>
+    <div class="row col-md-offset-4 col-md-4 the-big-or">
+      OR
+    </div>
+    <div class="row">
+      <button class="col-md-offset-4 col-md-4 btn btn-large btn-primary" id="show-signin-button">
+        SIGN IN
       </button>
     </div>
     <div class="row" id="signup-spinner">
@@ -75,7 +74,7 @@
   <!-- MENU -->
   <div id="menu" class="col-md-offset-3 col-md-6">
     <ul class="nav nav-pills nav-justified">
-      <li id="pill-questions" class="active"><a>Questions</a></li>
+      <li id="pill-starting" class="active"><a>Get Started</a></li>
       <li id="pill-profile"><a>Profile</a></li>
       <li id="pill-users"><a>Users</a></li>
       <li id="pill-dashboard"><a>Dashboard</a></li>
@@ -84,17 +83,27 @@
   </div>
 
   <!-- QUESTIONS -->
-  <div id="panel-questions" class="menu-panel col-md-offset-3 col-md-7"></div>
+  <div id="panel-starting" class="panel menu-panel">
+    <div class="row col-md-offset-3 col-md-7">
+      <h3>Copy this into the body of your pages:</h3>
+      <pre class="Source">
+&lt;script src=&quot;http://quinstantly.com/webtab.js&quot;&gt;
+      </pre>
+      <h4>or pull this <a>library</a> into your iPhone code</h4>
+    </div>
+  </div>
 
   <!-- PROFILE -->
   <div id="panel-profile" class="panel menu-panel col-md-offset-3 col-md-6">
     <span id="profile-submit-result" class="help-block"></span>
+
     <form id="profile-form" class="form-horizontal" role="form">
       <fieldset>
 
         <!-- Text input-->
         <div id="profile-name-div" class="form-group">
           <label for="name" class="col-md-3 control-label">Display Name</label>
+
           <div class="col-md-7">
             <input id="profile-name" name="name" type="text" placeholder="Name" class="form-control input-sm" required="true">
           </div>
@@ -103,6 +112,7 @@
         <!-- Text input-->
         <div class="form-group">
           <label for="email" class="col-md-3 control-label">Email</label>
+
           <div class="col-md-7">
             <input id="profile-email" name="email" type="email" placeholder="Email" class="form-control input-sm" required="true">
           </div>
@@ -111,6 +121,7 @@
         <!-- File Button -->
         <div class="form-group">
           <label for="upload" class="col-md-3 control-label">Avatar</label>
+
           <div class="col-md-7">
             <input id="profile-upload" name="upload" class="input-file" type="file">
           </div>
@@ -118,15 +129,16 @@
 
         <!--&lt;!&ndash; Textarea &ndash;&gt;-->
         <!--<div class="form-group">-->
-          <!--<label for="desc" class="col-md-3 control-label">About You</label>-->
-          <!--<div class="col-md-7">-->
-            <!--<textarea class="form-control" rows="3" id="profile-desc" name="desc">Who are you?</textarea>-->
-          <!--</div>-->
+        <!--<label for="desc" class="col-md-3 control-label">About You</label>-->
+        <!--<div class="col-md-7">-->
+        <!--<textarea class="form-control" rows="3" id="profile-desc" name="desc">Who are you?</textarea>-->
+        <!--</div>-->
         <!--</div>-->
 
         <!-- Password input-->
         <div class="form-group">
           <label for="password" class="col-md-3 control-label">Password</label>
+
           <div class="col-md-7">
             <input id="profile-password" name="password" type="password" placeholder="Old Password" class="form-control">
           </div>
@@ -135,6 +147,7 @@
         <!-- Password input-->
         <div class="form-group">
           <label for="newpassword" class="col-md-3 control-label">New Password</label>
+
           <div class="col-md-7">
             <input id="profile-newpassword" name="newpassword" type="password" placeholder="New Password" class="form-control">
           </div>
@@ -143,6 +156,7 @@
         <!-- Password input-->
         <div class="form-group">
           <label for="newpasswordconfirm" class="col-md-3 control-label">New Password</label>
+
           <div class="col-md-7">
             <input id="profile-newpasswordconfirm" name="newpasswordconfirm" type="password" placeholder="New Password" class="form-control">
           </div>
@@ -151,6 +165,7 @@
         <!-- Button -->
         <div class="form-group">
           <label class="control-label" for="submit"></label>
+
           <div class="col-md-offset-3 col-md-7">
             <button id="profile-submit" name="submit" class="btn btn-primary">Save</button>
           </div>
