@@ -1,4 +1,7 @@
 window.Menu or= {}
 
-Menu.init = ->
+Menu.show = ->
   $('#menu').slideDown()
+
+Menu.hide = ->
+  $('#menu').slideUp()

@@ -1,40 +1,55 @@
-window.Tenant or= {}
+window.Main or= {}
 
 $(document).ready ->
-  Tenant.$email = $('#email')
-  Tenant.$email.on 'keyup', (event) -> Tenant.checkSignInState()
+  Main.$email = $('#email')
+  Main.$email.on 'keyup', (event) -> Main.checkSignInState()
 
-  Tenant.$password = $('#password')
-  Tenant.$password.on 'keyup', (event) -> Tenant.checkSignInState()
+  Main.$password = $('#password')
+  Main.$password.on 'keyup', (event) -> Main.checkSignInState()
 
-  Tenant.$signinButton = $('#signin-button')
-  Tenant.$signinButton.on 'click', (event) -> Tenant.signIn(
-    (-> $('#signin').slideUp(); Menu.init),
-    (-> console.log("Auth Fail Callback"))
+  Main.$signoutLink = $('#signout-link')
+  Main.$signoutLink.on 'click', (event) -> Main.signOut(
+    (->
+      console.log "signed out!"
+      Main.$signoutLink.hide()
+      Menu.hide()
+      $('#signin').slideDown()
+    ),
+    ((msg) -> console.log("Failed to sign out: " + msg))
   )
 
-  Tenant.$emailNew = $('#email-new')
-  Tenant.$emailNew.on 'keyup', (event) -> Tenant.checkSignUpState()
+  Main.$signinButton = $('#signin-button')
+  Main.$signinButton.on 'click', (event) -> Main.signIn(
+    (->
+      console.log "signed in!"
+      Main.$signoutLink.show()
+      Menu.show()
+      $('#signin').slideUp()
+    ),
+    ((msg) -> console.log("Failed to sign in: " + msg))
+  )
 
-  Tenant.$passwordNew = $('#password-new')
-  Tenant.$passwordNew.on 'keyup', (event) -> Tenant.checkSignUpState()
+  Main.$showSignupButton = $('#show-signup-button')
+  Main.$showSignupButton.on 'click', (event) ->
+    $('#signin').slideUp()
+    $('#signup').slideDown()
 
-  Tenant.$passwordConfirm = $('#password-confirm')
-  Tenant.$passwordConfirm.on 'keyup', (event) -> Tenant.checkSignUpState()
+  Main.$showSigninButton = $('#show-signin-button')
+  Main.$showSigninButton.on 'click', (event) ->
+    $('#signup').slideUp()
+    $('#signin').slideDown()
 
-  Tenant.$signupButton = $('#signup-button')
-  Tenant.$signupButton.on 'click', (event) -> Tenant.signUp()
+  Main.$emailNew = $('#email-new')
+  Main.$emailNew.on 'keyup', (event) -> Main.checkSignUpState()
 
-  Tenant.$pillQuestions = $('#pill-questions')
-  Tenant.$panelQuestions = $('#panel-questions')
-  Tenant.$pillProfile = $('#pill-profile')
-  Tenant.$panelProfile = $('#panel-profile')
-  Tenant.$pillUsers = $('#pill-users')
-  Tenant.$panelUsers = $('#panel-users')
-  Tenant.$pillDashboard = $('#pill-dashboard')
-  Tenant.$panelDashboard = $('#panel-dashboard')
-  Tenant.$pillSettings = $('#pill-settings')
-  Tenant.$panelSettings = $('#panel-settings')
+  Main.$passwordNew = $('#password-new')
+  Main.$passwordNew.on 'keyup', (event) -> Main.checkSignUpState()
+
+  Main.$passwordConfirm = $('#password-confirm')
+  Main.$passwordConfirm.on 'keyup', (event) -> Main.checkSignUpState()
+
+  Main.$signupButton = $('#signup-button')
+  Main.$signupButton.on 'click', (event) -> Main.signUp()
 
   $('#menu li').on 'click', (event) ->
     $(event.currentTarget).addClass('active').siblings().removeClass('active')
@@ -52,14 +67,16 @@ $(document).ready ->
       sessionStorage.setItem('current_user', JSON.stringify(agent))
       console.log JSON.parse(sessionStorage.getItem('current_user')).id
       $('#menu').slideDown()
+      $('#signout-link').show()
     ),
     ( ->
       console.log("User is not authenticated")
       $('#signin').slideDown()
+      $('#signout-link').hide()
     )
   )
 
-Tenant.emailPattern = /// ^ #begin of line
+Main.emailPattern = /// ^ #begin of line
              ([\w.-]+)         #one or more letters, numbers, _ . or -
              @                 #followed by an @ sign
              ([\w.-]+)         #then one or more letters, numbers, _ . or -
@@ -67,29 +84,29 @@ Tenant.emailPattern = /// ^ #begin of line
              ([a-zA-Z.]{2,6})  #followed by 2 to 6 letters or periods
              $ ///i #end of line and ignore case
 
-Tenant.checkSignInState = ->
-  if !Tenant.$email.val() || !Tenant.$password.val()
-    Tenant.$signinButton.attr('disabled', 'disabled')
+Main.checkSignInState = ->
+  if !Main.$email.val() || !Main.$password.val()
+    Main.$signinButton.attr('disabled', 'disabled')
   else
-    Tenant.$signinButton.removeAttr('disabled')
+    Main.$signinButton.removeAttr('disabled')
 
-Tenant.checkSignUpState = ->
-  if Tenant.emailValidation() && Tenant.validatePasswordConfirmation()
-    Tenant.$signupButton.removeAttr('disabled')
+Main.checkSignUpState = ->
+  if Main.emailValidation() && Main.validatePasswordConfirmation()
+    Main.$signupButton.removeAttr('disabled')
   else
-    Tenant.$signupButton.attr('disabled', 'disabled')
+    Main.$signupButton.attr('disabled', 'disabled')
 
-Tenant.emailValidation = ->
-  b = Tenant.emailPattern.test Tenant.$emailNew.val()
-  console.log b + " : " + Tenant.$emailNew.val()
+Main.emailValidation = ->
+  b = Main.emailPattern.test Main.$emailNew.val()
+  console.log b + " : " + Main.$emailNew.val()
   return b
 
-Tenant.validatePasswordConfirmation = ->
-  return Password.validate(Tenant.$passwordNew) and (Tenant.$passwordNew.val() == Tenant.$passwordConfirm.val())
+Main.validatePasswordConfirmation = ->
+  return Password.validate(Main.$passwordNew) and (Main.$passwordNew.val() == Main.$passwordConfirm.val())
 
-Tenant.signIn = (onsuccess, onfail) ->
+Main.signIn = (onsuccess, onfail) ->
   console.log "signing in!"
-  API.createAgentSession(Tenant.$email.val(), Tenant.$password.val(), ((authed) ->
+  AuthAPI.createAgentSession(Main.$email.val(), Main.$password.val(), ((authed) ->
     $('#signin-spinner').slideUp('fast')
     if authed
       onsuccess()
@@ -98,9 +115,11 @@ Tenant.signIn = (onsuccess, onfail) ->
   ))
   $('#signin-spinner').slideDown('fast')
 
-Tenant.signUp = ->
-  console.log "signing up! " + Tenant.$emailNew.val()
-  API.createAgent(null, Tenant.$emailNew.val(), "abcdefg", Tenant.$passwordNew.val(), ((agent) ->
+Main.signOut = (onsuccess, onfail) ->
+  AuthAPI.destroyAgentSession(onsuccess, onfail)
+
+Main.signUp = ->
+  AgentAPI.createAgent(null, Main.$emailNew.val(), "abcdefg", Main.$passwordNew.val(), ((agent) ->
     $('#signup-spinner').slideUp('fast')
     if agent
       console.log "Registered: " + agent
