@@ -1,3 +1,5 @@
+require "rvm/capistrano"
+
 set :application, "rio"
 set :deploy_to, "/var/www/rio"
 set :repository,  "git@github.com:schrifty/rio"

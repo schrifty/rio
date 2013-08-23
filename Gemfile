@@ -42,7 +42,8 @@ group :development, :test do
 end
 
 group :development do
-  gem 'capistrano', group: :development
+  gem 'rvm-capistrano'
+  gem 'capistrano'
 end
 
 group :doc do
