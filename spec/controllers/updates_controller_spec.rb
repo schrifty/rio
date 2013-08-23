@@ -7,11 +7,17 @@ describe UpdatesController do
     controller.stub(:authenticate_agent!).and_return true
     @tenant1 = create(:tenant)
     @tenant2 = create(:tenant)
-    @agent1 = create(:agent, available: 1)
-    @agent2 = create(:agent, available: 1)
-    @agent3 = create(:agent, available: 1)
-    @conversation1 = create(:conversation, tenant: @tenant1)
-    @conversation2 = create(:conversation, tenant: @tenant2)
+
+    sign_in @agent1 = create(:agent, :tenant => @tenant1, available: 1)
+    @agent2 = create(:agent, :tenant => @tenant2, available: 1)
+    @agent3 = create(:agent, :tenant => @tenant2, available: 1)
+
+    @customer1 = create(:customer, :tenant => @tenant1)
+    @customer2 = create(:customer, :tenant => @tenant2)
+
+    @conversation1 = create(:conversation, tenant: @tenant1, customer: @customer1)
+    @conversation2 = create(:conversation, tenant: @tenant2, customer: @customer2)
+
     @message1 = create(:message, tenant: @tenant1, conversation: @conversation1, created_at: '2013-07-25 14:00:00', agent: nil)
     @message2 = create(:message, tenant: @tenant1, conversation: @conversation1, created_at: '2013-07-25 14:01:00', agent: @agent1)
     @message3 = create(:message, tenant: @tenant1, conversation: @conversation1, created_at: '2013-07-25 15:00:00', agent: nil)
