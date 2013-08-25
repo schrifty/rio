@@ -1,0 +1,30 @@
+$white: #FFFFFF;
+
+// Plain
+//$color1: #D74B4B;
+//$color2: #DCDDD8;
+//$color3: #475F77;
+//$color4: #354B5E;
+
+// $color1 - Header text
+// $color2 - Background
+// $color3 - Active Highlight
+// $color4 -
+// Japanese Art
+$color1: #FFB88C;
+$color2: #777755;
+$color3: #CCB287;
+$color4: #A69055;
+$color5: #2D2B21;
+
+#panel-questions {
+  height: 400px;
+  overflow: scroll;
+  .author-display-name {
+    color: green;
+  }
+  table.details {
+    display: none;
+    background-color: orange;
+  }
+}

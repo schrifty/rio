@@ -12,25 +12,56 @@ describe Conversation do
   end
 
   context 'creation' do
-    let(:conversation) { build(:conversation, :tenant => @tenant1, :customer => @customer1) }
+    before {
+      @conversation1 = build(:conversation, :tenant => @tenant1, :customer => @customer1)
+      @message1 = build(:message, :tenant => @tenant1, :conversation => @conversation1)
+      @conversation1.first_message = @message1
+      @message2 = build(:message, :tenant => @tenant1, :conversation => @conversation1, :agent_id => @agent1)
+      @conversation1.last_message = @message2
+      @conversation2 = build(:conversation, :tenant => @tenant2, :customer => @customer2)
+      @conversation2.first_message = build(:message, :tenant => @tenant2, :conversation => @conversation2)
+      @conversation2.last_message = build(:message, :tenant => @tenant2, :conversation => @conversation2)
+    }
 
     it 'should build a valid conversation' do
-      conversation.should be_valid
+      @conversation1.should be_valid
     end
 
     it 'should not be valid without a tenant' do
-      conversation.tenant = nil
-      conversation.should_not be_valid
+      @conversation1.tenant = nil
+      @conversation1.should_not be_valid
     end
 
     it 'should not be valid without a customer' do
-      conversation.customer = nil
-      conversation.should_not be_valid
+      @conversation1.customer = nil
+      @conversation1.should_not be_valid
     end
 
     it 'should not be valid with an invalid tenant id' do
-      conversation.tenant_id = 99999
-      conversation.should_not be_valid
+      @conversation1.tenant_id = 99999
+      @conversation1.should_not be_valid
+    end
+
+    it 'should not be valid with a first_message that belongs to another tenant' do
+      @conversation1.first_message = @conversation2.first_message
+      @conversation1.should_not be_valid
+    end
+
+    it 'should not be valid with a last_message that belongs to another tenant' do
+      @conversation1.last_message = @conversation2.last_message
+      @conversation1.should_not be_valid
+    end
+
+    it 'should have the correct customer display name' do
+      @conversation1.customer_display_name.should eq @customer1.display_name
+    end
+
+    it 'should have the correct last_message_author_display_name' do
+      @conversation1.last_message_author_display_name.should eq @agent1.display_name
+    end
+
+    it 'should have the correct last_message_created_at' do
+      @conversation1.last_message_created_at.should eq @conversation1.last_message.created_at
     end
   end
 
@@ -50,20 +81,20 @@ describe Conversation do
     end
 
     it 'should return an accurate number of active conversations' do
-      conversation1 = create(:conversation, tenant: @tenant1, customer: @customer1, active: true)
-      conversation2 = create(:conversation, tenant: @tenant1, customer: @customer1, active: false)
-      Conversation.by_active(true).should include(conversation1)
-      Conversation.by_active(true).should_not include(conversation2)
-      Conversation.by_active(false).should_not include(conversation1)
-      Conversation.by_active(false).should include(conversation2)
+      conversation1 = create(:conversation, tenant: @tenant1, customer: @customer1, resolved: false)
+      conversation2 = create(:conversation, tenant: @tenant1, customer: @customer1, resolved: true)
+      Conversation.unresolved.should include(conversation1)
+      Conversation.unresolved.should_not include(conversation2)
+      Conversation.resolved.should_not include(conversation1)
+      Conversation.resolved.should include(conversation2)
     end
 
     it 'should return the next conversation that needs assignment' do
-      conversation1 = create(:conversation, tenant: @tenant1, customer: @customer1, active: true, engaged_agent: @agent1)
-      conversation2 = create(:conversation, tenant: @tenant1, customer: @customer1, active: false, engaged_agent: nil)
-      conversation3 = create(:conversation, tenant: @tenant1, customer: @customer1, active: true, engaged_agent: nil, updated_at: "2013-07-15 10:06:22")
-      conversation4 = create(:conversation, tenant: @tenant1, customer: @customer1, active: true, engaged_agent: nil, updated_at: "2013-07-15 12:06:22")
-      conversation5 = create(:conversation, tenant: @tenant1, customer: @customer1, active: true, engaged_agent: nil, updated_at: "2013-07-15 11:06:22")
+      conversation1 = create(:conversation, tenant: @tenant1, customer: @customer1, resolved: false, engaged_agent: @agent1)
+      conversation2 = create(:conversation, tenant: @tenant1, customer: @customer1, resolved: true, engaged_agent: nil)
+      conversation3 = create(:conversation, tenant: @tenant1, customer: @customer1, resolved: false, engaged_agent: nil, updated_at: "2013-07-15 10:06:22")
+      conversation4 = create(:conversation, tenant: @tenant1, customer: @customer1, resolved: false, engaged_agent: nil, updated_at: "2013-07-15 12:06:22")
+      conversation5 = create(:conversation, tenant: @tenant1, customer: @customer1, resolved: false, engaged_agent: nil, updated_at: "2013-07-15 11:06:22")
       conv = Conversation.needs_assignment.first
       conv.should_not == conversation1
       conv.should_not == conversation2

@@ -1,7 +1,7 @@
 FactoryGirl::define do
   factory :conversation do
     tenant
-    active              1
+    resolved            0
     customer
     referer_url         { Faker::Internet.url }
     location            { Faker::Address.city }

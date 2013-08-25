@@ -1,48 +1,51 @@
 #!/usr/bin/env ruby
+
+# run with ruby script/generate_data
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
 puts 'Truncating tables'
-%w(tenants customers agents conversations messages invites).each {|table_name|
+%w(tenants customers agents conversations messages invites).each { |table_name|
   ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{table_name}")
 }
 
 puts 'Creating 50 tenants'
-tenants = (1..50).collect{|n| FactoryGirl.create(:tenant)}
+tenants = (1..50).collect { |n| FactoryGirl.create(:tenant) }
 
 # for each tenant
-tenants.each_with_index{|tenant, i|
+tenants.each_with_index { |tenant, i|
   # FactoryGirl.create up to 100 customers
   puts "Populating Tenant [#{i}] customers"
-  customers = (0..rand(100)).collect{|n| FactoryGirl.create(:customer, tenant: tenant)}
+  customers = (0..rand(100)).collect { |n| FactoryGirl.create(:customer, tenant: tenant) }
 
   # FactoryGirl.create up to 50 agents
   puts "Populating Tenant [#{i}] agents"
-  agents = (0..rand(50)).collect{|n| FactoryGirl.create(:agent, tenant: tenant)}
+  agents = (0..rand(50)).collect { |n| FactoryGirl.create(:agent, tenant: tenant, password: 'cheyenne') }
 
   # FactoryGirl.create up to 30 invites
   puts "Populating Tenant [#{i}] invites"
-  (0..rand(3)).each{|n| FactoryGirl.create(:invite, tenant: tenant)}
+  (0..rand(3)).each { |n| FactoryGirl.create(:invite, tenant: tenant) }
 
-  # FactoryGirl.create up to 5000 conversations
+  # FactoryGirl.create up to 500 conversations
   puts "Populating Tenant [#{i}] conversations"
-  (0..rand(5000)).each{|n|
+  (0..rand(500)).each { |n|
     customer = customers[rand(customers.size)]
     conversation = FactoryGirl.create(:conversation, tenant: tenant, customer: customer)
 
-    # FactoryGirl.create up to 100 messages per conversation, leaving 30% of all conversations without any messages
-    if rand(100) > 30
-      last_agent = this_agent = nil
-      (0..rand(100)).each{|message_num|
-        FactoryGirl.create(:message, tenant: tenant, conversation: conversation, agent: this_agent)
-        if rand(2) == 1
-          # once there's an agent, switch agents only 2% of the time
-          if ! last_agent || rand(100) > 97
-            last_agent = this_agent = agents[rand(agents.size)]
-          else
-            this_agent = last_agent
-          end
+    # FactoryGirl.create up to 30 of message unanswered
+    message_count = (rand > 0.3) ? (rand(20) + 1) : 1
+    last_agent = this_agent = nil
+    (1..message_count).each { |message_num|
+      FactoryGirl.create(:message, tenant: tenant, conversation: conversation, agent: this_agent)
+      conversation.reload
+      puts "#{conversation.first_message.id} - #{conversation.last_message.id}"
+      if rand(2) == 1
+        # once there's an agent, switch agents only 2% of the time
+        if !last_agent || rand(100) > 97
+          last_agent = this_agent = agents[rand(agents.size)]
+        else
+          this_agent = last_agent
         end
-      }
-    end
+      end
+    }
   }
 }

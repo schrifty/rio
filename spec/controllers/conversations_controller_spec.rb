@@ -30,7 +30,7 @@ describe ConversationsController do
     }
 
     it 'should get all and only all of the conversations the user is permitted to see' do
-      get :index
+      get :index, :format => :json
       expect(response.status).to eq(200)
       assigns(:conversations).map { |a| a.id }.should eq @conversations.select { |a| a.tenant == @conversation1.tenant }.map { |a| a.id }
     end
@@ -65,28 +65,28 @@ describe ConversationsController do
 
     it 'should create a valid conversation' do
       expect {
-        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :active => true, :referer_url => 'http:'}
+        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :resolved => false, :referer_url => 'http:'}
       }.to change(Conversation, :count).by(1)
       expect(response.status).to eq(201)
     end
 
     it 'should not create a conversation without a tenant' do
       expect {
-        post :create, conversation: {:customer_id => @customer1.id, :active => true, :referer_url => 'http:'}
+        post :create, conversation: {:customer_id => @customer1.id, :resolved => false, :referer_url => 'http:'}
       }.to change(Conversation, :count).by 0
       expect(response.status).to eq 422
     end
 
     it 'should not create a conversation with a forbidden engaged_agent' do
       expect {
-        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :active => true, :engaged_agent_id => @agent2.id}
+        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :resolved => false, :engaged_agent_id => @agent2.id}
       }.to change(Conversation, :count).by 0
       expect(response.status).to eq 422
     end
 
     it 'should not create a conversation with a forbidden target_agent' do
       expect {
-        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :active => true, :target_agent_id => @agent2.id}
+        post :create, :conversation => {:tenant_id => @tenant1.id, :customer_id => @customer1.id, :resolved => false, :target_agent_id => @agent2.id}
       }.to change(Conversation, :count).by 0
       expect(response.status).to eq 422
     end
@@ -94,14 +94,14 @@ describe ConversationsController do
     # FYI how does this work?
     it 'should not create a conversation with a forbidden tenant' do
       expect {
-        post :create, conversation: {:tenant_id => @tenant2.id, :customer_id => @customer1.id, :active => true, :referer_url => 'http:'}
+        post :create, conversation: {:tenant_id => @tenant2.id, :customer_id => @customer1.id, :resolved => false, :referer_url => 'http:'}
       }.to change(Conversation, :count).by 0
       expect(response.status).to eq 422
     end
 
     it 'should not create a conversation with a forbidden customer' do
       expect {
-        post :create, conversation: {:tenant_id => @tenant1.id, :customer_id => @customer2.id, :active => true, :referer_url => 'http:'}
+        post :create, conversation: {:tenant_id => @tenant1.id, :customer_id => @customer2.id, :resolved => false, :referer_url => 'http:'}
       }.to change(Conversation, :count).by(0)
       expect(response.status).to eq(422)
     end
@@ -113,22 +113,22 @@ describe ConversationsController do
     }
 
     it 'should find the conversation' do
-      put :update, :conversation => {:active => false}, :id => @conversation1.id
+      put :update, :conversation => {:resolved => true}, :id => @conversation1.id
       assigns(:conversation).should eq @conversation1
       expect(response.status).to eq 200
     end
 
     it 'should update agent attributes' do
-      put :update, :conversation => {:active => false, :referer_url => 'www.wow.com', :engaged_agent_id => @agent1.id}, :id => @conversation1.id
+      put :update, :conversation => {:resolved => true, :referer_url => 'www.wow.com', :engaged_agent_id => @agent1.id}, :id => @conversation1.id
       @conversation1.reload
-      @conversation1.active.should eq false
+      @conversation1.resolved.should eq true
       @conversation1.referer_url.should eq 'www.wow.com'
       @conversation1.engaged_agent.id.should eq @agent1.id
       expect(response.status).to eq 200
     end
 
     it 'should not find a forbidden conversation' do
-      put :update, :conversation => {:active => false}, :id => @conversation2.id
+      put :update, :conversation => {:resolved => true}, :id => @conversation2.id
       expect(response.status).to eq 403
     end
 

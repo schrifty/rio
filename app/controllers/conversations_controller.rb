@@ -1,10 +1,11 @@
 class ConversationsController < ApplicationController
   before_filter :authenticate_agent!
+  respond_to :json
 
   def create
     Conversation.transaction do
       begin
-        @conversations = [Conversation.create!(conversation_params)]
+        @conversations = [Conversation.create!(create_params)]
         return render json: @conversations, status: 201
       rescue ActiveRecord::RecordInvalid => e
         return render text: e.message, status: 422
@@ -48,21 +49,22 @@ class ConversationsController < ApplicationController
   def new
   end
 
+  # main use case is the poller - tenant wants to see all unresolved conversations (i.e. resolved == false)
   def index
-    @conversations = Conversation.by_tenant(current_agent.tenant)
-    return render json: @conversations
+    respond_with(@conversations = Conversation.by_tenant(current_agent.tenant).unresolved,
+      :methods => [:customer_display_name, :last_message, :last_message_author_display_name, :last_message_created_at, :message_count])
   end
 
   private
-  def conversation_params
-    params.require(:conversation).permit(:tenant_id, :active, :customer_id, :referer_url, :location, :customer_data,
-                                         :first_customer_message, :engaged_agent_id, :target_agent_id,
+  def create_params
+    params.require(:conversation).permit(:tenant_id, :resolved, :customer_id, :referer_url, :location, :customer_data,
+                                         :first_message_id, :last_message_id, :engaged_agent_id, :target_agent_id,
                                          :preferred_response_channel, :preferred_response_channel_info)
   end
 
   def update_params
-    params.require(:conversation).permit(:active, :referer_url, :location, :customer_data,
-                                         :first_customer_message, :engaged_agent_id, :target_agent_id,
+    params.require(:conversation).permit(:resolved, :referer_url, :location, :customer_data,
+                                         :first_message_id, :last_message_id, :engaged_agent_id, :target_agent_id,
                                          :preferred_response_channel, :preferred_response_channel_info)
   end
 end

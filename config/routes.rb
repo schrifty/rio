@@ -1,15 +1,15 @@
 Rio::Application.routes.draw do
   devise_for :agents, :controllers => {registrations: 'registrations', sessions: 'sessions'}
 
-  resources :invites, only: [:create, :destroy, :show, :index]
-  resources :messages, only: [:create, :update, :show, :index ]
-  resources :conversations, only: [:new, :create, :update, :show, :index]
-  resources :agents, only: [:create, :destroy, :update, :show, :index, :current_agent]
-  resources :customers, only: [:create, :update, :show, :index]
-  resources :tenants, only: [:new, :create, :update, :show, :index]
-  resources :updates, only: [:index]
+  resources :invites, only: [:create, :destroy, :show, :index], :defaults => { :format => 'json' }
+  resources :messages, only: [:create, :update, :show, :index ], :defaults => { :format => 'json' }
+  resources :conversations, only: [:new, :create, :update, :show, :index], :defaults => { :format => 'json' }
+  resources :agents, only: [:create, :destroy, :update, :show, :index, :current_agent], :defaults => { :format => 'json' }
+  resources :customers, only: [:create, :update, :show, :index], :defaults => { :format => 'json' }
+  resources :tenants, only: [:new, :create, :update, :show, :index], :defaults => { :format => 'json' }
+  resources :updates, only: [:index], :defaults => { :format => 'json' }
 
-  get '/current_agent' => 'agents#show_current_agent'
+  get '/current_agent' => 'agents#show_current_agent', :defaults => { :format => 'json' }
 
   root 'tenants#new'
 

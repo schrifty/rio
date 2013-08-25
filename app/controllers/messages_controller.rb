@@ -7,7 +7,7 @@ class MessagesController < ApplicationController
         unless params[:message][:conversation_id] && !params[:message][:conversation_id].empty?
           display_name = params[:message][:display_name] || "Unknown"
           customer = Customer.create!({:tenant_id => params[:message][:tenant_id], :display_name => display_name})
-          conversation = Conversation.create!({:tenant_id => params[:message][:tenant_id], :customer_id => customer.id, :active => true, :referer_url => params[:message][:referer_url]})
+          conversation = Conversation.create!({:tenant_id => params[:message][:tenant_id], :customer_id => customer.id, :resolved => false, :referer_url => params[:message][:referer_url]})
           params[:message][:conversation_id] = conversation.id
         end
 
@@ -38,6 +38,7 @@ class MessagesController < ApplicationController
   end
 
   def index
+    Rails.logger.info ("WTF: " + params.inspect)
     @messages = Message.by_tenant(current_agent.tenant).by_conversation(params[:conversation]).since(params[:since])
     return render json: @messages
   end

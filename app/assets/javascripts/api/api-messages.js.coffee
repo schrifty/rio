@@ -16,3 +16,13 @@ MessageAPI.sendMessage = (text_selector) ->
     success: (data) ->
       console.log data
       Display.update({messages: data})
+
+MessageAPI.getMessages = (conversation_id, onsuccess, onfail) ->
+  console.log " CONVERSATION : " + conversation_id
+  $.ajax '/messages',
+    data: {conversation: conversation_id},
+    dataType: 'json',
+    error: (jqXHR, textStatus, errorThrown) ->
+      onfail(errorThrown)
+    success: (data) ->
+      onsuccess(data)
