@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>Moxie-CWT</title>
+<title>Quinstantly!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <head>
-  <div id="header">
-    <div class="row">
-      <a class="col-md-offset-0 col-md-1" id="signout-link">Sign Out</a>
-      <hgroup>
-        <h1>Moxie-CWT</h1>
-      </hgroup>
-    </div>
-  </div>
+  <link href='http://fonts.googleapis.com/css?family=Allerta+Stencil' rel='stylesheet' type='text/css'>
 </head>
 <body>
 <div id="tenant-main">
+  <div id="header" class="row">
+    <hgroup>
+      <h1 class="col-md-offset-2 col-md-6">Quinstantly!</h1>
+    </hgroup>
+  </div>
+
   <div id="signin">
 
     <!-- SIGN IN -->
@@ -74,7 +73,7 @@
   <!-- MENU -->
   <div id="menu" class="col-md-offset-3 col-md-6">
     <ul class="nav nav-pills nav-justified">
-      <li id="pill-starting" class="active"><a>Get Started</a></li>
+      <li id="pill-questions"><a>Questions</a></li>
       <li id="pill-profile"><a>Profile</a></li>
       <li id="pill-users"><a>Users</a></li>
       <li id="pill-dashboard"><a>Dashboard</a></li>
@@ -82,15 +81,8 @@
     </ul>
   </div>
 
-  <!-- QUESTIONS -->
-  <div id="panel-starting" class="panel menu-panel">
-    <div class="row col-md-offset-3 col-md-7">
-      <h3>Copy this into the body of your pages:</h3>
-      <pre class="Source">
-&lt;script src=&quot;http://quinstantly.com/webtab.js&quot;&gt;
-      </pre>
-      <h4>or pull this <a>library</a> into your iPhone code</h4>
-    </div>
+  <!-- GET STARTED -->
+  <div id="panel-questions" class="panel menu-panel col-md-offset-3 col-md-6">
   </div>
 
   <!-- PROFILE -->
@@ -190,10 +182,18 @@
   </div>
 
   <!-- DASHBOARD -->
-  <div id="panel-dashboard" class="menu-panel col-md-offset-3 col-md-7"></div>
+  <div id="panel-dashboard" class="panel menu-panel col-md-offset-3 col-md-6"></div>
 
   <!-- SETTINGS -->
-  <div id="panel-settings" class="menu-panel col-md-offset-3 col-md-7"></div>
+  <div id="panel-settings" class="panel menu-panel col-md-offset-3 col-md-6">
+    <div id="starting-div" class="row">
+      <h4>Copy this into the body of your pages:</h3>
+      <pre class="Source">
+&lt;script src=&quot;http://quinstantly.com/webtab.js&quot;&gt;
+      </pre>
+        <h4>or pull this <a>library</a> into your iPhone code</h4>
+    </div>
+  </div>
 </div>
 </body>
 </html>

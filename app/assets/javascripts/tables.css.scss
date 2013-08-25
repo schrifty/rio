@@ -10,6 +10,7 @@ $white: #FFFFFF;
 // $color2 - Background
 // $color3 - Active Highlight
 // $color4 -
+
 // Japanese Art
 $color1: #FFB88C;
 $color2: #777755;
@@ -17,20 +18,6 @@ $color3: #CCB287;
 $color4: #A69055;
 $color5: #2D2B21;
 
-#panel-users {
-  display: none;
-  height: 400px;
-  overflow: scroll;
-  td.available {
-    color: white;
-  }
-  td.engaged {
-    color: green;
-  }
-  td.unavailable {
-    color: gray;
-  }
-  td.nonresponsive {
-    color: red;
-  }}
-
+tr {
+  background-color: $color4;
+}

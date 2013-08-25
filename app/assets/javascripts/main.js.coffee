@@ -7,11 +7,11 @@ $(document).ready ->
   Main.$password = $('#password')
   Main.$password.on 'keyup', (event) -> Main.checkSignInState()
 
-  Main.$signoutLink = $('#signout-link')
-  Main.$signoutLink.on 'click', (event) -> Main.signOut(
+  Main.$signout = $('#signout')
+  Main.$signout.on 'click', (event) -> Main.signOut(
     (->
       console.log "signed out!"
-      Main.$signoutLink.hide()
+      Main.$signout.hide()
       Menu.hide()
       $('#signin').slideDown()
     ),
@@ -22,7 +22,7 @@ $(document).ready ->
   Main.$signinButton.on 'click', (event) -> Main.signIn(
     (->
       console.log "signed in!"
-      Main.$signoutLink.show()
+      Main.$signout.show()
       Menu.show()
       $('#signin').slideUp()
     ),
@@ -65,16 +65,38 @@ $(document).ready ->
     ( (agent) ->
       console.log("User is authenticated: " + agent.display_name)
       sessionStorage.setItem('current_user', JSON.stringify(agent))
-      console.log JSON.parse(sessionStorage.getItem('current_user')).id
       $('#menu').slideDown()
-      $('#signout-link').show()
+      $('#signout').show()
+      Main.displayAvailability()
     ),
     ( ->
       console.log("User is not authenticated")
       $('#signin').slideDown()
-      $('#signout-link').hide()
+      $('#signout').hide()
     )
   )
+
+  $('#pill-questions').click()
+
+Main.displayAvailability = ->
+  user = JSON.parse(sessionStorage.getItem('current_user'))
+  console.log "User: " + user
+  buttonText = user.status
+
+  buttonMarkup = "
+  <div class='col-md-offset-8 col-md-4'>" +
+    user.display_name +
+    " is
+    <button type='button' class='btn btn-success dropdown-toggle' data-toggle='dropdown'>
+      Online <span class='caret'></span>
+    </button>
+    <ul class='dropdown-menu' role='menu'>
+      <li><a href='#'>Logout</a></li>
+      <li><a href='#'>Go Offline</a></li>
+    </ul>
+  </div>"
+
+  $('#header').append(buttonMarkup)
 
 Main.emailPattern = /// ^ #begin of line
              ([\w.-]+)         #one or more letters, numbers, _ . or -
