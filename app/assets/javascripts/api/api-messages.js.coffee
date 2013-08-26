@@ -12,15 +12,15 @@ MessageAPI.sendMessage = (text_selector) ->
     type: 'POST',
     dataType: 'json',
     error: (jqXHR, textStatus, errorThrown) ->
-      console.log(textStatus)
+      console.log(errorThrown)
     success: (data) ->
       console.log data
       Display.update({messages: data})
 
-MessageAPI.getMessages = (conversation_id, onsuccess, onfail) ->
-  console.log " CONVERSATION : " + conversation_id
+MessageAPI.getMessages = (conversation_id, limit, onsuccess, onfail) ->
+  console.log " LIMIT : " + limit
   $.ajax '/messages',
-    data: {conversation: conversation_id},
+    data: {conversation: conversation_id, limit: limit},
     dataType: 'json',
     error: (jqXHR, textStatus, errorThrown) ->
       onfail(errorThrown)

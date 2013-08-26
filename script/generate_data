@@ -25,11 +25,14 @@ tenants.each_with_index { |tenant, i|
   puts "Populating Tenant [#{i}] invites"
   (0..rand(3)).each { |n| FactoryGirl.create(:invite, tenant: tenant) }
 
-  # FactoryGirl.create up to 500 conversations
+  # FactoryGirl.create up to 100 conversations
   puts "Populating Tenant [#{i}] conversations"
-  (0..rand(500)).each { |n|
+  unresolved = rand(6)
+  total_convs = unresolved + rand(100)
+  (1..total_convs).each { |conv_count|
     customer = customers[rand(customers.size)]
-    conversation = FactoryGirl.create(:conversation, tenant: tenant, customer: customer)
+    resolved = conv_count < (total_convs - unresolved)
+    conversation = FactoryGirl.create(:conversation, tenant: tenant, customer: customer, resolved: resolved)
 
     # FactoryGirl.create up to 30 of message unanswered
     message_count = (rand > 0.3) ? (rand(20) + 1) : 1
@@ -37,7 +40,6 @@ tenants.each_with_index { |tenant, i|
     (1..message_count).each { |message_num|
       FactoryGirl.create(:message, tenant: tenant, conversation: conversation, agent: this_agent)
       conversation.reload
-      puts "#{conversation.first_message.id} - #{conversation.last_message.id}"
       if rand(2) == 1
         # once there's an agent, switch agents only 2% of the time
         if !last_agent || rand(100) > 97

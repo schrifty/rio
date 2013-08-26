@@ -23,8 +23,18 @@ $color5: #2D2B21;
   .author-display-name {
     color: green;
   }
-  table.details {
-    display: none;
-    background-color: orange;
+  table {
+    tr[message-count="1"] {
+      background-color: red;
+    }
+    .details {
+      background-color: orange;
+      .agent {
+        color: green;
+      }
+      .customer {
+        color: blue;
+      }
+    }
   }
 }

@@ -38,9 +38,16 @@ class MessagesController < ApplicationController
   end
 
   def index
-    Rails.logger.info ("WTF: " + params.inspect)
-    @messages = Message.by_tenant(current_agent.tenant).by_conversation(params[:conversation]).since(params[:since])
-    return render json: @messages
+    opts = {}
+    Rails.logger.info { "XYZZY: #{params[:limit].class}"}
+    opts.reverse_merge({:order => 'created_at desc', :limit => params[:limit]}) if params[:limit] && params[:limit].to_i != -1
+    @messages = Message.by_tenant(current_agent.tenant).by_conversation(params[:conversation]).since(params[:since]).order('created_at desc')
+    if params[:limit].to_i > 0
+      @messages = @messages.limit(params[:limit].to_i)
+    end
+
+    return render json: @messages,
+      :methods => [:author_display_name, :author_class]
   end
 
   def message_params

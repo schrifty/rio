@@ -10,12 +10,16 @@ class Message < ActiveRecord::Base
   scope :by_conversation, lambda { |conversation_id| where('conversation_id = ?', conversation_id) unless conversation_id.nil? }
   scope :since, lambda { |since| where('created_at > ?', since) unless since.nil? }
 
-  after_create :update_conversation
+  after_create :update_conversation_after_create
 
   attr_reader :author_display_name
 
+  def author_class
+    self.agent_id ? 'agent' : 'customer'
+  end
+
   def author_display_name
-    self.agent_id ? self.agent.display_name : conversation.customer.display_name
+    (agent && agent.display_name) || conversation.customer.display_name
   end
 
   # this query depends upon ids being sequential - if we convert the message id to a guid (no reason to think we would) this will break
@@ -23,18 +27,14 @@ class Message < ActiveRecord::Base
     Message.find_by_sql("select b.* from (select MAX(id) as mid from messages where agent_id is null group by conversation_id) a join messages b on a.mid = b.id order by updated_at limit #{rows}")
   end
 
-  def update_conversation
+  def update_conversation_after_create
     self.conversation.engaged_agent = self.agent
     self.conversation.first_message ||= self
     self.conversation.last_message = self
     self.conversation.save!
   end
 
-  def display_name
-    (agent && agent.display_name) || conversation.customer.display_name
-  end
-
   def as_json(options={})
-    super.as_json(options).merge({:display_name => display_name})
+    super.as_json(options).merge({:display_name => author_display_name})
   end
 end

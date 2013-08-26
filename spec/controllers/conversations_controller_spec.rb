@@ -16,11 +16,16 @@ describe ConversationsController do
     @customer2 = create(:customer, :tenant => @tenant2)
 
     @conversation1 = create(:conversation, :tenant => @tenant1, :customer => @customer1)
+    @message1 = create(:message, :tenant => @tenant1, :conversation => @conversation1, :agent => nil)
+
     @conversation2 = create(:conversation, :tenant => @tenant2, :customer => @customer2)
+    @message2 = create(:message, :tenant => @tenant2, :conversation => @conversation2, :agent => nil)
+
     @conversations = [@conversation1, @conversation2] + (1..10).map { |n|
       tenant = [@tenant1, @tenant2, @tenant3][rand(3)]
       customer = create(:customer, :tenant => tenant)
-      create(:conversation, :tenant => tenant, :customer => customer)
+      conversation = create(:conversation, :tenant => tenant, :customer => customer)
+      create(:message, :tenant => tenant, :conversation => conversation, :agent => nil)
     }
   }
 

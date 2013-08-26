@@ -3,6 +3,6 @@ FactoryGirl::define do
     tenant
     conversation
     agent
-    text { Faker::Lorem.sentences(2) }
+    text { Faker::Lorem.sentence }
   end
 end
