@@ -14,7 +14,7 @@ class Message < ActiveRecord::Base
 
   attr_reader :author_display_name
 
-  def author_class
+  def author_role
     self.agent_id ? 'agent' : 'customer'
   end
 

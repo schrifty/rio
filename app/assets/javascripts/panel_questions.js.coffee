@@ -1,17 +1,15 @@
 window.PanelQuestions or= {}
 
 $(document).ready ->
-  row = $(event.target).closest('tr')
-  PanelQuestions.loadMessages(row, 1)
-
-  $('#panel-questions').on 'click', (event) ->
-    row = $(event.target).closest('tr')
-    if row.hasClass("expanded")
-      PanelQuestions.loadMessages(row, 1)
-      row.removeClass("expanded")
+  $('#panel-questions > table > tbody').on 'click', (event) ->
+    $row = $(event.target).closest('.conversation')
+    convId = $row.data("conv-id")
+    if $row.hasClass("expanded")
+      PanelQuestions.loadMessages(convId, 1)
+      $row.removeClass("expanded")
     else
-      PanelQuestions.loadMessages(row, -1)
-      row.addClass("expanded")
+      PanelQuestions.loadMessages(convId, -1)
+      $row.addClass("expanded")
 
 PanelQuestions.init = () ->
   ConversationAPI.getConversations(
@@ -23,46 +21,47 @@ PanelQuestions.loadConversations = (data) ->
   $body = $('#panel-questions tbody')
   $body.empty()
   for conversation in data
-    $newrow = $('<tr conv-id="' + conversation.id + '" message-count="' + conversation.message_count + '">')
-    $newrow.append($('<td>').text(conversation.customer_display_name))
-
-    col = $('<td>')
-    col.append('Last message by: ')
-    col.append('<span class="author-display-name">' + conversation.last_message_author_display_name + '</span>')
-    col.append(', ')
-    col.append('<span class="prettydate" title="' + conversation.last_message_created_at + '">')
-    if conversation.message_count > 1
-      col.append(', ')
-      col.append('<span class="message-count">' + conversation.message_count + '</span>')
-      col.append(' messages')
-    col.append('<table id="' + conversation.id + '" message-count="' + conversation.message_count + '" class="details"><tbody></tbody></table>')
-    $newrow.append(col)
-    $body.append($newrow)
+    html = '<tr class="conversation" data-conv-id="' + conversation.id + '"">
+        <td>' + conversation.customer_display_name + '</td>
+        <td>' + conversation.engaged_agent_name + '</td>
+      </tr>
+      <tr class="conversation" data-conv-id="' + conversation.id + '">
+        <td colspan="3">
+          <table>
+            <colgroup>
+              <col class="message-author" span="1">
+              <col class="message-text" span="1">
+              <col class="message-created-at" span="1">
+            </colgroup>
+            <tbody id="conversation-' + conversation.id + '">
+              ' + PanelQuestions.getMessageRow(conversation.last_message_author_role, conversation.last_message_author_display_name,
+                  conversation.last_message_text, conversation.last_message_created_at) + '
+            </tbody>
+          </table>
+        </td>
+      </tr>'
+    $body.append(html)
     $('.prettydate').prettyDate(5)
 
-PanelQuestions.loadMessages = ($row, limit) ->
-  MessageAPI.getMessages($row.attr('conv-id'), limit,
+PanelQuestions.loadMessages = (convId, limit) ->
+  MessageAPI.getMessages(convId, Math.min(limit, 5),
     ( (data) ->
-      $details = $($row.find('table.details'))
-      $details.empty()
-
+      $body = $('#conversation-' + convId)
+      $body.empty()
+      html = ""
       for message in data
-        $newrow = $('<tr>')
-        col = $('<td>')
-        col.append('<span class="' + message.author_class + '">' + message.display_name + '</span>' + ': ')
-        $newrow .append(col)
-        col = $('<td>')
-        col.append(message.text)
-        $newrow .append(col)
-        col = $('<td>')
-        col.append('<span class="created_at">' + message.created_at+ '</span>')
-        col.formatDateTime('d-M g:ii a')
-        $newrow .append(col)
-        $details.append($newrow)
-        $('#example').formatDateTime('mm/dd/y g:ii a');
+        console.log "adding a message!"
+        html += PanelQuestions.getMessageRow(message.author_role, message.display_name, message.text, message.created_at)
+      $body.append(html)
     ),
     ( (msg) -> console.log "Failed to get messages: " + msg )
   )
 
-
+PanelQuestions.getMessageRow = (author_role, author_display_name, text, created_at) ->
+  return '
+    <tr>
+      <td class="message-author-' + author_role + '">' + author_display_name + ':</td>
+      <td>' + text + '</td>
+      <td>' + $.formatDateTime('g:ii a', new Date(created_at)) + '</td>
+    </tr>'
 

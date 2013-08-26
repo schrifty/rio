@@ -27,12 +27,30 @@ $color5: #2D2B21;
     tr[message-count="1"] {
       background-color: red;
     }
-    .details {
-      background-color: orange;
-      .agent {
+    col.customer {
+      width: 10%;
+    }
+    col.agent {
+      width: 10%;
+    }
+    col.spacer {
+      width: 80%;
+    }
+    table.details {
+      width: 100%;
+      col.message-author {
+        width: 10%;
+      }
+      col.message-text {
+        width: 80;
+      }
+      col.message-timestamp {
+        width: 10%;
+      }
+      .message-author-agent {
         color: green;
       }
-      .customer {
+      .message-author-customer {
         color: blue;
       }
     }

@@ -52,7 +52,8 @@ class ConversationsController < ApplicationController
   # main use case is the poller - tenant wants to see all unresolved conversations (i.e. resolved == false)
   def index
     respond_with(@conversations = Conversation.by_tenant(current_agent.tenant).unresolved,
-      :methods => [:customer_display_name, :last_message, :last_message_author_display_name, :last_message_created_at, :message_count])
+      :methods => [:customer_display_name, :last_message_author_role, :last_message_author_display_name, :last_message_created_at,
+                   :last_message_text, :engaged_agent_name, :message_count])
   end
 
   private

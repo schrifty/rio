@@ -18,7 +18,6 @@ MessageAPI.sendMessage = (text_selector) ->
       Display.update({messages: data})
 
 MessageAPI.getMessages = (conversation_id, limit, onsuccess, onfail) ->
-  console.log " LIMIT : " + limit
   $.ajax '/messages',
     data: {conversation: conversation_id, limit: limit},
     dataType: 'json',

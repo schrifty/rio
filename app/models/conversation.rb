@@ -34,8 +34,20 @@ class Conversation < ActiveRecord::Base
     self.customer.display_name
   end
 
+  def engaged_agent_name
+    (self.engaged_agent && self.engaged_agent.display_name) || ""
+  end
+
+  def last_message_author_role
+    self.last_message.author_role
+  end
+
   def last_message_author_display_name
     self.last_message.author_display_name
+  end
+
+  def last_message_text
+    self.last_message.text
   end
 
   def last_message_created_at
