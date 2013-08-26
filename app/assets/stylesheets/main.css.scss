@@ -20,10 +20,9 @@ $color5: #2D2B21;
 #header {
   h1 {
     font-family: 'Allerta Stencil', sans-serif;
-    margin-left: 180px;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    text-align: left;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    text-align: center;
     overflow: visible;
     font-size: 75px;
     color: $color1;
@@ -32,6 +31,10 @@ $color5: #2D2B21;
 
   #signout {
     vertical-align: center;
+  }
+
+  #availability-widget {
+    margin-top: 35px;
   }
 }
 
@@ -80,25 +83,6 @@ label {
         color: $white;
         background-color: $color1;
       }
-    }
-  }
-
-  #panel-questions {
-  }
-
-  #panel-profile {
-    #profile-name-div {
-      margin-top: 20px;
-    }
-  }
-
-  #panel-dashboard {
-  }
-
-  #panel-settings {
-    #starting-div {
-      padding-left: 15px;
-      padding-right: 15px;
     }
   }
 

@@ -22,12 +22,13 @@ PanelQuestions.loadConversations = (data) ->
   $body.empty()
   for conversation in data
     html = '<tr class="conversation" data-conv-id="' + conversation.id + '"">
-        <td>' + conversation.customer_display_name + '</td>
-        <td>' + conversation.engaged_agent_name + '</td>
+        <td class="conversation-summary">
+          <span class="agent">' + conversation.engaged_agent_name + '</span> is assisting
+          <span class="customer">' + conversation.customer_display_name + '</span></td>
       </tr>
-      <tr class="conversation" data-conv-id="' + conversation.id + '">
-        <td colspan="3">
-          <table>
+      <tr class="conversation " data-conv-id="' + conversation.id + '">
+        <td>
+          <table id="message-table">
             <colgroup>
               <col class="message-author" span="1">
               <col class="message-text" span="1">

@@ -7,22 +7,10 @@ $(document).ready ->
   Main.$password = $('#password')
   Main.$password.on 'keyup', (event) -> Main.checkSignInState()
 
-  Main.$signout = $('#signout')
-  Main.$signout.on 'click', (event) -> Main.signOut(
-    (->
-      console.log "signed out!"
-      Main.$signout.hide()
-      Menu.hide()
-      $('#signin').slideDown()
-    ),
-    ((msg) -> console.log("Failed to sign out: " + msg))
-  )
-
   Main.$signinButton = $('#signin-button')
   Main.$signinButton.on 'click', (event) -> Main.signIn(
     (->
-      console.log "signed in!"
-      Main.$signout.show()
+      AvailabilityWidget.show()
       Menu.show()
       $('#signin').slideUp()
     ),
@@ -60,43 +48,23 @@ $(document).ready ->
     $('#' + panelName).slideDown()
     window[classname].init();
 
-  # make sure the correct panel is displayed when the page is first loaded
   AgentAPI.getCurrentAgent(
     ( (agent) ->
       console.log("User is authenticated: " + agent.display_name)
       sessionStorage.setItem('current_user', JSON.stringify(agent))
-      $('#menu').slideDown()
-      $('#signout').show()
-      Main.displayAvailability()
+      console.log "Agent: " + JSON.stringify(agent)
+      console.log "Setting availability to " + agent.available
+      sessionStorage.setItem('availability', agent.available)
+      AvailabilityWidget.show()
+      Menu.show()
     ),
     ( ->
       console.log("User is not authenticated")
+      AvailabilityWidget.hide()
+      Menu.hide()
       $('#signin').slideDown()
-      $('#signout').hide()
     )
   )
-
-  $('#pill-questions').click()
-
-Main.displayAvailability = ->
-  user = JSON.parse(sessionStorage.getItem('current_user'))
-  console.log "User: " + user
-  buttonText = user.status
-
-  buttonMarkup = "
-  <div class='col-md-offset-8 col-md-4'>" +
-    user.display_name +
-    " is
-    <button type='button' class='btn btn-success dropdown-toggle' data-toggle='dropdown'>
-      Online <span class='caret'></span>
-    </button>
-    <ul class='dropdown-menu' role='menu'>
-      <li><a href='#'>Logout</a></li>
-      <li><a href='#'>Go Offline</a></li>
-    </ul>
-  </div>"
-
-  $('#header').append(buttonMarkup)
 
 Main.emailPattern = /// ^ #begin of line
              ([\w.-]+)         #one or more letters, numbers, _ . or -
@@ -137,8 +105,17 @@ Main.signIn = (onsuccess, onfail) ->
   ))
   $('#signin-spinner').slideDown('fast')
 
-Main.signOut = (onsuccess, onfail) ->
-  AuthAPI.destroyAgentSession(onsuccess, onfail)
+Main.signOut = ->
+  AuthAPI.destroyAgentSession(
+    ( ->
+      AvailabilityWidget.hide()
+      Menu.hide()
+      $('#signin').slideDown()
+    ),
+    ( (errorThrown) ->
+      console.log "Failed to sign out: " + errorThrown
+    )
+  )
 
 Main.signUp = ->
   AgentAPI.createAgent(null, Main.$emailNew.val(), "abcdefg", Main.$passwordNew.val(), ((agent) ->
@@ -149,5 +126,3 @@ Main.signUp = ->
       console.log "Not registered: " + agent
   ))
   $('#signup-spinner').slideDown('fast')
-
-

@@ -20,39 +20,44 @@ $color5: #2D2B21;
 #panel-questions {
   height: 400px;
   overflow: scroll;
-  .author-display-name {
+  padding: 0px;
+  table {
+    width: 100%;
+  }
+  .conversation-summary {
+    color: $white;
+  }
+  .agent {
     color: green;
   }
-  table {
-    tr[message-count="1"] {
-      background-color: red;
+  .customer {
+    color: blue;
+  }
+  #message-table {
+    width: 100%;
+    border-bottom: 5px;
+    border-color: $white;
+    padding-left: 10px;
+    tr {
+      cursor: pointer;
+      background-color: gray;
+      border-width: 2px;
+      border-style: groove;
     }
-    col.customer {
+    col.message-author {
       width: 10%;
     }
-    col.agent {
+    col.message-text {
+      width: 80;
+    }
+    col.message-created-at {
       width: 10%;
     }
-    col.spacer {
-      width: 80%;
+    .message-author-agent {
+      color: green;
     }
-    table.details {
-      width: 100%;
-      col.message-author {
-        width: 10%;
-      }
-      col.message-text {
-        width: 80;
-      }
-      col.message-timestamp {
-        width: 10%;
-      }
-      .message-author-agent {
-        color: green;
-      }
-      .message-author-customer {
-        color: blue;
-      }
+    .message-author-customer {
+      color: blue;
     }
   }
 }

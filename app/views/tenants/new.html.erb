@@ -6,12 +6,25 @@
 <head>
   <link href='http://fonts.googleapis.com/css?family=Allerta+Stencil' rel='stylesheet' type='text/css'>
 </head>
+
 <body>
 <div id="tenant-main">
   <div id="header" class="row">
     <hgroup>
-      <h1 class="col-md-offset-2 col-md-6">Quinstantly!</h1>
+      <h1 class="col-md-offset-3 col-md-6">Quinstantly!</h1>
     </hgroup>
+    <div id='availability-widget' class='agent col-md-2'>
+      <span id='availability-label'>User is</span>
+      <button type='button' id='availability-button' class='btn btn-success dropdown-toggle' data-toggle='dropdown'>
+        <span id='availability-button-label'>xxx</span>
+        <span class='caret'></span>
+      </button>
+      <ul class='dropdown-menu' role='menu'>
+        <li><a id='logout-button'>Logout</a></li>
+        <li><a id='online-button'>Go Online</a></li>
+        <li><a id='offline-button'>Go Offline</a></li>
+      </ul>
+    </div>
   </div>
 
   <div id="signin">
@@ -84,16 +97,6 @@
   <!-- QUESTIONS -->
   <div id="panel-questions" class="panel menu-panel col-md-offset-3 col-md-6">
     <table class="table-condensed">
-      <colgroup>
-        <col class="customer" span="1">
-        <col class="agent" span="1">
-        <col class="spacer" span="1">
-      </colgroup>
-      <thead>
-        <th>Customer</th>
-        <th>Agent</th>
-        <th></th>
-      </thead>
       <tbody>
       </tbody>
     </table>
