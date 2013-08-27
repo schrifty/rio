@@ -15,9 +15,9 @@ default_run_options[:pty] = true
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 
-role :web, "ec2-54-213-176-56.us-west-2.compute.amazonaws.com"
-role :app, "ec2-54-213-176-56.us-west-2.compute.amazonaws.com"
-role :db,  "ec2-54-213-176-56.us-west-2.compute.amazonaws.com", :primary => true
+role :web, "ec2-54-213-12-187.us-west-2.compute.amazonaws.com"
+role :app, "ec2-54-213-12-187.us-west-2.compute.amazonaws.com"
+role :db,  "ec2-54-213-12-187.us-west-2.compute.amazonaws.com", :primary => true
 
 # if you want to clean up old releases on each deploy uncomment this:
 after "deploy:restart", "deploy:cleanup"
