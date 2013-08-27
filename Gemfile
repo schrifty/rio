@@ -41,8 +41,8 @@ group :development, :test do
   gem 'faker'
 end
 
+gem 'rvm-capistrano'
 group :development do
-  gem 'rvm-capistrano'
   gem 'capistrano'
 end
 
@@ -52,7 +52,7 @@ group :doc do
 end
 
 # Use ActiveModel has_secure_password
-#gem 'bcrypt-ruby', '~> 3.1.2'
+gem 'bcrypt-ruby', '~> 3.0.0'
 
 # Use unicorn as the app server
 # gem 'unicorn'
