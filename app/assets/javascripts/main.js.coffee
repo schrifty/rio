@@ -52,8 +52,6 @@ $(document).ready ->
     ( (agent) ->
       console.log("User is authenticated: " + agent.display_name)
       sessionStorage.setItem('current_user', JSON.stringify(agent))
-      console.log "Agent: " + JSON.stringify(agent)
-      console.log "Setting availability to " + agent.available
       sessionStorage.setItem('availability', agent.available)
       AvailabilityWidget.show()
       Menu.show()
