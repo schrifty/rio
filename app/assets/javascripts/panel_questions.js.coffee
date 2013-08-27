@@ -5,7 +5,7 @@ $(document).ready ->
     $row = $(event.target).closest('.conversation')
     convId = $row.data("conv-id")
     if $row.hasClass("expanded")
-      PanelQuestions.loadMessages(convId, 1)
+      PanelQuestions.loadMessages(convId, 3)
       $row.removeClass("expanded")
     else
       PanelQuestions.loadMessages(convId, -1)
@@ -35,17 +35,18 @@ PanelQuestions.loadConversations = (data) ->
               <col class="message-created-at" span="1">
             </colgroup>
             <tbody id="conversation-' + conversation.id + '">
-              ' + PanelQuestions.getMessageRow(conversation.last_message_author_role, conversation.last_message_author_display_name,
-                  conversation.last_message_text, conversation.last_message_created_at) + '
             </tbody>
           </table>
         </td>
       </tr>'
     $body.append(html)
     $('.prettydate').prettyDate(5)
+    PanelQuestions.loadMessages(conversation.id, 3)
+
 
 PanelQuestions.loadMessages = (convId, limit) ->
-  MessageAPI.getMessages(convId, Math.min(limit, 5),
+  console.log "Got called with convId[" + convId + "] and limit [" + limit + "]"
+  MessageAPI.getMessages(convId, limit,
     ( (data) ->
       $body = $('#conversation-' + convId)
       $body.empty()
