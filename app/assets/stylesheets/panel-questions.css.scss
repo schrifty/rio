@@ -36,14 +36,8 @@ $color5: #2D2B21;
   #message-table {
     width: 100%;
     border-bottom: 5px;
-    border-color: $white;
+    border-color: rgb(128, 128, 128);
     padding-left: 10px;
-    tr {
-      cursor: pointer;
-      background-color: gray;
-      border-width: 2px;
-      border-style: groove;
-    }
     col.message-author {
       width: 10%;
     }
@@ -55,9 +49,19 @@ $color5: #2D2B21;
     }
     .message-author-agent {
       color: green;
+      text-align: right;
     }
     .message-author-customer {
       color: blue;
+      text-align: right;
+    }
+    tr {
+      cursor: pointer;
+      background-color: $white;
+      td {
+        border-width: 3px;
+        border-style: groove;
+      }
     }
   }
 }
