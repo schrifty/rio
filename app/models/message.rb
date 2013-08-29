@@ -11,6 +11,7 @@ class Message < ActiveRecord::Base
   scope :since, lambda { |since| where('created_at > ?', since) unless since.nil? }
 
   after_create :update_conversation_after_create
+  after_create :send_message_to_clients
 
   attr_reader :author_display_name
 
@@ -32,6 +33,11 @@ class Message < ActiveRecord::Base
     self.conversation.first_message ||= self
     self.conversation.last_message = self
     self.conversation.save!
+  end
+
+  def send_message_to_clients
+    channel_name = "messages-tenant-#{self.tenant.id}"
+    WebsocketRails[channel_name.to_sym].trigger 'new', self
   end
 
   def as_json(options={})

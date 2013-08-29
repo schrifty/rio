@@ -11,6 +11,25 @@ $(document).ready ->
       PanelQuestions.loadMessages(convId, -1)
       $row.addClass("expanded")
 
+  tenant_id = sessionStorage.getItem('tenant')
+  dispatcher = new WebSocketRails('localhost:3001/websocket')
+
+  channel_name = 'messages-tenant-' + tenant_id
+  channel = dispatcher.subscribe(channel_name)
+  channel.bind('new', (message) ->
+    console.log 'a new message has arrived! ' + JSON.stringify(message)
+    role = if message.agent_id == null then "customer" else "agent"
+    html = PanelQuestions.getMessageHTML(role, message.display_name, message.text, message.created_at)
+    $body = $('#conversation-' + message.conversation_id)
+    $body.append(html)
+  )
+
+  channel_name = 'conversations-tenant-' + tenant_id
+  channel = dispatcher.subscribe(channel_name)
+  channel.bind('new', (conversation) ->
+    console.log 'a new conversation has arrived! ' + JSON.stringify(message)
+  )
+
 PanelQuestions.init = () ->
   ConversationAPI.getConversations(
     ( (data) -> PanelQuestions.loadConversations(data) ),
@@ -26,7 +45,7 @@ PanelQuestions.loadConversations = (data) ->
           <span class="agent">' + conversation.engaged_agent_name + '</span> is assisting
           <span class="customer">' + conversation.customer_display_name + '</span></td>
       </tr>
-      <tr class="conversation " data-conv-id="' + conversation.id + '">
+      <tr class="conversation" data-conv-id="' + conversation.id + '">
         <td>
           <table id="message-table">
             <colgroup>
@@ -43,7 +62,6 @@ PanelQuestions.loadConversations = (data) ->
     $('.prettydate').prettyDate(5)
     PanelQuestions.loadMessages(conversation.id, 3)
 
-
 PanelQuestions.loadMessages = (convId, limit) ->
   console.log "Got called with convId[" + convId + "] and limit [" + limit + "]"
   MessageAPI.getMessages(convId, limit,
@@ -52,14 +70,13 @@ PanelQuestions.loadMessages = (convId, limit) ->
       $body.empty()
       html = ""
       for message in data
-        console.log "adding a message!"
-        html += PanelQuestions.getMessageRow(message.author_role, message.display_name, message.text, message.created_at)
+        html += PanelQuestions.getMessageHTML(message.author_role, message.display_name, message.text, message.created_at)
       $body.append(html)
     ),
     ( (msg) -> console.log "Failed to get messages: " + msg )
   )
 
-PanelQuestions.getMessageRow = (author_role, author_display_name, text, created_at) ->
+PanelQuestions.getMessageHTML = (author_role, author_display_name, text, created_at) ->
   return '
     <tr>
       <td class="message-author-' + author_role + '">' + author_display_name + ':</td>

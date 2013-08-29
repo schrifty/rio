@@ -53,6 +53,7 @@ $(document).ready ->
       console.log("User is authenticated: " + agent.display_name)
       sessionStorage.setItem('current_user', JSON.stringify(agent))
       sessionStorage.setItem('availability', agent.available)
+      sessionStorage.setItem('tenant', agent.tenant_id)
       AvailabilityWidget.show()
       Menu.show()
     ),

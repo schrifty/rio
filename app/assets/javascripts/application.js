@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+//= require websocket_rails/main
 
 String.prototype.capitalize = function(){
     return this.charAt(0).toUpperCase() + this.slice(1);

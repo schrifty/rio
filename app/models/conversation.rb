@@ -20,11 +20,25 @@ class Conversation < ActiveRecord::Base
   validates_presence_of :tenant, :customer
   validates_with FKValidator, fields: [:customer, :engaged_agent, :target_agent, :first_message, :last_message]
 
-  scope :by_tenant, lambda { |tenant| where('tenant_id = ?', tenant.id) }
-  scope :unresolved, lambda { where('resolved = 0') }
-  scope :resolved, lambda { where('resolved = 1') }
-  scope :by_engaged, lambda { |b| where("engaged_agent_id is #{b ? 'not' : ''} null") }
-  scope :needs_assignment, lambda { | | where('resolved = 0 AND engaged_agent_id is null').order('updated_at desc') }
+  after_create :send_message_to_clients
+
+  scope :by_tenant, lambda { |tenant| where('conversations.tenant_id = ?', tenant.id) }
+  scope :unresolved, lambda { where('conversations.resolved = 0') }
+  scope :resolved, lambda { where('conversations.resolved = 1') }
+  scope :by_engaged, lambda { |b| where("conversations.engaged_agent_id is #{b ? 'not' : ''} null") }
+  scope :needs_assignment, lambda { | | where('conversations.resolved = 0 AND conversations.engaged_agent_id is null').order('conversations.updated_at desc') }
+  scope :agent_inbox, lambda { |agent|
+    joins(:last_message).
+    where('conversations.resolved = ? AND (conversations.engaged_agent_id IS NULL OR (conversations.engaged_agent_id = ? AND messages.agent_id IS NULL))', 0, agent.id).
+    select('conversations.*')}
+  scope :customer_inbox, lambda { |customer|
+    joins(:last_message).
+    where('conversations.resolved = ? AND conversations.customer_id = ? AND messages.agent_id IS NOT NULL', 0, customer.id)}
+
+  def send_message_to_clients
+    channel_name = "conversations-tenant-#{self.tenant.id}"
+    WebsocketRails[channel_name.to_sym].trigger 'new', self
+  end
 
   def message_count
     self.messages.size

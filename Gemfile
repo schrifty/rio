@@ -29,6 +29,8 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'devise'
 
+gem 'websocket-rails'
+
 #linux?
 gem 'highline'
 gem 'net-ssh'

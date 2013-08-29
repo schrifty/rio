@@ -3,6 +3,7 @@ development:
   encoding: utf8
   database: rio
   username: root
+  pool: 100
   password:
   host: 127.0.0.1
   port: 3306
@@ -24,6 +25,7 @@ production:
   encoding: utf8
   database: rio
   username: root
+  pool: 100
   password: password12
   host:
   port:
