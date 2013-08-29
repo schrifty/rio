@@ -1,14 +1,20 @@
 window.PanelProfile or= {}
 
+PanelProfile.initted = false
+
 $(document).ready ->
   $('#profile-submit').on 'click', (event) -> PanelProfile.processForm(event)
   PanelProfile.$submitStatus = $('#profile-submit-result')
 
 PanelProfile.init = ->
-  AgentAPI.getCurrentAgent(
-    ( (data) -> PanelProfile.populate(data) ),
-    ( -> console.log 'Failed to get the current agent!' )
-  )
+  unless PanelProfile.initted
+    AgentAPI.getCurrentAgent(
+      ( (data) ->
+        PanelProfile.populate(data)
+        PanelProfile.initted = true
+      ),
+      ( -> console.log 'Failed to get the current agent!' )
+    )
 
 PanelProfile.processForm = (event) ->
   $('#profile-form').validate( {
@@ -58,3 +64,6 @@ PanelProfile.populate = (data) ->
   console.log "populating data with " + data
   $('#profile-name').val(data.display_name)
   $('#profile-email').val(data.email)
+
+PanelProfile.messageNotificationHandler = (message) ->
+PanelProfile.conversationNotificationHandler = (conversation) ->

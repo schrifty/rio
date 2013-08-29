@@ -39,14 +39,7 @@ $(document).ready ->
   Main.$signupButton = $('#signup-button')
   Main.$signupButton.on 'click', (event) -> Main.signUp()
 
-  $('#menu li').on 'click', (event) ->
-    $(event.currentTarget).addClass('active').siblings().removeClass('active')
-    objStr = event.currentTarget.id.match(/pill-(.*)/)[1]
-    classname = "Panel" + objStr.capitalize()
-    panelName = "panel-" + objStr
-    $('.menu-panel').slideUp()
-    $('#' + panelName).slideDown()
-    window[classname].init();
+  $('#menu li').on 'click', (event) -> Main.switchMenuContext(event)
 
   AgentAPI.getCurrentAgent(
     ( (agent) ->
@@ -64,6 +57,15 @@ $(document).ready ->
       $('#signin').slideDown()
     )
   )
+
+Main.switchMenuContext = (event) ->
+  $(event.currentTarget).addClass('active').siblings().removeClass('active')
+  objStr = event.currentTarget.id.match(/pill-(.*)/)[1]
+  classname = "Panel" + objStr.capitalize()
+  panelName = "panel-" + objStr
+  $('.menu-panel').slideUp()
+  $('#' + panelName).slideDown()
+  window[classname].init();
 
 Main.emailPattern = /// ^ #begin of line
              ([\w.-]+)         #one or more letters, numbers, _ . or -

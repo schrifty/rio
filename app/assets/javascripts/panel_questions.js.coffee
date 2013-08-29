@@ -1,5 +1,7 @@
 window.PanelQuestions or= {}
 
+PanelQuestions.initted = false
+
 $(document).ready ->
   $('#panel-questions > table > tbody').on 'click', (event) ->
     $row = $(event.target).closest('.conversation')
@@ -11,30 +13,15 @@ $(document).ready ->
       PanelQuestions.loadMessages(convId, -1)
       $row.addClass("expanded")
 
-  tenant_id = sessionStorage.getItem('tenant')
-  dispatcher = new WebSocketRails('localhost:3001/websocket')
-
-  channel_name = 'messages-tenant-' + tenant_id
-  channel = dispatcher.subscribe(channel_name)
-  channel.bind('new', (message) ->
-    console.log 'a new message has arrived! ' + JSON.stringify(message)
-    role = if message.agent_id == null then "customer" else "agent"
-    html = PanelQuestions.getMessageHTML(role, message.display_name, message.text, message.created_at)
-    $body = $('#conversation-' + message.conversation_id)
-    $body.append(html)
-  )
-
-  channel_name = 'conversations-tenant-' + tenant_id
-  channel = dispatcher.subscribe(channel_name)
-  channel.bind('new', (conversation) ->
-    console.log 'a new conversation has arrived! ' + JSON.stringify(message)
-  )
-
 PanelQuestions.init = () ->
-  ConversationAPI.getConversations(
-    ( (data) -> PanelQuestions.loadConversations(data) ),
-    ( (msg) -> console.log 'Failed to get conversations [' + msg + ']' )
-  )
+  unless PanelQuestions.initted
+    ConversationAPI.getConversations(
+      ( (data) ->
+        PanelQuestions.loadConversations(data)
+        PanelQuestions.initted = true
+      ),
+      ( (msg) -> console.log 'Failed to get conversations [' + msg + ']' )
+    )
 
 PanelQuestions.loadConversations = (data) ->
   $body = $('#panel-questions tbody')
@@ -84,3 +71,12 @@ PanelQuestions.getMessageHTML = (author_role, author_display_name, text, created
       <td>' + $.formatDateTime('g:ii a', new Date(created_at)) + '</td>
     </tr>'
 
+PanelQuestions.messageNotificationHandler = (message) ->
+  console.log "Questions Panel received a new message"
+  role = if message.agent_id == null then "customer" else "agent"
+  html = PanelQuestions.getMessageHTML(role, message.display_name, message.text, message.created_at)
+  $body = $('#conversation-' + message.conversation_id)
+  $body.append(html)
+
+PanelQuestions.conversationNotificationHandler = (conversation) ->
+  console.log "Questions Panel received a new conversation"

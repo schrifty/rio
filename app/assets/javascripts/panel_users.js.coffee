@@ -1,14 +1,21 @@
 window.PanelUsers or= {}
 
+PanelUsers.initted = false
+
 $(document).ready ->
   $('#panel-users').on 'dblclick', (event) ->
     console.log "DOUBLECLICK"
 
 PanelUsers.init = ->
-  AgentAPI.getAgents(
-    ( (data) -> PanelUsers.populate(data) ),
-    ( -> console.log 'Failed to get the agents!' )
-  )
+  unless PanelUsers.initted
+    AgentAPI.getAgents(
+      ( (data) ->
+        PanelUsers.populate(data)
+        PanelUsers.initted = true
+      ),
+      ( -> console.log 'Failed to get the agents!' )
+    )
+
 
 PanelUsers.populate = (data) ->
   body = $('#panel-users tbody')
@@ -23,6 +30,5 @@ PanelUsers.populate = (data) ->
     body.append(newrow)
     $('.prettydate').prettyDate(5)
 
-
-
-
+PanelUsers.messageNotificationHandler = (message) ->
+PanelUsers.conversationNotificationHandler = (conversation) ->
