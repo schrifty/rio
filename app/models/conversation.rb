@@ -2,7 +2,7 @@ class FKValidator < ActiveModel::Validator
   def validate(record)
     [:customer, :engaged_agent, :target_agent, :first_message, :last_message].each { |field|
       if record.send(field) && record.send(field).tenant != record.send(:tenant)
-        record.errors[:base] << "#{field.to_s} access forbidden"
+        record.errors[:base] << "#{field.to_s} cross-tenant access forbidden"
       end
     }
   end
@@ -15,7 +15,8 @@ class Conversation < ActiveRecord::Base
   belongs_to :target_agent, :class_name => Agent
   belongs_to :first_message, :class_name => Message
   belongs_to :last_message, :class_name => Message
-  has_many :messages
+  # TODO figure out why limit(3) doesn't work - in its absence, we'll have to do a lot of seemingly unnecessary work
+  has_many :messages # , -> { order('id desc').limit(3) }
 
   validates_presence_of :tenant, :customer
   validates_with FKValidator, fields: [:customer, :engaged_agent, :target_agent, :first_message, :last_message]
@@ -37,7 +38,7 @@ class Conversation < ActiveRecord::Base
 
   def send_message_to_clients
     channel_name = "conversations-tenant-#{self.tenant.id}"
-    WebsocketRails[channel_name.to_sym].trigger 'new', self
+    WebsocketRails[channel_name.to_sym].trigger 'new', self.to_json(:methods => [:customer_display_name, :engaged_agent_name] )
   end
 
   def message_count

@@ -33,19 +33,24 @@ $color5: #2D2B21;
   .customer {
     color: blue;
   }
+  #conversation-template, #message-template {
+    display: none
+  }
   #message-table {
     width: 100%;
     border-bottom: 5px;
     border-color: rgb(128, 128, 128);
     padding-left: 10px;
-    col.message-author {
-      width: 10%;
-    }
-    col.message-text {
-      width: 80;
-    }
-    col.message-created-at {
-      width: 10%;
+    col {
+      &.message-author {
+        width: 10%;
+      }
+      &.message-text {
+        width: 80%;
+      }
+      &.message-created-at {
+        width: 10%;
+      }
     }
     .message-author-agent {
       color: green;
@@ -55,13 +60,18 @@ $color5: #2D2B21;
       color: blue;
       text-align: right;
     }
-    tr {
+    .message-summary {
       cursor: pointer;
-      background-color: $white;
+      background-color: $color3;
+      transition: background-color 1600ms ease;
       td {
         border-width: 3px;
         border-style: groove;
       }
+      &.complete {
+        background-color: $white;
+      }
     }
+
   }
 }

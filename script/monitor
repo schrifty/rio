@@ -2,11 +2,10 @@
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
 #TENANT_NAME = "Tesla Motors"
-AGENT_COUNT = 5
-CUSTOMER_COUNT = 20
+AGENT_COUNT = 3
+CUSTOMER_COUNT = 10
 
 MUTEX = Mutex.new
-#AR_MUTEX = Mutex.new
 
 def mlog(str)
   MUTEX.synchronize do
@@ -15,12 +14,9 @@ def mlog(str)
 end
 
 def safely
-  #AR_MUTEX.synchronize do
-    ActiveRecord::Base.connection_pool.with_connection do | connection |
-      #mlog connection.is_read_only?
-      yield
-    end
-  #end
+  ActiveRecord::Base.connection_pool.with_connection do |connection|
+    yield
+  end
 end
 
 def run_customer(tenant, customer)
@@ -47,12 +43,11 @@ def run_customer(tenant, customer)
           safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil, :text => 'Thank you!') }
           safely { conversation.update_attributes!(:resolved => 1) }
           conversation = nil
-          sleep(10 + rand(20))
         else
           mlog "Customer ##{customer.id} is replying to conversation ##{conversation.id}"
           safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil) }
-          sleep(10 + rand(20))
         end
+        sleep(10 + rand(60))
       end
       ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
     end
@@ -77,14 +72,14 @@ def run_agent(tenant, agent)
         if rand(20) == 1
           mlog "Agent ##{agent.id} has gone offline"
           safely { agent.update_attributes!(:available => 0) }
-          sleep(15 + rand(20))
+          sleep(15 + rand(40))
         end
       else
         if rand(20) == 1
           mlog "Agent ##{agent.id} has come online"
           safely { agent.update_attributes!(:available => 1) }
         end
-        sleep(10 + rand(20))
+        sleep(10 + rand(40))
       end
       ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
     end
@@ -93,8 +88,7 @@ def run_agent(tenant, agent)
   end
 end
 
-mlog "Creating #{AGENT_COUNT} agents and #{CUSTOMER_COUNT} customers"
-#tenant = FactoryGirl.create(:tenant)
+mlog "Wiping existing data, excepting the tenant and agent"
 tenant = Tenant.find(119)
 agent_email = 'vernice.treutel@example.net'
 Message.destroy_all("tenant_id = '#{tenant.id}'")
@@ -102,6 +96,10 @@ Conversation.destroy_all("tenant_id = '#{tenant.id}'")
 Customer.destroy_all("tenant_id = '#{tenant.id}'")
 Agent.destroy_all("tenant_id = '#{tenant.id}' AND email <> '#{agent_email}'")
 
+mlog "Sleeping 5 seconds"
+sleep(5)
+
+mlog "Creating #{AGENT_COUNT} agents and #{CUSTOMER_COUNT} customers"
 mlog "TENANT: #{tenant.id}"
 agents = (1..AGENT_COUNT).collect { |n|
   cont = true

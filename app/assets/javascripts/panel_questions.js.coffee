@@ -12,71 +12,51 @@ $(document).ready ->
     else
       PanelQuestions.loadMessages(convId, -1)
       $row.addClass("expanded")
+  $('.prettydate').prettyDate(5)
 
 PanelQuestions.init = () ->
   unless PanelQuestions.initted
-    ConversationAPI.getConversations(
-      ( (data) ->
-        PanelQuestions.loadConversations(data)
-        PanelQuestions.initted = true
-      ),
-      ( (msg) -> console.log 'Failed to get conversations [' + msg + ']' )
-    )
-
-PanelQuestions.loadConversations = (data) ->
-  $body = $('#panel-questions tbody')
-  $body.empty()
-  for conversation in data
-    html = '<tr class="conversation" data-conv-id="' + conversation.id + '"">
-        <td class="conversation-summary">
-          <span class="agent">' + conversation.engaged_agent_name + '</span> is assisting
-          <span class="customer">' + conversation.customer_display_name + '</span></td>
-      </tr>
-      <tr class="conversation" data-conv-id="' + conversation.id + '">
-        <td>
-          <table id="message-table">
-            <colgroup>
-              <col class="message-author" span="1">
-              <col class="message-text" span="1">
-              <col class="message-created-at" span="1">
-            </colgroup>
-            <tbody id="conversation-' + conversation.id + '">
-            </tbody>
-          </table>
-        </td>
-      </tr>'
-    $body.append(html)
-    $('.prettydate').prettyDate(5)
-    PanelQuestions.loadMessages(conversation.id, 3)
-
-PanelQuestions.loadMessages = (convId, limit) ->
-  console.log "Got called with convId[" + convId + "] and limit [" + limit + "]"
-  MessageAPI.getMessages(convId, limit,
-    ( (data) ->
-      $body = $('#conversation-' + convId)
-      $body.empty()
-      html = ""
-      for message in data
-        html += PanelQuestions.getMessageHTML(message.author_role, message.display_name, message.text, message.created_at)
-      $body.append(html)
-    ),
-    ( (msg) -> console.log "Failed to get messages: " + msg )
-  )
-
-PanelQuestions.getMessageHTML = (author_role, author_display_name, text, created_at) ->
-  return '
-    <tr>
-      <td class="message-author-' + author_role + '">' + author_display_name + ':</td>
-      <td>' + text + '</td>
-      <td>' + $.formatDateTime('g:ii a', new Date(created_at)) + '</td>
-    </tr>'
-
-PanelQuestions.messageNotificationHandler = (message) ->
-  console.log "Questions Panel received a new message"
-  role = if message.agent_id == null then "customer" else "agent"
-  html = PanelQuestions.getMessageHTML(role, message.display_name, message.text, message.created_at)
-  $body = $('#conversation-' + message.conversation_id)
-  $body.append(html)
+    PanelQuestions.initted = true
 
 PanelQuestions.conversationNotificationHandler = (conversation) ->
-  console.log "Questions Panel received a new conversation"
+  conversationJSON = JSON.parse(conversation)
+  newConvRow = $('#conversation-template').clone()
+  newConvRow.attr('id', 'conversation-' + conversationJSON.id)
+  newConvHTML = newConvRow.get(0).outerHTML.
+    replace(/XCONVID/g, conversationJSON.id).
+    replace(/XCONVENGAGEDNAME/g, conversationJSON.engaged_agent_name).
+    replace(/XCONVCUSTOMERDISPLAYNAME/g, conversationJSON.customer_display_name)
+  $('#conversations-body').prepend(newConvHTML)
+
+PanelQuestions.messageNotificationHandler = (message) ->
+  messageJSON = JSON.parse(message)
+
+  # build the HTML for the new message, starting with the template we get from the server so we don't have to keep the
+  # server and the client in sync on the correct DOM structure
+  newMessageRow = $('#message-template').clone()
+#  newMessageRow.hide()
+  newMessageRow.removeAttr('id')
+  newMessageHTML = newMessageRow.get(0).outerHTML.
+    replace(/MESSAGEAUTHORROLE/g, messageJSON.author_role).
+    replace(/MESSAGEAUTHORDISPLAYNAME/g, messageJSON.author_display_name).
+    replace(/MESSAGETEXT/g, messageJSON.text).
+    replace(/MESSAGECREATEDAT/g, $.formatDateTime('g:ii a', new Date(messageJSON.created_at)))
+  newMessageRow.remove()
+
+  # figure out if the conversation needs to be moved to the top of the table
+  $row = $('#conversation-' + messageJSON.conversation_id)
+  $messageBody = $('#messages-body-' + messageJSON.conversation_id)
+  index = $('#conversations-body').children().index($row)
+  console.log "Looking for: " + $row.get()
+  console.log index
+  if index > 0
+    $row.hide()
+    $newMessage = $(newMessageHTML).appendTo($messageBody)
+    $firstRow = $row.parent().find("tr:first")
+    $row.insertBefore($firstRow)
+    $row.slideDown('slow')
+  else
+    $newMessage = $(newMessageHTML).appendTo($messageBody)
+    $newMessage.show()
+  $newMessage.delay( 400 ).addClass('complete')
+

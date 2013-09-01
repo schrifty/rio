@@ -7,6 +7,36 @@ describe TenantsController do
     controller.stub(:authenticate_agent!).and_return true
   }
 
+  describe 'GET :new' do
+    before {
+      @tenant = create(:tenant)
+      @customer = create(:customer, :tenant => @tenant)
+      @agent = create(:agent, :tenant => @tenant)
+      @conversation1 = create(:conversation, :tenant => @tenant, :customer => @customer, :engaged_agent => @agent)
+      @message1 = create(:message, :tenant => @tenant, :conversation => @conversation1, :agent => nil, created_at: '2013-07-25 14:00:00')
+      @message2 = create(:message, :tenant => @tenant, :conversation => @conversation1, :agent => @agent, created_at: '2013-07-25 15:00:00')
+      @conversation2 = create(:conversation, :tenant => @tenant, :customer => @customer, :engaged_agent => @agent)
+      @message3 = create(:message, :tenant => @tenant, :conversation => @conversation2, :agent => nil, created_at: '2013-07-25 14:00:00')
+      @message4 = create(:message, :tenant => @tenant, :conversation => @conversation2, :agent => @agent, created_at: '2013-07-25 15:00:00')
+      @message5 = create(:message, :tenant => @tenant, :conversation => @conversation2, :agent => nil, created_at: '2013-07-25 16:00:00')
+      @message6 = create(:message, :tenant => @tenant, :conversation => @conversation2, :agent => @agent, created_at: '2013-07-25 17:00:00')
+      @conversation1.update_attributes(:updated_at => '2013-07-25 14:00:00')
+      @conversation2.update_attributes(:updated_at => '2013-07-25 13:00:00')
+
+      sign_in @agent
+    }
+
+    it 'should load 2 conversations and 5 messages' do
+      get :new
+      #expect (response.status).to eq 200
+      convs = assigns(:conversations)
+      convs[0].id.should eq @conversation1.id
+      convs[0].messages.map {|m| m.id}.should eq [@message1.id, @message2.id]
+      convs[1].id.should eq @conversation2.id
+      convs[1].messages.map {|m| m.id}.should eq [@message3.id, @message4.id, @message5.id, @message6.id]
+    end
+  end
+
   describe 'GET :index' do
     before {
       @tenants = (1..3).map { |n| create(:tenant) }

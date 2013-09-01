@@ -1,0 +1,39 @@
+<%
+if sample
+  conv_id = 'XCONVID'
+  conv_engaged_name = 'XCONVENGAGEDNAME'
+  conv_customer_display_name = 'XCONVCUSTOMERDISPLAYNAME'
+  conv_messages = []
+else
+  conv_id = conv.id.to_s
+  conv_engaged_name = conv.engaged_agent_name
+  conv_customer_display_name = conv.customer_display_name
+  conv_messages = conv.messages
+end
+%>
+<tr id="<%= sample ? 'conversation-template' : 'conversation-' + conv_id %>" class="conversation" data-conv-id="<%= conv_id %>">
+  <td>
+    <table id="message-table">
+      <colgroup>
+        <col class="message-author">
+        <col class="message-text">
+        <col class="message-created-at">
+      </colgroup>
+      <tbody id="messages-body-<%= conv_id %>">
+        <tr>
+          <td colspan="3" class="conversation-summary">
+            <span class="customer"><%= conv_customer_display_name %></span>
+            is assisted by
+            <span class="agent"><%= conv_engaged_name %></span> (<%= conv_id %>)
+          </td>
+        </tr>
+<% n = 0 %>
+<% conv_messages.each do |message| %>
+  <% n = n + 1 %>
+  <% break if n > 3 %>
+        <%= render :partial => 'message', locals: { sample: false, message: message } %>
+<% end %>
+      </tbody>
+    </table>
+  </td>
+</tr>

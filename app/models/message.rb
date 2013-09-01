@@ -13,7 +13,7 @@ class Message < ActiveRecord::Base
   after_create :update_conversation_after_create
   after_create :send_message_to_clients
 
-  attr_reader :author_display_name
+  #attr_reader :author_display_name
 
   def author_role
     self.agent_id ? 'agent' : 'customer'
@@ -37,10 +37,10 @@ class Message < ActiveRecord::Base
 
   def send_message_to_clients
     channel_name = "messages-tenant-#{self.tenant.id}"
-    WebsocketRails[channel_name.to_sym].trigger 'new', self
+    WebsocketRails[channel_name.to_sym].trigger 'new', self.to_json( {:methods => [:author_role, :author_display_name]} )
   end
 
-  def as_json(options={})
-    super.as_json(options).merge({:display_name => author_display_name})
-  end
+  #def as_json(options={})
+  #  super.as_json(options).merge({:display_name => author_display_name})
+  #end
 end

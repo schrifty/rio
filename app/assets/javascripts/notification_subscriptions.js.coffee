@@ -6,7 +6,7 @@ $(document).ready ->
   channel_name = 'conversations-tenant-' + tenant_id
   channel = dispatcher.subscribe(channel_name)
   channel.bind('new', (conversation) ->
-    console.log 'a new conversation has arrived! ' + JSON.stringify(message)
+    console.log 'a new conversation has arrived! ' + JSON.stringify(conversation)
     for element in $('.menu-panel')
       classname = "Panel" + element.id.match(/panel-(.*)/)[1].capitalize()
       window[classname].conversationNotificationHandler(conversation)

@@ -34,7 +34,7 @@ WebsocketRails.setup do |config|
   # config.keep_subscribers_when_private = false
 end
 
-WebsocketRails::EventMap.describe do
+#WebsocketRails::EventMap.describe do
   # You can use this file to map incoming events to controller actions.
   # One event can be mapped to any number of controller actions. The
   # actions will be executed in the order they were subscribed.
@@ -48,7 +48,7 @@ WebsocketRails::EventMap.describe do
   #   end
   # The above will handle an event triggered on the client like `product.new`.
 
-  namespace :message do
-    subscribe :create, :to => ChatController, :with_method => :create
-  end
-end
+  #namespace :message do
+  #  subscribe :create, :to => ChatxController, :with_method => :create
+  #end
+#end

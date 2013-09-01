@@ -34,6 +34,10 @@ class TenantsController < ApplicationController
     return render json: @tenants
   end
 
+  def new
+    @conversations = Conversation.by_tenant(current_agent.tenant).unresolved.includes(:messages).order('conversations.updated_at desc')
+  end
+
   private
   def tenant_params
     params.require(:tenant).permit(:twitter_id, :email, :display_name)

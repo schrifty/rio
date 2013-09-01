@@ -1,0 +1,19 @@
+<%
+if sample
+  message_author_role = 'MESSAGEAUTHORROLE'
+  message_author_display_name = 'MESSAGEAUTHORDISPLAYNAME'
+  message_text = 'MESSAGETEXT'
+  message_created_at = 'MESSAGECREATEDAT'
+else
+  message_author_role = message.author_role
+  message_author_display_name = message.author_display_name
+  message_text = message.text
+  message_created_at = message.created_at.strftime('%l:%M %P')
+end
+%>
+
+<tr<%= sample ? ' id=message-template' : ''%> class="message-summary">
+  <td class="message-author-<%= message_author_role %>"><%= message_author_display_name %>:</td>
+  <td><%= message_text %></td>
+  <td><%= message_created_at %></td>
+</tr>
