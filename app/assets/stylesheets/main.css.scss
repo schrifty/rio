@@ -43,7 +43,6 @@ body {
   font-size: 13px;
   font-weight: 400;
   font-style: normal;
-  //background: url('/assets/dark_wood.png');
   background-color: $color2;
   overflow: hidden;
 }
@@ -55,7 +54,13 @@ label {
 .menu-panel {
   display: none;
   border-width: 6px;
+  height: 400px;
+  padding: 0px;
+  table {
+    width: 100%;
+  }
 }
+
 
 #tenant-main {
   .flash .error, .flash .alert {
@@ -63,25 +68,24 @@ label {
     background-color: #fdd;
   }
 
-  #menu {
+  #menu-main {
     display: none;
     margin-bottom: 12px;
-  }
-
-  .nav-pills {
-    li {
-      a {
-        color: $white;
+    .nav-pills {
+      li {
+        a {
+          color: $white;
+        }
+        a:hover, a:focus {
+          background-color: $color3;
+        }
       }
-      a:hover, a:focus {
-        background-color: $color3;
-      }
-    }
 
-    li.active {
-      a {
-        color: $white;
-        background-color: $color1;
+      li.active {
+        a {
+          color: $white;
+          background-color: $color1;
+        }
       }
     }
   }
@@ -95,12 +99,6 @@ label {
   #signin {
     display: none;
 
-    //span {
-    //  text-transform: uppercase;
-    //}
-    //i {
-    //  text-align: center;
-    //}
     #signin-spinner {
       display: none;
       text-align: center;

@@ -18,12 +18,7 @@ $color4: #A69055;
 $color5: #2D2B21;
 
 #panel-questions {
-  height: 400px;
   overflow: scroll;
-  padding: 0px;
-  table {
-    width: 100%;
-  }
   .conversation-summary {
     color: $white;
   }

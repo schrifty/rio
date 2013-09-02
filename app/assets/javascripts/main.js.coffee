@@ -11,7 +11,7 @@ $(document).ready ->
   Main.$signinButton.on 'click', (event) -> Main.signIn(
     (->
       AvailabilityWidget.show()
-      Menu.show()
+      MenuMain.show()
       $('#signin').slideUp()
     ),
     ((msg) -> console.log("Failed to sign in: " + msg))
@@ -39,7 +39,9 @@ $(document).ready ->
   Main.$signupButton = $('#signup-button')
   Main.$signupButton.on 'click', (event) -> Main.signUp()
 
-  $('#menu li').on 'click', (event) -> Main.switchMenuContext(event)
+  $('#menu-main li').on 'click', (event) -> MenuMain.switchMenuContext(event)
+  $('#menu-dashboard li').on 'click', (event) -> MenuDashboard.switchMenuContext(event)
+
 
   AgentAPI.getCurrentAgent(
     ( (agent) ->
@@ -48,24 +50,15 @@ $(document).ready ->
       sessionStorage.setItem('availability', agent.available)
       sessionStorage.setItem('tenant', agent.tenant_id)
       AvailabilityWidget.show()
-      Menu.show()
+      MenuMain.show()
     ),
     ( ->
       console.log("User is not authenticated")
       AvailabilityWidget.hide()
-      Menu.hide()
+      MenuMain.hide()
       $('#signin').slideDown()
     )
   )
-
-Main.switchMenuContext = (event) ->
-  $(event.currentTarget).addClass('active').siblings().removeClass('active')
-  objStr = event.currentTarget.id.match(/pill-(.*)/)[1]
-  classname = "Panel" + objStr.capitalize()
-  panelName = "panel-" + objStr
-  $('.menu-panel').slideUp()
-  $('#' + panelName).slideDown()
-  window[classname].init();
 
 Main.emailPattern = /// ^ #begin of line
              ([\w.-]+)         #one or more letters, numbers, _ . or -
@@ -110,7 +103,7 @@ Main.signOut = ->
   AuthAPI.destroyAgentSession(
     ( ->
       AvailabilityWidget.hide()
-      Menu.hide()
+      MenuMain.hide()
       $('#signin').slideDown()
     ),
     ( (errorThrown) ->
