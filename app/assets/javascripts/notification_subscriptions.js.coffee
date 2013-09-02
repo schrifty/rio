@@ -21,3 +21,13 @@ $(document).ready ->
       classname = "Panel" + element.id.match(/panel-(.*)/)[1].capitalize()
       window[classname].messageNotificationHandler(message)
   )
+
+  # Subscribe to agents
+  channel_name = 'agents-tenant-' + tenant_id
+  channel = dispatcher.subscribe(channel_name)
+  channel.bind('new', (agent) ->
+    console.log 'a new agent has arrived! ' + JSON.stringify(agent)
+    for element in $('.menu-panel')
+      classname = "Panel" + element.id.match(/panel-(.*)/)[1].capitalize()
+      window[classname].agentNotificationHandler(agent)
+  )

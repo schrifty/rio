@@ -32,3 +32,5 @@ PanelUsers.populate = (data) ->
 
 PanelUsers.messageNotificationHandler = (message) ->
 PanelUsers.conversationNotificationHandler = (conversation) ->
+PanelUsers.agentNotificationHandler = (agent) ->
+  # add a new row to the table

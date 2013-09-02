@@ -25,6 +25,7 @@ class Agent < ActiveRecord::Base
   default_scope order("if(available = #{STATUS_AVAILABLE}, 0, if(available = #{STATUS_NONRESPONSIVE}, 1, 2))")
 
   before_validation :ensure_tenant
+  after_create :send_message_to_clients
 
   def as_json(options = nil)
     super(:methods => [:last_sign_in_at, :customer_count, :status] )
@@ -68,4 +69,8 @@ class Agent < ActiveRecord::Base
     save!
   end
 
+  def send_message_to_clients
+    channel_name = "agents-tenant-#{self.tenant.id}"
+    WebsocketRails[channel_name.to_sym].trigger 'new', self.to_json(:methods => [:status, :customer_count] )
+  end
 end
