@@ -26,6 +26,7 @@ describe ConversationsController do
       customer = create(:customer, :tenant => tenant)
       conversation = create(:conversation, :tenant => tenant, :customer => customer)
       create(:message, :tenant => tenant, :conversation => conversation, :agent => nil)
+      conversation
     }
   }
 
