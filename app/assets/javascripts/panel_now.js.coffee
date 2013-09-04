@@ -7,5 +7,6 @@ PanelNow.init = ->
   unless PanelNow.initted
     PanelNow.initted = true
 
-PanelNow.messageNotificationHandler = (message) ->
-PanelNow.conversationNotificationHandler = (conversation) ->
+PanelNow.messageNotificationHandler = (message) -> # noop
+PanelNow.conversationNotificationHandler = (conversation) -> # noop
+PanelNow.agentNotificationHandler = (agent) -> # noop

@@ -65,5 +65,6 @@ PanelProfile.populate = (data) ->
   $('#profile-name').val(data.display_name)
   $('#profile-email').val(data.email)
 
-PanelProfile.messageNotificationHandler = (message) ->
-PanelProfile.conversationNotificationHandler = (conversation) ->
+PanelProfile.messageNotificationHandler = (message) -> # noop
+PanelProfile.conversationNotificationHandler = (conversation) -> # noop
+PanelProfile.agentNotificationHandler = (agent) -> # noop

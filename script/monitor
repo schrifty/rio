@@ -89,12 +89,22 @@ def run_agent(tenant, agent)
 end
 
 mlog "Wiping existing data, excepting the tenant and agent"
-tenant = Tenant.find(119)
-agent_email = 'vernice.treutel@example.net'
+#reuse_tenant = nil
+reuse_tenant = 1
+reuse_agent_email = 'aleen@example.org'
+if reuse_tenant
+  mlog "Resuing tenant [#{reuse_tenant}] and agent [#{reuse_agent_email}]"
+  tenant = Tenant.find(reuse_tenant)
+  Agent.destroy_all("email <> '#{reuse_agent_email}'")
+else
+  Tenant.destroy_all
+  Agent.destroy_all
+  tenant = FactoryGirl.create(:tenant)
+end
+
 Message.destroy_all("tenant_id = '#{tenant.id}'")
 Conversation.destroy_all("tenant_id = '#{tenant.id}'")
 Customer.destroy_all("tenant_id = '#{tenant.id}'")
-Agent.destroy_all("tenant_id = '#{tenant.id}' AND email <> '#{agent_email}'")
 
 mlog "Sleeping 5 seconds"
 sleep(5)

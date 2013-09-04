@@ -31,14 +31,13 @@ $(document).ready ->
 
 AvailabilityWidget.show = ->
   user = JSON.parse(sessionStorage.getItem('current_user'))
-  $('#availability-label').text(user.display_name + ' is ')
   if sessionStorage.getItem('availability') == "1"
-    $('#availability-button-label').text('Online')
+    $('#availability-button-label').text(user.display_name + ' is Online')
     $('#availability-button').removeClass('btn-primary').addClass('btn-success')
     AvailabilityWidget.$onlineButton.hide()
     AvailabilityWidget.$offlineButton.show()
   else
-    $('#availability-button-label').text('Offline')
+    $('#availability-button-label').text(user.display_name + ' is Offline')
     $('#availability-button').removeClass('btn-success').addClass('btn-primary')
     AvailabilityWidget.$onlineButton.show()
     AvailabilityWidget.$offlineButton.hide()

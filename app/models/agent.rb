@@ -1,4 +1,7 @@
 class Agent < ActiveRecord::Base
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
@@ -26,6 +29,19 @@ class Agent < ActiveRecord::Base
 
   before_validation :ensure_tenant
   after_create :send_message_to_clients
+
+  # elasticsearch
+  def type
+    'agent'
+  end
+
+  def to_indexed_json
+    self.to_json( { :only => [:text] } )
+  end
+
+  mapping do
+    indexes :text
+  end
 
   def as_json(options = nil)
     super(:methods => [:last_sign_in_at, :customer_count, :status] )

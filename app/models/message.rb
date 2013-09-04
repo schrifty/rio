@@ -1,4 +1,7 @@
 class Message < ActiveRecord::Base
+  include Tire::Model::Search
+  include Tire::Model::Callbacks
+
   belongs_to :tenant
   belongs_to :conversation
   belongs_to :agent
@@ -13,7 +16,19 @@ class Message < ActiveRecord::Base
   after_create :update_conversation_after_create
   after_create :send_message_to_clients
 
-  #attr_reader :author_display_name
+  # elasticsearch
+  def type
+    'message'
+  end
+
+  def to_indexed_json
+    self.to_json( { :only => [:display_name, :email] } )
+  end
+
+  mapping do
+    indexes :display_name
+    indexes :email
+  end
 
   def author_role
     self.agent_id ? 'agent' : 'customer'
@@ -39,8 +54,4 @@ class Message < ActiveRecord::Base
     channel_name = "messages-tenant-#{self.tenant.id}"
     WebsocketRails[channel_name.to_sym].trigger 'new', self.to_json( {:methods => [:author_role, :author_display_name]} )
   end
-
-  #def as_json(options={})
-  #  super.as_json(options).merge({:display_name => author_display_name})
-  #end
 end

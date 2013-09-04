@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require "tire"
+
+Tire.index 'messages' do
+  delete
+  create
+end
+
+Tire.index 'agents' do
+  delete
+  create
+end

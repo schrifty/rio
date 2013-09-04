@@ -6,5 +6,6 @@ PanelSettings.init = ->
   unless PanelSettings.initted
     PanelSettings.initted = true
 
-PanelSettings.messageNotificationHandler = (message) ->
-PanelSettings.conversationNotificationHandler = (conversation) ->
+PanelSettings.messageNotificationHandler = (message) -> # noop
+PanelSettings.conversationNotificationHandler = (conversation) -> # noop
+PanelSettings.agentNotificationHandler = (agent) -> # noop

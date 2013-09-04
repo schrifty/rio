@@ -7,5 +7,6 @@ PanelTrends.init = ->
   unless PanelTrends.initted
     PanelTrends.initted = true
 
-PanelTrends.messageNotificationHandler = (message) ->
-PanelTrends.conversationNotificationHandler = (conversation) ->
+PanelTrends.messageNotificationHandler = (message) -> # noop
+PanelTrends.conversationNotificationHandler = (conversation) -> # noop
+PanelTrends.agentNotificationHandler = (agent) -> # noop

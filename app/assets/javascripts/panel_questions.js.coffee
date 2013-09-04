@@ -60,3 +60,4 @@ PanelQuestions.messageNotificationHandler = (message) ->
     $newMessage.show()
   $newMessage.delay( 400 ).addClass('complete')
 
+  PanelQuestions.agentNotificationHandler = (agent) -> # noop

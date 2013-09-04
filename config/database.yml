@@ -4,7 +4,7 @@ development:
   database: rio
   username: root
   pool: 100
-  password:
+  password: password12
   host: 127.0.0.1
   port: 3306
 
@@ -16,7 +16,7 @@ test:
   encoding: utf8
   database: rio_test
   username: root
-  password:
+  password: password12
   host: 127.0.0.1
   port: 3306
 

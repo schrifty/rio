@@ -1,54 +1,55 @@
-$white: #FFFFFF;
+$colorHeaderText: #FFFEB4;
+$colorBodyBackground: black;
+$colorPanelBackground: #888850;
+$colorPillBackground: black;
+$colorPillText: white;
+$colorActivePillBackground: #FFFEB4;
+$colorActivePillText: black;
+$colorChatBackground: white;
 
-// Plain
-//$color1: #D74B4B;
-//$color2: #DCDDD8;
-//$color3: #475F77;
-//$color4: #354B5E;
+html {
+  //background: url(brickwall.jpg) no-repeat center center fixed;
+  //-webkit-background-size: cover;
+  //-moz-background-size: cover;
+  //-o-background-size: cover;
+  //background-size: cover;
 
-// $color1 - Header text
-// $color2 - Background
-// $color3 - Active Highlight
-// $color4 -
-// Japanese Art
-$color1: #FFB88C;
-$color2: #777755;
-$color3: #CCB287;
-$color4: #A69055;
-$color5: #2D2B21;
+  #header {
+    margin-top: 15px;
+    h1 {
+      margin-top: 0px;
+      margin-bottom: 25px;
+      padding: 0px;
+      font-family: 'Allerta Stencil', sans-serif;
+      //font-family: 'Roboto', sans-serif;
 
-#header {
-  h1 {
-    font-family: 'Allerta Stencil', sans-serif;
-    margin-top: 5px;
-    margin-bottom: 25px;
-    text-align: center;
-    overflow: visible;
-    font-size: 75px;
-    color: $color1;
-    font-weight: 900;
+      text-align: center;
+      font-size: 75px;
+      color: $colorHeaderText;
+      font-weight: 900;
+    }
+
+    #signout {
+      vertical-align: center;
+    }
+
+    #availability-widget {
+      padding-right: 5px;
+    }
   }
 
-  #signout {
-    vertical-align: center;
+  body {
+    font-family: "Lato", arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    font-style: normal;
+    background-color: $colorBodyBackground;
+    overflow: hidden;
   }
-
-  #availability-widget {
-    margin-top: 35px;
-  }
-}
-
-body {
-  font-family: "Lato", arial, sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  font-style: normal;
-  background-color: $color2;
-  overflow: hidden;
 }
 
 label {
-  color: $color2;
+  color: $colorBodyBackground;
 }
 
 .menu-panel {
@@ -60,7 +61,6 @@ label {
     width: 100%;
   }
 }
-
 
 #tenant-main {
   .flash .error, .flash .alert {
@@ -74,17 +74,18 @@ label {
     .nav-pills {
       li {
         a {
-          color: $white;
+          color: white;
         }
         a:hover, a:focus {
-          background-color: $color3;
+          color: black;
+          background-color: $colorActivePillBackground;
         }
       }
 
       li.active {
         a {
-          color: $white;
-          background-color: $color1;
+          color: black;
+          background-color: $colorActivePillBackground;
         }
       }
     }
