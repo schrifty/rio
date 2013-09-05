@@ -27,5 +27,5 @@ production:
   username: root
   pool: 100
   password: password12
-  host:
-  port:
+  host: 127.0.0.1
+  port: 3306
