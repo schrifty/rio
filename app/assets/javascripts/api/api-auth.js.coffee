@@ -4,7 +4,7 @@ AuthAPI.destroyAgentSession = (onsuccess, onfail) ->
   $.ajax '/agents/sign_out',
     type: 'DELETE'
     error: (jqXHR, textStatus, errorThrown) ->
-      onfail(textStatus)
+      onfail(errorThrown)
     success: ->
       onsuccess()
 

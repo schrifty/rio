@@ -1,12 +1,12 @@
 window.AvailabilityWidget ||= {}
 
 $(document).ready ->
-  AvailabilityWidget.$logoutButton = $('#logout-button')
-  AvailabilityWidget.$logoutButton.on 'click', (event) -> Main.signOut()
+  AvailabilityWidget.$logout = $('#logout-action')
+  AvailabilityWidget.$logout.on 'click', (event) -> Main.signOut()
 
   # User wants to go offline
-  AvailabilityWidget.$offlineButton = $('#offline-button')
-  AvailabilityWidget.$offlineButton.on 'click', (event) ->
+  AvailabilityWidget.$offline = $('#offline-action')
+  AvailabilityWidget.$offline.on 'click', (event) ->
     user = JSON.parse(sessionStorage.getItem('current_user'))
     AgentAPI.updateAgent(user.id, { agent : { available: 0 }},
       ( ->
@@ -17,8 +17,8 @@ $(document).ready ->
     )
 
   # User wants to go online
-  AvailabilityWidget.$onlineButton = $('#online-button')
-  AvailabilityWidget.$onlineButton.on 'click', (event) ->
+  AvailabilityWidget.$online = $('#online-action')
+  AvailabilityWidget.$online.on 'click', (event) ->
     user = JSON.parse(sessionStorage.getItem('current_user'))
     AgentAPI.updateAgent(user.id, { agent: { available: 1 }},
       ( ->
@@ -28,20 +28,20 @@ $(document).ready ->
       ( (errorThrown) -> console.log "Couldn't take user online: " + errorThrown)
     )
 
-
 AvailabilityWidget.show = ->
   user = JSON.parse(sessionStorage.getItem('current_user'))
+  $button = $('#availability-button')
   if sessionStorage.getItem('availability') == "1"
     $('#availability-button-label').text(user.display_name + ' is Online')
-    $('#availability-button').removeClass('btn-primary').addClass('btn-success')
-    AvailabilityWidget.$onlineButton.hide()
-    AvailabilityWidget.$offlineButton.show()
+    $button.removeClass('btn-inverse').addClass('btn-success')
+    AvailabilityWidget.$online.hide()
+    AvailabilityWidget.$offline.show()
   else
     $('#availability-button-label').text(user.display_name + ' is Offline')
-    $('#availability-button').removeClass('btn-success').addClass('btn-primary')
-    AvailabilityWidget.$onlineButton.show()
-    AvailabilityWidget.$offlineButton.hide()
-  $('#availability-widget').slideDown()
+    $button.removeClass('btn-success').addClass('btn-inverse')
+    AvailabilityWidget.$online.show()
+    AvailabilityWidget.$offline.hide()
+  $button.slideDown()
 
 AvailabilityWidget.hide = ->
-  $('#availability-widget').slideUp()
+  $('#availability-button').slideUp()
