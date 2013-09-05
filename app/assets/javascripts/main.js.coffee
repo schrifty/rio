@@ -17,6 +17,17 @@ $(document).ready ->
     ((msg) -> console.log("Failed to sign in: " + msg))
   )
 
+  Main.$signupButton = $('#signup-button')
+  Main.$signupButton.on 'click', (event) -> Main.signUp(
+    (->
+      console.log 'successfully signed up'
+      AvailabilityWidget.show()
+      MenuMain.show()
+      $('#signup').slideUp()
+    ),
+    ((msg) -> console.log("Failed to sign up: " + msg))
+  )
+
   Main.$showSignupButton = $('#show-signup-button')
   Main.$showSignupButton.on 'click', (event) ->
     $('#signin').slideUp()
@@ -36,12 +47,8 @@ $(document).ready ->
   Main.$passwordConfirm = $('#password-confirm')
   Main.$passwordConfirm.on 'keyup', (event) -> Main.checkSignUpState()
 
-  Main.$signupButton = $('#signup-button')
-  Main.$signupButton.on 'click', (event) -> Main.signUp()
-
   $('#menu-main li').on 'click', (event) -> MenuMain.switchMenuContext(event)
   $('#menu-dashboard li').on 'click', (event) -> MenuDashboard.switchMenuContext(event)
-
 
   AgentAPI.getCurrentAgent(
     ( (agent) ->
@@ -89,7 +96,6 @@ Main.validatePasswordConfirmation = ->
   return Password.validate(Main.$passwordNew) and (Main.$passwordNew.val() == Main.$passwordConfirm.val())
 
 Main.signIn = (onsuccess, onfail) ->
-  console.log "signing in!"
   AuthAPI.createAgentSession(Main.$email.val(), Main.$password.val(), ((authed) ->
     $('#signin-spinner').slideUp('fast')
     if authed
@@ -98,6 +104,16 @@ Main.signIn = (onsuccess, onfail) ->
       onfail()
   ))
   $('#signin-spinner').slideDown('fast')
+
+Main.signUp = (onsuccess, onfail) ->
+  AgentAPI.createAgent(null, Main.$emailNew.val(), "abcdefg", Main.$passwordNew.val(), ((agent) ->
+    $('#signup-spinner').slideUp('fast')
+    if agent
+      onsuccess()
+    else
+      onfail()
+  ))
+  $('#signup-spinner').slideDown('fast')
 
 Main.signOut = ->
   AuthAPI.destroyAgentSession(
@@ -110,13 +126,3 @@ Main.signOut = ->
       console.log "Failed to sign out: " + errorThrown
     )
   )
-
-Main.signUp = ->
-  AgentAPI.createAgent(null, Main.$emailNew.val(), "abcdefg", Main.$passwordNew.val(), ((agent) ->
-    $('#signup-spinner').slideUp('fast')
-    if agent
-      console.log "Registered: " + agent
-    else
-      console.log "Not registered: " + agent
-  ))
-  $('#signup-spinner').slideDown('fast')

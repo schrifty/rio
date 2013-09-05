@@ -8,3 +8,14 @@ MenuDashboard.switchMenuContext = (event) ->
   $('.dashboard-menu-panel').slideUp()
   $('#' + panelName).slideDown()
   window[classname].init();
+
+MenuDashboard.show = ->
+  console.log "about to show the dashboard menu"
+  $('#menu-dashboard').slideDown()
+  # make sure the correct panel is displayed when the page is first loaded
+  # TODO pull up the most recent panel
+  $('#pill-now').click()
+
+MenuDashboard.hide = ->
+  $('#menu-dashboard').slideUp()
+  $('.dashboard-menu-panel').slideUp()
