@@ -1,0 +1,11 @@
+development:
+  redis-host: localhost
+  redis-port: 6379
+
+test:
+  redis-host: localhost
+  redis-port: 6379
+
+production:
+  redis-host: ec2-54-213-181-205.us-west-2.compute.amazonaws.com
+  redis-port: 6379

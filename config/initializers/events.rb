@@ -1,5 +1,6 @@
-WebsocketRails.setup do |config|
+ws_config = YAML.load(File.read(File.join(Rails.root, 'config', 'websockets.yml')))
 
+WebsocketRails.setup do |config|
   # Uncomment to override the default log level. The log level can be
   # any of the standard Logger log levels. By default it will mirror the
   # current Rails environment log level.
@@ -25,7 +26,8 @@ WebsocketRails.setup do |config|
   # Uncomment and edit to point to a different redis instance.
   # Will not be used unless standalone or synchronization mode
   # is enabled.
-  # config.redis_options = {:host => 'localhost', :port => '6379'}
+  Rails.logger.info { "XYZZY: #{ws_config[Rails.env]['host']}" }
+  config.redis_options = {:host => ws_config[Rails.env]['host'], :port => ws_config[Rails.env]['port']}
 
   # By default, all subscribers in to a channel will be removed
   # when that channel is made private. If you don't wish active
