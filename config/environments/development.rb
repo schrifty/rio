@@ -31,6 +31,6 @@ Rio::Application.configure do
   config.assets.debug = true
 
   Tire.configure do
-    url 'http://localhost:9201'
+    url 'http://localhost:9200'
   end
 end

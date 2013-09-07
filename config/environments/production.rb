@@ -78,4 +78,8 @@ Rio::Application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  Tire.configure do
+    url 'http://ec2-54-213-181-205.us-west-2.compute.amazonaws.com:9200'
+  end
 end
