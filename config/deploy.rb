@@ -1,4 +1,5 @@
 require "rvm/capistrano"
+require 'bundler/capistrano'
 
 set :application, "rio"
 set :deploy_to, "/var/www/rio"
@@ -8,6 +9,7 @@ set :user, "ubuntu"
 set :branch, "master"
 set :use_sudo, false
 #set :deploy_via, :remote_cache
+before "deploy:assets:precompile", "bundle:install"
 
 ssh_options[:forward_agent] = true
 ssh_options[:keys] = "~/.ssh/myhosts.pem"
