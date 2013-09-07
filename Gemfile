@@ -35,8 +35,11 @@ gem 'websocket-rails'
 gem 'highline'
 gem 'net-ssh'
 
-gem 'ruby-debug-base19x'
-gem 'ruby-debug-ide'
+group :development do
+  gem 'ruby-debug-base19x', '0.11.30.pre14  '
+  gem 'ruby-debug-ide', '0.4.18'
+end
+
 group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails', "~> 4.0"
@@ -62,4 +65,4 @@ gem 'tire'
 # gem 'unicorn'
 
 # Use debugger
-# gem 'debugger', group: [:development, :test]
+#gem 'debugger', group: [:development, :test]
