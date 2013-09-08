@@ -13,19 +13,16 @@ $(document).ready ->
       AvailabilityWidget.show()
       MenuMain.show()
       $('#signin').slideUp()
-    ),
-    ((msg) -> console.log("Failed to sign in: " + msg))
+    )
   )
 
   Main.$signupButton = $('#signup-button')
   Main.$signupButton.on 'click', (event) -> Main.signUp(
     (->
-      console.log 'successfully signed up'
       AvailabilityWidget.show()
       MenuMain.show()
       $('#signup').slideUp()
-    ),
-    ((msg) -> console.log("Failed to sign up: " + msg))
+    )
   )
 
   Main.$showSignupButton = $('#show-signup-button')
@@ -50,21 +47,27 @@ $(document).ready ->
   $('#menu-main li').on 'click', (event) -> MenuMain.switchMenuContext(event)
   $('#menu-dashboard li').on 'click', (event) -> MenuDashboard.switchMenuContext(event)
 
-  AgentAPI.getCurrentAgent(
-    ( (agent) ->
-      console.log("User is authenticated: " + agent.display_name)
-      sessionStorage.setItem('current_user', JSON.stringify(agent))
-      sessionStorage.setItem('availability', agent.available)
-      sessionStorage.setItem('tenant', agent.tenant_id)
+  Main.cacheAgentInfo(
+    ( ->
       AvailabilityWidget.show()
       MenuMain.show()
     ),
     ( ->
-      console.log("User is not authenticated")
       AvailabilityWidget.hide()
       MenuMain.hide()
       $('#signin').slideDown()
     )
+  )
+
+Main.cacheAgentInfo = (onsuccess, onfail) ->
+  AgentAPI.getCurrentAgent(
+    ( (agent) ->
+      sessionStorage.setItem('current_user', JSON.stringify(agent))
+      sessionStorage.setItem('availability', agent.available)
+      sessionStorage.setItem('tenant', agent.tenant_id)
+      onsuccess()
+    ),
+    onfail
   )
 
 Main.emailPattern = /// ^ #begin of line
@@ -99,8 +102,15 @@ Main.signIn = (onsuccess, onfail) ->
   AuthAPI.createAgentSession(Main.$email.val(), Main.$password.val(), ((authed) ->
     $('#signin-spinner').slideUp('fast')
     if authed
-      onsuccess()
+      Main.cacheAgentInfo(
+        ( -> onsuccess() ),
+        ( ->
+          console.log "Agent was logged in but no agent info was returned"
+          onfail()
+        )
+      )
     else
+      console.log "Agent could not be logged in"
       onfail()
   ))
   $('#signin-spinner').slideDown('fast')
@@ -109,8 +119,15 @@ Main.signUp = (onsuccess, onfail) ->
   AgentAPI.createAgent(null, Main.$emailNew.val(), "abcdefg", Main.$passwordNew.val(), ((agent) ->
     $('#signup-spinner').slideUp('fast')
     if agent
-      onsuccess()
+      Main.cacheAgentInfo(
+        ( -> onsuccess() ),
+        ( ->
+          console.log "Agent was registered but no agent info was returned"
+          onfail()
+        )
+      )
     else
+      console.log "Agent could not be registered"
       onfail()
   ))
   $('#signup-spinner').slideDown('fast')
