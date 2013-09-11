@@ -4,6 +4,7 @@ class CreateTenants < ActiveRecord::Migration
       t.string :display_name
       t.string :twitter_id
       t.string :email
+      t.integer :demo_mode, :null => false, :default => 0
 
       t.timestamps
     end

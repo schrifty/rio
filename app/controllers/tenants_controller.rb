@@ -43,6 +43,6 @@ class TenantsController < ApplicationController
 
   private
   def tenant_params
-    params.require(:tenant).permit(:twitter_id, :email, :display_name)
+    params.require(:tenant).permit(:twitter_id, :email, :display_name, :demo_mode)
   end
 end

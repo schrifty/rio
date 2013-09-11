@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(version: 20130801222756) do
     t.string   "display_name"
     t.string   "twitter_id"
     t.string   "email"
+    t.integer  "demo_mode",    default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

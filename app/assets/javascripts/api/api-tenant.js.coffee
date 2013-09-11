@@ -7,8 +7,17 @@ TenantAPI.createTenant = (email, display_name) ->
     type: 'POST'
     dataType: 'json'
     error: (jqXHR, textStatus, errorThrown) ->
-      console.log(textStatus)
+      console.log(errorThrown)
       return false
     success: (data) ->
       return true
 
+TenantAPI.updateTenant = (id, data, onsuccess, onfail) ->
+  $.ajax '/tenants/' + id,
+    type: 'PUT'
+    dataType: 'json'
+    data: { "tenant": data }
+    error: (jqXHR, textStatus, errorThrown) ->
+      onfail(errorThrown)
+    success: (data) ->
+      onsuccess(data)

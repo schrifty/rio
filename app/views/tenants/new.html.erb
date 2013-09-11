@@ -26,16 +26,21 @@
     <h1 class="col-md-8">ReplyStyle</h1>
   </hgroup>
   <div class="col-md-2">
-    <span class="add-on">
-      <i class="icon-search"></i>
-    </span>
-    <input type="search" class="span3" placeholder="Search" name="search" id="search"/>
+    <button type='button' id='demo-button' class='btn btn-danger'>
+      Demo Mode: false
+    </button>
   </div>
 </div>
 
-<div id="signin">
+<!-- SEARCH -->
+<div id="search" class="light row col-md-offset-4 col-md-4">
+  <form>
+    <span><input type="text" class="search rounded" placeholder="Search..."></span>
+  </form>
+</div>
 
-  <!-- SIGN IN -->
+<!-- SIGN IN -->
+<div id="signin">
   <div class="row">
     <input id="email" class="col-md-offset-4 col-md-4" type="text" placeholder="Email"/>
   </div>

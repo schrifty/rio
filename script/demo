@@ -1,0 +1,176 @@
+#!/usr/bin/env ruby
+require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+
+AGENT_COUNT = 1 + rand(3)
+CUSTOMER_COUNT = 5 + rand(7)
+
+# thread-safe screen logging
+MUTEX = Mutex.new
+def mlog(str)
+  MUTEX.synchronize do
+    puts "[#{Thread.current["id"]}] - #{Time.now.strftime('%H:%M:%S')}: #{str}"
+  end
+end
+
+# thread-safe counter
+@counter = 0
+COUNTER_MUTEX = Mutex.new
+def inc_counter
+  MUTEX.synchronize do
+    @counter = @counter + 1
+  end
+  @counter
+end
+
+# thread-safe AR
+def safely
+  ActiveRecord::Base.connection_pool.with_connection do |connection|
+    yield
+  end
+end
+
+def run_customer(tenant, customer)
+  begin
+    sleep(rand(60))
+    mlog "Customer [#{customer.id}] is alive!"
+    conversation = nil
+    in_demo_mode = true
+    while in_demo_mode do
+      # if there's an ongoing conversation
+      if conversation
+        # and if an agent is waiting for a response
+        last_message = safely { conversation.reload.last_message }
+        if last_message.agent_id
+
+          # 10% chance this is the last message in the conversation and it's resolved
+          if (rand(10) == 1)
+            mlog "Customer [#{customer.id}] is resolving conversation ##{conversation.id}"
+            safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil, :text => 'Thank you!') }
+            safely { conversation.update_attributes!(:resolved => 1) }
+            conversation = nil
+          else
+            mlog "Customer [#{customer.id}] is replying to conversation ##{conversation.id}"
+            safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil) }
+          end
+        end
+      else
+        conversation = safely { FactoryGirl.create(:conversation, :tenant => tenant, :customer => customer, :resolved => false, :engaged_agent => nil) }
+        mlog "Customer [#{customer.id}] opening ticket ##{conversation.id}"
+        safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil) }
+      end
+      ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
+      sleep(10 + rand(20))
+      safely { in_demo_mode = (tenant.reload.demo_mode == 1) }
+    end
+    mlog "Customer [#{customer.id}] is dying!"
+  rescue Exception => e
+    mlog ([e.message] + e.backtrace).join("\n")
+  end
+end
+
+def run_agent(tenant, agent)
+  begin
+    sleep(rand(60))
+    mlog "Agent [#{agent.id}] is alive!"
+    in_demo_mode = true
+    while in_demo_mode do
+      if agent.available == 1
+        mlog "Agent [#{agent.id}] is checking his inbox!"
+        conversation = safely { Conversation.by_tenant(tenant).agent_inbox(agent).first }
+        if conversation
+          mlog "Agent [#{agent.id}] is responding to conversation ##{conversation.id}"
+          safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => agent) }
+        end
+        sleep(15 + rand(20))
+        if rand(20) == 1
+          mlog "Agent [#{agent.id}] has gone offline"
+          safely { agent.update_attributes!(:available => 0) }
+          sleep(15 + rand(40))
+        end
+      else
+        if rand(20) == 1
+          mlog "Agent [#{agent.id}] has come online"
+          safely { agent.update_attributes!(:available => 1) }
+        end
+        sleep(10 + rand(40))
+      end
+      ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
+      safely { in_demo_mode = (tenant.reload.demo_mode == 1)}
+    end
+    mlog "Agent [#{agent.id}] is dying!"
+  rescue Exception => e
+    mlog ([e.message] + e.backtrace).join("\n")
+  end
+end
+
+def stop_demo(tenant)
+  mlog "Cleaning up tenant #{tenant.id}"
+  Message.destroy_all("tenant_id = '#{tenant.id}'")
+  Conversation.destroy_all("tenant_id = '#{tenant.id}'")
+  Customer.destroy_all("tenant_id = '#{tenant.id}'")
+end
+
+def start_demo(tenant)
+  mlog "Creating #{AGENT_COUNT} agents and #{CUSTOMER_COUNT} customers for tenant #{tenant.id}"
+
+  # create agents
+  agents = (1..AGENT_COUNT).collect { |n|
+    cont = true
+    girl = nil
+    while cont
+      begin
+        girl = FactoryGirl.create(:agent, :tenant => tenant, :available => true, :password => 'cheyenne')
+        cont = false
+      rescue Exception => e
+        mlog ([e.message] + e.backtrace).join('\n')
+      end
+    end
+    girl
+  }
+
+  # create customers
+  customers = (1..CUSTOMER_COUNT).collect { |n| FactoryGirl.create(:customer, :tenant => tenant) }
+
+  mlog "Spinning up agent and customer threads"
+
+  # spin up the customer threads
+  customer_threads = customers.collect { |customer|
+    t = Thread.new { run_customer(tenant, customer) }
+    t["id"] = "customer-#{inc_counter}"
+    t
+  }
+  # spin up the agent threads
+  agent_threads = agents.collect { |agent|
+    t = Thread.new { run_agent(tenant, agent) }
+    t["id"] = "agent-#{inc_counter}"
+    t
+  }
+
+  # waiting for all of the agent and customer threads to end
+  (customer_threads + agent_threads).each { |t| t.join }
+end
+
+def watch
+  Thread.current["id"] = "main-#{inc_counter}"
+  demo_list = []
+  while true do
+    in_demo_mode = nil
+    mlog "Polling..."
+    safely {
+      in_demo_mode = Tenant.in_demo_mode.all
+      puts "HEY: #{in_demo_mode.inspect}"
+    }
+    (in_demo_mode - demo_list).each { |tenant|
+      demo_list << tenant
+      t = Thread.new { start_demo(tenant) }
+      t["id"] = "watch-#{inc_counter}"
+    }
+    (demo_list - in_demo_mode).each { |tenant|
+      stop_demo(tenant)
+    }
+    demo_list = in_demo_mode.clone
+    sleep(5)
+  end
+end
+
+watch

@@ -47,6 +47,9 @@ $(document).ready ->
   $('#menu-main li').on 'click', (event) -> MenuMain.switchMenuContext(event)
   $('#menu-dashboard li').on 'click', (event) -> MenuDashboard.switchMenuContext(event)
 
+  Main.$demoButton = $('#demo-button')
+  Main.$demoButton.on 'click', (event) -> Main.toggleDemo()
+
   Main.cacheAgentInfo(
     ( ->
       AvailabilityWidget.show()
@@ -142,4 +145,20 @@ Main.signOut = ->
     ( (errorThrown) ->
       console.log "Failed to sign out: " + errorThrown
     )
+  )
+
+Main.toggleDemo = ->
+  console.log "before " + sessionStorage.getItem('demo_mode')
+  demoEnabled = if sessionStorage.getItem('demo_mode') == '1' then 0 else 1
+  console.log "demoEnabled: " + demoEnabled
+
+  current_user = JSON.parse(sessionStorage.getItem('current_user'))
+  tenant_id = current_user['tenant_id']
+  TenantAPI.updateTenant(tenant_id, { demo_mode: demoEnabled },
+    ( (data) ->
+      sessionStorage.setItem('demo_mode', demoEnabled )
+      strDemoEnabled = if demoEnabled = 0 then "no" else "yes"
+      $('#demo-button').text('Demo Mode: ' + strDemoEnabled)
+    ),
+    ( (msg) -> console.log "unable to update tenant table: " + msg )
   )
