@@ -11,6 +11,7 @@ $(document).ready ->
   Main.$signinButton.on 'click', (event) -> Main.signIn(
     (->
       AvailabilityWidget.show()
+      $('#demo-button').show()
       MenuMain.show()
       $('#signin').slideUp()
     )
@@ -20,6 +21,7 @@ $(document).ready ->
   Main.$signupButton.on 'click', (event) -> Main.signUp(
     (->
       AvailabilityWidget.show()
+      $('#demo-button').show()
       MenuMain.show()
       $('#signup').slideUp()
     )
@@ -157,8 +159,12 @@ Main.toggleDemo = ->
   TenantAPI.updateTenant(tenant_id, { demo_mode: demoEnabled },
     ( (data) ->
       sessionStorage.setItem('demo_mode', demoEnabled )
-      strDemoEnabled = if demoEnabled = 0 then "no" else "yes"
-      $('#demo-button').text('Demo Mode: ' + strDemoEnabled)
+      if demoEnabled
+        $('#demo-button').addClass('btn-success')
+        $('#demo-button').text('On')
+      else
+        $('#demo-button').removeClass('btn-success')
+        $('#demo-button').text('Off')
     ),
     ( (msg) -> console.log "unable to update tenant table: " + msg )
   )

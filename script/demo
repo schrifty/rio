@@ -103,11 +103,13 @@ def run_agent(tenant, agent)
   end
 end
 
-def stop_demo(tenant)
-  mlog "Cleaning up tenant #{tenant.id}"
-  Message.destroy_all("tenant_id = '#{tenant.id}'")
-  Conversation.destroy_all("tenant_id = '#{tenant.id}'")
-  Customer.destroy_all("tenant_id = '#{tenant.id}'")
+def cleanup_after_demo(tenant)
+  mlog "Cleaning up tenant [#{tenant.id}]"
+  safely {
+    Customer.destroy_all("tenant_id = '#{tenant.id}'")
+    Conversation.destroy_all("tenant_id = '#{tenant.id}'")
+    Message.destroy_all("tenant_id = '#{tenant.id}'")
+  }
 end
 
 def start_demo(tenant)
@@ -152,23 +154,23 @@ end
 
 def watch
   Thread.current["id"] = "main-#{inc_counter}"
-  demo_list = []
+  currently_demoing = []
   while true do
     in_demo_mode = nil
     mlog "Polling..."
     safely {
       in_demo_mode = Tenant.in_demo_mode.all
-      puts "HEY: #{in_demo_mode.inspect}"
     }
-    (in_demo_mode - demo_list).each { |tenant|
-      demo_list << tenant
+    (in_demo_mode - currently_demoing).each { |tenant|
+      currently_demoing << tenant
       t = Thread.new { start_demo(tenant) }
       t["id"] = "watch-#{inc_counter}"
     }
-    (demo_list - in_demo_mode).each { |tenant|
-      stop_demo(tenant)
+    (currently_demoing - in_demo_mode).each { |tenant|
+      mlog "Stopping demo for tenant [#{tenant.id}]"
+      currently_demoing.delete(tenant)
+      cleanup_after_demo(tenant)
     }
-    demo_list = in_demo_mode.clone
     sleep(5)
   end
 end
