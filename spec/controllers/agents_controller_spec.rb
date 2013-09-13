@@ -94,7 +94,7 @@ describe AgentsController do
     end
   end
 
-  describe 'HEAD show' do
+  describe 'HEAD :show' do
     before {
       @agent1 = create(:agent, :tenant => @tenant1)
       @agent2 = create(:agent, :tenant => @tenant2)
@@ -117,7 +117,7 @@ describe AgentsController do
     end
   end
 
-  describe 'POST create' do
+  describe 'POST :create' do
     context 'with valid attributes' do
       context 'without a tenant' do
         it 'should create a new tenant' do
@@ -201,7 +201,7 @@ describe AgentsController do
     end
   end
 
-  describe 'PUT update' do
+  describe 'PUT:update' do
     before {
       @agent1 = create(:agent, :tenant => @tenant1)
       @agent2 = create(:agent, :tenant => @tenant2)
@@ -238,7 +238,7 @@ describe AgentsController do
     end
   end
 
-  describe 'DELETE destroy' do
+  describe 'DELETE :destroy' do
     before {
       @agent1 = create(:agent, :tenant => @tenant1)
       @agent2 = create(:agent, :tenant => @tenant2)
