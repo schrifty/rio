@@ -29,15 +29,14 @@ $(document).ready ->
     )
 
 AvailabilityWidget.show = ->
-  user = JSON.parse(sessionStorage.getItem('current_user'))
   $button = $('#availability-button')
   if sessionStorage.getItem('availability') == "1"
-    $('#availability-button-label').text(user.email + ' is Online')
+    $('#availability-button-label').text('Online')
     $button.removeClass('btn-inverse').addClass('btn-success')
     AvailabilityWidget.$online.hide()
     AvailabilityWidget.$offline.show()
   else
-    $('#availability-button-label').text(user.email + ' is Offline')
+    $('#availability-button-label').text('Offline')
     $button.removeClass('btn-success').addClass('btn-inverse')
     AvailabilityWidget.$online.show()
     AvailabilityWidget.$offline.hide()

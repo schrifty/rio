@@ -8,44 +8,6 @@ $colorActivePillText: black;
 $colorChatBackground: white;
 
 html {
-  //background: url(brickwall.jpg) no-repeat center center fixed;
-  //-webkit-background-size: cover;
-  //-moz-background-size: cover;
-  //-o-background-size: cover;
-  //background-size: cover;
-
-  #header {
-    margin-top: 15px;
-    h1 {
-      margin-top: 0px;
-      margin-bottom: 25px;
-      padding: 0px;
-      font-family: 'Allerta Stencil', sans-serif;
-      //font-family: 'Roboto', sans-serif;
-
-      text-align: center;
-      font-size: 75px;
-      color: $colorHeaderText;
-      font-weight: 900;
-    }
-
-    #signout {
-      vertical-align: center;
-    }
-
-    #availability-widget {
-      padding-right: 5px;
-      #availability-button {
-        display: none;
-      }
-    }
-
-    #demo-button {
-      display: none;
-      width: 100px;
-    }
-  }
-
   body {
     font-family: "Lato", arial, sans-serif;
     font-size: 13px;
@@ -53,6 +15,7 @@ html {
     font-style: normal;
     background-color: $colorBodyBackground;
     overflow: hidden;
+    margin-top: 10px;
   }
 }
 
@@ -60,11 +23,58 @@ label {
   color: $colorBodyBackground;
 }
 
+#left-sidebar, #right-sidebar {
+  border-width: 4px;
+  height: 623px;
+}
+
+#left-sidebar {
+  margin-left: 13px;
+
+  h1 {
+    font-family: 'Allerta Stencil', sans-serif;
+    padding-left: 95px;
+    padding-bottom: 10px;
+    font-size: 75px;
+    color: $colorHeaderText;
+    font-weight: 900;
+    -webkit-transform: rotate(-270deg);
+    -moz-transform: rotate(-270deg);
+    -ms-transform: rotate(-270deg);
+    -o-transform: rotate(-270deg);
+    transform: rotate(-270deg);
+
+    /* also accepts left, right, top, bottom coordinates; not required, but a good idea for styling */
+    -webkit-transform-origin: 50% 50%;
+    -moz-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    -o-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+
+    /* Should be unset in IE9+ I think. */
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  }
+}
+
+#right-sidebar {
+  margin-right: 10px;
+  #availability-widget {
+    padding-right: 5px;
+    #availability-button {
+      display: none;
+    }
+  }
+  #demo-button {
+    display: none;
+    width: 100px;
+  }
+}
+
 .menu-panel {
   display: none;
-  border-width: 6px;
-  height: 400px;
-  padding: 0px;
+  border-width: 4px;
+  height: 519px;
+  padding: 3px;
   table {
     width: 100%;
   }
@@ -76,49 +86,84 @@ label {
     background-color: #fdd;
   }
 
-  #search {
-    //width: 100%;
-    form {
-      width:900px;
-      margin:0 auto;
+  #searchbox {
+    background: #eaf8fc;
+    background-image: -moz-linear-gradient(#fff, #d4e8ec);
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #d4e8ec), color-stop(1, #fff));
+
+    -moz-border-radius: 35px;
+    border-radius: 35px;
+
+    border-width: 1px;
+    border-style: solid;
+    border-color: #c4d9df #a4c3ca #83afb7;
+    width: 500px;
+    //height: 35px;
+    padding: 10px;
+    margin: auto;
+    margin-bottom: 10px;
+    overflow: hidden; /* Clear floats */
+    #search, #submit {
+      float: left;
     }
-    .search {
-      padding:6px 15px 6px 30px;
-      margin:3px;
-      background: url('./images/search.png') no-repeat 8px 6px;
+    #search {
+      padding: 5px 9px;
+      height: 23px;
+      width: 380px;
+      border: 1px solid #a4c3ca;
+      font: normal 13px 'trebuchet MS', arial, helvetica;
+      background: #f1f1f1;
+
+      -moz-border-radius: 50px 3px 3px 50px;
+      border-radius: 50px 3px 3px 50px;
+      -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
     }
-    .light {
-      width:95%;
-      height:50px;
-      padding:40px 25px;
-      background: url('./images/light_grey.jpg');
-      input[type=text]{
-        border:1px solid #acb1b7;
-        background-color:#fcfcfc;
-      }
-    }
-    .rounded {
-      border-radius:15px;
-      -moz-border-radius:15px;
-      -webkit-border-radius:15px;
-    }
-    input[type=text]{
-      color:#bcbcbc;
-    }
-    input[type=button], input[type=button]:hover {
-      position:relative;
-      left:-6px;
-      border:1px solid #adc5cf;
-      background: #e4f1f9; /* Old browsers */
-      background: -moz-linear-gradient(top, #e4f1f9 0%, #d5e7f3 100%); /* FF3.6+ */
-      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e4f1f9), color-stop(100%,#d5e7f3)); /* Chrome,Safari4+ */
-      background: -webkit-linear-gradient(top, #e4f1f9 0%,#d5e7f3 100%); /* Chrome10+,Safari5.1+ */
-      background: -o-linear-gradient(top, #e4f1f9 0%,#d5e7f3 100%); /* Opera 11.10+ */
-      background: -ms-linear-gradient(top, #e4f1f9 0%,#d5e7f3 100%); /* IE10+ */
-      background: linear-gradient(top, #e4f1f9 0%,#d5e7f3 100%); /* W3C */
-      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e4f1f9', endColorstr='#d5e7f3',GradientType=0 ); /* IE6-9 */
-      color:#7da2aa;
+    #submit {
+      background: #6cbb6b;
+      background-image: -moz-linear-gradient(#95d788, #6cbb6b);
+      background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #6cbb6b), color-stop(1, #95d788));
+
+      -moz-border-radius: 3px 50px 50px 3px;
+      border-radius: 3px 50px 50px 3px;
+
+      border-width: 1px;
+      border-style: solid;
+      border-color: #7eba7c #578e57 #447d43;
+
+      -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+      -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+      box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+
+      height: 23px;
+      //margin: 0 0 0 10px;
+      padding: 0;
+      width: 90px;
       cursor: pointer;
+      font: bold 14px Arial, Helvetica;
+      color: #23441e;
+
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    #submit:hover {
+      background: #95d788;
+      background-image: -moz-linear-gradient(#6cbb6b, #95d788);
+      background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #95d788), color-stop(1, #6cbb6b));
+    }
+
+    #submit:active {
+      background: #95d788;
+      outline: none;
+
+      -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
+      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
+    }
+
+    #submit::-moz-focus-inner {
+      border: 0; /* Small centering fix for Firefox */
     }
   }
 

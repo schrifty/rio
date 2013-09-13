@@ -168,3 +168,6 @@ Main.toggleDemo = ->
     ),
     ( (msg) -> console.log "unable to update tenant table: " + msg )
   )
+
+#Main.search = $('#search')
+#Main.search.on 'click' = (event) ->
