@@ -106,9 +106,15 @@ end
 def cleanup_after_demo(tenant)
   mlog "Cleaning up tenant [#{tenant.id}]"
   safely {
-    Customer.destroy_all("tenant_id = '#{tenant.id}'")
-    Conversation.destroy_all("tenant_id = '#{tenant.id}'")
-    Message.destroy_all("tenant_id = '#{tenant.id}'")
+    Customer.transaction do
+      begin
+        Message.destroy_all("tenant_id = '#{tenant.id}'")
+        Conversation.destroy_all("tenant_id = '#{tenant.id}'")
+        Customer.destroy_all("tenant_id = '#{tenant.id}'")
+      rescue Exception => e
+        mlog e.message
+      end
+    end
   }
 end
 
