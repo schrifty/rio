@@ -28,19 +28,22 @@ $(document).ready ->
       ( (errorThrown) -> console.log "Couldn't take user online: " + errorThrown)
     )
 
+  AvailabilityWidget.$widget = $('#availability-widget')
+  AvailabilityWidget.$button = $('#availability-button')
+  AvailabilityWidget.$label = $('#availability-button-label')
+
 AvailabilityWidget.show = ->
-  $button = $('#availability-button')
   if sessionStorage.getItem('availability') == "1"
-    $('#availability-button-label').text('Online')
-    $button.removeClass('btn-inverse').addClass('btn-success')
+    AvailabilityWidget.$label.text('Online')
+    AvailabilityWidget.$button.removeClass('btn-warning').addClass('btn-info')
     AvailabilityWidget.$online.hide()
     AvailabilityWidget.$offline.show()
   else
-    $('#availability-button-label').text('Offline')
-    $button.removeClass('btn-success').addClass('btn-inverse')
+    AvailabilityWidget.$label.text('Offline')
+    AvailabilityWidget.$button.removeClass('btn-info').addClass('btn-warning')
     AvailabilityWidget.$online.show()
     AvailabilityWidget.$offline.hide()
-  $button.slideDown()
+  AvailabilityWidget.$widget.slideDown()
 
 AvailabilityWidget.hide = ->
-  $('#availability-button').slideUp()
+  AvailabilityWidget.$widget.slideUp()

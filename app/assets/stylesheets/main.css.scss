@@ -1,6 +1,6 @@
 $colorHeaderText: #FFFEB4;
 $colorBodyBackground: black;
-$colorPanelBackground: #888850;
+$colorPanelBackground: #10ccff;
 $colorPillBackground: black;
 $colorPillText: white;
 $colorActivePillBackground: #FFFEB4;
@@ -17,219 +17,177 @@ html {
     overflow: hidden;
     margin-top: 10px;
   }
-}
 
-label {
-  color: $colorBodyBackground;
-}
-
-#left-sidebar, #right-sidebar {
-  border-width: 4px;
-  height: 623px;
-}
-
-#left-sidebar {
-  margin-left: 13px;
-
-  h1 {
-    font-family: 'Allerta Stencil', sans-serif;
-    padding-left: 95px;
-    padding-bottom: 10px;
-    font-size: 75px;
-    color: $colorHeaderText;
-    font-weight: 900;
-    -webkit-transform: rotate(-270deg);
-    -moz-transform: rotate(-270deg);
-    -ms-transform: rotate(-270deg);
-    -o-transform: rotate(-270deg);
-    transform: rotate(-270deg);
-
-    /* also accepts left, right, top, bottom coordinates; not required, but a good idea for styling */
-    -webkit-transform-origin: 50% 50%;
-    -moz-transform-origin: 50% 50%;
-    -ms-transform-origin: 50% 50%;
-    -o-transform-origin: 50% 50%;
-    transform-origin: 50% 50%;
-
-    /* Should be unset in IE9+ I think. */
-    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-  }
-}
-
-#right-sidebar {
-  margin-right: 10px;
-  #availability-widget {
-    padding-right: 5px;
-    #availability-button {
-      display: none;
-    }
-  }
-  #demo-button {
-    display: none;
-    width: 100px;
-  }
-}
-
-.menu-panel {
-  display: none;
-  border-width: 4px;
-  height: 519px;
-  padding: 3px;
-  table {
-    width: 100%;
-  }
-}
-
-#tenant-main {
-  .flash .error, .flash .alert {
-    border: 1px solid #fbb;
-    background-color: #fdd;
+  label {
+    color: $colorBodyBackground;
   }
 
-  #searchbox {
-    background: #eaf8fc;
-    background-image: -moz-linear-gradient(#fff, #d4e8ec);
-    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #d4e8ec), color-stop(1, #fff));
-
-    -moz-border-radius: 35px;
-    border-radius: 35px;
-
-    border-width: 1px;
-    border-style: solid;
-    border-color: #c4d9df #a4c3ca #83afb7;
-    width: 500px;
-    //height: 35px;
-    padding: 10px;
-    margin: auto;
-    margin-bottom: 10px;
-    overflow: hidden; /* Clear floats */
-    #search, #submit {
-      float: left;
-    }
-    #search {
-      padding: 5px 9px;
-      height: 23px;
-      width: 380px;
-      border: 1px solid #a4c3ca;
-      font: normal 13px 'trebuchet MS', arial, helvetica;
-      background: #f1f1f1;
-
-      -moz-border-radius: 50px 3px 3px 50px;
-      border-radius: 50px 3px 3px 50px;
-      -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
-      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) inset, 0 1px 0 rgba(255, 255, 255, 1);
-    }
-    #submit {
-      background: #6cbb6b;
-      background-image: -moz-linear-gradient(#95d788, #6cbb6b);
-      background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #6cbb6b), color-stop(1, #95d788));
-
-      -moz-border-radius: 3px 50px 50px 3px;
-      border-radius: 3px 50px 50px 3px;
-
-      border-width: 1px;
-      border-style: solid;
-      border-color: #7eba7c #578e57 #447d43;
-
-      -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-      -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-      box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-
-      height: 23px;
-      //margin: 0 0 0 10px;
-      padding: 0;
-      width: 90px;
-      cursor: pointer;
-      font: bold 14px Arial, Helvetica;
-      color: #23441e;
-
-      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  #tenant-main {
+    .flash .error, .flash .alert {
+      border: 1px solid #fbb;
+      background-color: #fdd;
     }
 
-    #submit:hover {
-      background: #95d788;
-      background-image: -moz-linear-gradient(#6cbb6b, #95d788);
-      background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #95d788), color-stop(1, #6cbb6b));
-    }
+    #big-row {
+      //display: none;
 
-    #submit:active {
-      background: #95d788;
-      outline: none;
+      #left-sidebar, #right-sidebar {
+        border-width: 4px;
+        height: 623px;
+      }
 
-      -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
-      -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) inset;
-    }
+      #left-sidebar {
+        margin-left: 13px;
 
-    #submit::-moz-focus-inner {
-      border: 0; /* Small centering fix for Firefox */
-    }
-  }
+        h1 {
+          font-family: 'Allerta Stencil', sans-serif;
+          padding-left: 70px;
+          padding-bottom: 10px;
+          font-size: 90px;
+          color: #5bc0de;
+          //color: $colorHeaderText;
+          font-weight: 900;
+          -webkit-transform: rotate(-270deg);
+          -moz-transform: rotate(-270deg);
+          -ms-transform: rotate(-270deg);
+          -o-transform: rotate(-270deg);
+          transform: rotate(-270deg);
 
-  #menu-main {
-    display: none;
-    margin-bottom: 12px;
-    .nav-pills {
-      li {
-        a {
-          color: white;
-        }
-        a:hover, a:focus {
-          color: black;
-          background-color: $colorActivePillBackground;
+          /* also accepts left, right, top, bottom coordinates; not required, but a good idea for styling */
+          -webkit-transform-origin: 50% 50%;
+          -moz-transform-origin: 50% 50%;
+          -ms-transform-origin: 50% 50%;
+          -o-transform-origin: 50% 50%;
+          transform-origin: 50% 50%;
+
+          /* Should be unset in IE9+ I think. */
+          filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
         }
       }
 
-      li.active {
-        a {
-          color: black;
-          background-color: $colorActivePillBackground;
+      #right-sidebar {
+        margin-right: 10px;
+        #availability-widget {
+          width: 100%;
+          margin-left: 0px;
+          margin-right: 0px;
+          margin-top: 3px;
+          margin-bottom: 3px;
+          padding: 6px;
+          #availability-button {
+            width: 100%;
+          }
+        }
+        #demo-widget {
+          width: 100%;
+          margin-left: 0px;
+          margin-right: 0px;
+          margin-top: 3px;
+          margin-bottom: 3px;
+          padding: 6px;
+          #demo-button {
+            width: 100%;
+          }
+        }
+      }
+
+      .menu-panel {
+        display: none;
+        border-width: 4px;
+        height: 519px;
+        padding: 3px;
+        table {
+          width: 100%;
+        }
+      }
+
+      #middle-column {
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+
+      #menu-main {
+        display: none;
+        margin-bottom: 12px;
+        .nav-pills {
+          li {
+            a {
+              color: white;
+            }
+            a:hover, a:focus {
+              color: black;
+              background-color: $colorActivePillBackground;
+            }
+          }
+
+          li.active {
+            a {
+              color: black;
+              background-color: $colorActivePillBackground;
+            }
+          }
         }
       }
     }
-  }
 
-  .the-big-or {
-    color: orange;
-    font-size: 36px;
-    text-align: center;
-  }
-
-  #signin {
-    display: none;
-
-    #signin-spinner {
-      display: none;
+    .the-big-or {
+      color: orange;
+      font-size: 36px;
       text-align: center;
     }
-    #email {
-      margin-top: 6px;
-      margin-bottom: 6px;
-    }
-    #password {
-      margin-bottom: 6px;
-    }
-  }
 
-  #signup {
-    display: none;
-
-    #signup-spinner {
+    #signin {
       display: none;
-      text-align: center;
+
+      #signin-spinner {
+        display: none;
+        text-align: center;
+      }
+      #email {
+        margin-top: 6px;
+        margin-bottom: 6px;
+        width: 100%;
+      }
+      #password {
+        margin-bottom: 6px;
+        width: 100%;
+      }
+      #signin-button {
+        width: 100%;
+      }
+      #show-signup-button {
+        width: 100%;
+      }
     }
-    #email-new {
-      margin-bottom: 6px;
-    }
-    #password-new {
-      margin-bottom: 6px;
-    }
-    #password-confirm {
-      margin-bottom: 6px;
-    }
-    #signup-button-div {
-      margin-bottom: 6px;
+
+    #signup {
+      display: none;
+
+      #signup-spinner {
+        display: none;
+        text-align: center;
+      }
+      #email-new {
+        margin-bottom: 6px;
+        width: 100%;
+      }
+      #password-new {
+        margin-bottom: 6px;
+        width: 100%;
+      }
+      #password-confirm {
+        margin-bottom: 6px;
+        width: 100%;
+      }
+      #signup-button {
+        width: 100%;
+      }
+      #show-signin-button {
+        width: 100%;
+      }
+      #signup-button-div {
+        margin-bottom: 6px;
+      }
     }
   }
 }
