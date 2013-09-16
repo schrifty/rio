@@ -10,7 +10,6 @@ MenuDashboard.switchMenuContext = (event) ->
   window[classname].init();
 
 MenuDashboard.show = ->
-  console.log "about to show the dashboard menu"
   $('#menu-dashboard').slideDown()
   # make sure the correct panel is displayed when the page is first loaded
   # TODO pull up the most recent panel

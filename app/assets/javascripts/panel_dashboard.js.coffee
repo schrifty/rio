@@ -4,7 +4,7 @@ PanelDashboard.initted = false
 
 PanelDashboard.init = ->
   unless PanelDashboard.initted
-    MenuDashboard.show
+    MenuDashboard.show()
     PanelDashboard.initted = true
 
 PanelDashboard.messageNotificationHandler = (message) -> # noop
