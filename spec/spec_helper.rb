@@ -50,9 +50,9 @@ def response_json
 end
 
 def validate_response_body(messages, response_body)
-  assert_equal messages.size, response_body.size
+  response_body.size.should eq messages.size
   messages.each {|m|
-    assert response_body.detect{|j| j['id'] == m['id'] }
+    response_body.detect{|j| j['id'] == m['id'] }.should be_true
   }
 end
 
