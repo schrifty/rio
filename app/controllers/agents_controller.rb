@@ -32,7 +32,7 @@ class AgentsController < ApplicationController
     begin
       @agent = Agent.by_tenant(current_agent.tenant).find(params[:id])
       if request.head?
-        return render status: 200
+        return render :nothing => true, status: 200
       else
         return render json: @agent
       end
