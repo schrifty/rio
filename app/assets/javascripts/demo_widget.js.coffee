@@ -23,7 +23,7 @@ DemoWidget.updateTenant = (status) ->
   tenant_id = sessionStorage.getItem('tenant')
   TenantAPI.updateTenant(tenant_id, { demo_mode: intStatus },
     ( (data) ->
-      sessionStorage.setItem('demo', status)
+      sessionStorage.setItem('demo_mode', status)
       DemoWidget.$button.removeClass('btn-default').removeClass('btn-info').removeClass('btn-warning')
       DemoWidget.show()
     ),
@@ -31,15 +31,15 @@ DemoWidget.updateTenant = (status) ->
   )
 
 DemoWidget.show = () ->
-  demo_status = sessionStorage.getItem('demo')
-  DemoWidget.$label.text("Demo " + demo_status)
+  demo_mode = sessionStorage.getItem('demo_mode')
+  DemoWidget.$label.text("Demo " + demo_mode)
   DemoWidget.$on.show()
   DemoWidget.$pause.show()
   DemoWidget.$off.show()
-  if demo_status == "On"
+  if demo_mode == "On"
     DemoWidget.$button.removeClass('btn-info').addClass('btn-warning')
     DemoWidget.$on.hide()
-  else if demo_status == "Paused"
+  else if demo_mode == "Paused"
     DemoWidget.$button.removeClass('btn-warning').addClass('btn-info')
     DemoWidget.$pause.hide()
   else

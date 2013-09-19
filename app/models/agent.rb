@@ -30,21 +30,23 @@ class Agent < ActiveRecord::Base
   before_validation :ensure_tenant
   after_create :send_message_to_clients
 
-  # elasticsearch
+  # for tire/elasticsearch
   def type
     'agent'
   end
 
+  # for tire/elasticsearch
   def to_indexed_json
     self.to_json( { :only => [:text] } )
   end
 
+  # for tire/elasticsearch
   mapping do
     indexes :text
   end
 
   def as_json(options = nil)
-    super(:methods => [:last_sign_in_at, :customer_count, :status] )
+    super(:methods => [:last_sign_in_at, :customer_count, :status, :demo_mode] )
   end
 
   attr_reader :status
@@ -65,6 +67,10 @@ class Agent < ActiveRecord::Base
   attr_reader :customer_count
   def customer_count
     [0, rand(20) - 10].max
+  end
+
+  def demo_mode
+    self.tenant.demo_mode
   end
 
   def ensure_tenant
