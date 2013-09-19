@@ -1,0 +1,9 @@
+<table class="table-condensed">
+  <tbody id="conversations-body">
+  <% @conversations.each do |conv| %>
+      <%= render :partial => 'conversation', locals: {sample: false, conv: conv} %>
+  <% end %>
+  <%= render :partial => 'conversation', locals: {sample: true} %>
+  <%= render :partial => 'message', locals: {sample: true} %>
+  </tbody>
+</table>
