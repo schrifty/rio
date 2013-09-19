@@ -59,13 +59,14 @@ class ConversationsController < ApplicationController
   end
 
   def search
+    @search_results = []
+
     if params[:q]
       q = "text:#{params[:q]}"
       s = Tire.search('messages', {}) { query { string q + '*' } }
       conv_ids = s.results.collect{|d| d.conversation_id}.uniq
-      @search_results = Conversation.by_tenant(current_agent.tenant).by_id(conv_ids).order("field(id, #{conv_ids.join(',')})")
-      first = last = nil
-      @search_results.each{|conv|
+      Conversation.by_tenant(current_agent.tenant).by_id(conv_ids).order("field(id, #{conv_ids.join(',')})").each { |conv|
+        first = last = nil
         conv.messages.each_with_index{|msg, i|
           if /(#{params[:q]}\S*)/.match(msg.text)
             first = i unless first
@@ -73,7 +74,10 @@ class ConversationsController < ApplicationController
             msg.text = msg.text.gsub($1, "<span class='search-term'>#{$1}</span>")
           end
         }
-        conv.messages = conv.messages.slice!([first - 1, 0].max..[last + 1, conv.messages.size - 1].min)
+        if first
+          conv.messages = conv.messages.slice!([first - 1, 0].max..[last + 1, conv.messages.size - 1].min)
+          @search_results << conv
+        end
       }
     end
     respond_to do |format|
