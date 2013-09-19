@@ -47,8 +47,6 @@ PanelQuestions.messageNotificationHandler = (message) ->
   $row = $('#conversation-' + messageJSON.conversation_id)
   $messageBody = $('#messages-body-' + messageJSON.conversation_id)
   index = $('#conversations-body').children().index($row)
-  console.log "Looking for: " + $row.get()
-  console.log index
   if index > 0
     $row.hide()
     $newMessage = $(newMessageHTML).appendTo($messageBody)
@@ -60,4 +58,4 @@ PanelQuestions.messageNotificationHandler = (message) ->
     $newMessage.show()
   $newMessage.delay( 400 ).addClass('complete')
 
-  PanelQuestions.agentNotificationHandler = (agent) -> # noop
+PanelQuestions.agentNotificationHandler = (agent) -> # noop

@@ -3,11 +3,7 @@ window.MenuMain or= {}
 MenuMain.switchMenuContext = (event) ->
   $(event.currentTarget).addClass('active').siblings().removeClass('active')
   objStr = event.currentTarget.id.match(/pill-(.*)/)[1]
-  classname = "Panel" + objStr.capitalize()
-  panelName = "panel-" + objStr
-  $('.menu-panel').slideUp()
-  $('#' + panelName).slideDown()
-  window[classname].init();
+  Main.switchPanel(objStr)
 
 MenuMain.show = ->
   $('#menu-main').slideDown()

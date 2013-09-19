@@ -1,0 +1,65 @@
+$colorHeaderText: #FFFEB4;
+$colorBodyBackground: black;
+$colorPanelBackground: #888850;
+$colorPillBackground: black;
+$colorPillText: white;
+$colorActivePillBackground: #FFFEB4;
+$colorActivePillText: black;
+$colorChatBackground: white;
+
+#panel-results {
+  overflow: scroll;
+  .conversation-summary {
+    color: white;
+  }
+  .agent {
+    color: green;
+  }
+  .customer {
+    color: blue;
+  }
+  .search-term {
+    background-color: yellow;
+  }
+  #conversation-template, #message-template {
+    display: none
+  }
+  #message-table {
+    width: 100%;
+    border-bottom: 5px;
+    border-color: rgb(128, 128, 128);
+    padding-left: 10px;
+    col {
+      &.message-author {
+        width: 10%;
+      }
+      &.message-text {
+        width: 80%;
+      }
+      &.message-created-at {
+        width: 10%;
+      }
+    }
+    .message-author-agent {
+      color: green;
+      text-align: right;
+    }
+    .message-author-customer {
+      color: blue;
+      text-align: right;
+    }
+    .message-summary {
+      cursor: pointer;
+      background-color: $colorChatBackground;
+      transition: background-color 1600ms ease;
+      td {
+        border-width: 3px;
+        border-style: groove;
+      }
+      &.complete {
+        background-color: white;
+      }
+    }
+
+  }
+}

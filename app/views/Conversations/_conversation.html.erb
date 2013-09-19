@@ -31,7 +31,7 @@ end
 <% conv_messages.each do |message| %>
   <% n = n + 1 %>
   <% break if n > 3 %>
-        <%= render :partial => 'message', locals: { sample: false, message: message } %>
+        <%= render :partial => 'conversations/message', locals: { sample: false, message: message } %>
 <% end %>
       </tbody>
     </table>

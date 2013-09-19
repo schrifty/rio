@@ -61,7 +61,6 @@ PanelProfile.processForm = (event) ->
   )
 
 PanelProfile.populate = (data) ->
-  console.log "populating data with " + data
   $('#profile-name').val(data.display_name)
   $('#profile-email').val(data.email)
 

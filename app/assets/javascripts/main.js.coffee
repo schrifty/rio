@@ -49,6 +49,15 @@ $(document).ready ->
   $('#menu-main li').on 'click', (event) -> MenuMain.switchMenuContext(event)
   $('#menu-dashboard li').on 'click', (event) -> MenuDashboard.switchMenuContext(event)
 
+  Main.search = $('#search-submit')
+  Main.search.on 'click', (event) -> SearchAPI.query($('#search-text').val(),
+    ( (data) ->
+      $('#panel-results').html(data)
+      Main.switchPanel('results')
+    ),
+    ( (message) -> console.log "Search failed: " + message )
+  )
+
   Main.cacheAgentInfo(
     ( ->
       AvailabilityWidget.show()
@@ -57,6 +66,7 @@ $(document).ready ->
     ),
     ( ->
       AvailabilityWidget.hide()
+      DemoWidget.hide()
       MenuMain.hide()
       $('#signin').slideDown()
     )
@@ -65,6 +75,8 @@ $(document).ready ->
 Main.cacheAgentInfo = (onsuccess, onfail) ->
   AgentAPI.getCurrentAgent(
     ( (agent) ->
+      demo_mode = if agent.demo_mode == 1 then 'On' else 'Off'
+      sessionStorage.setItem('demo_mode', demo_mode)
       sessionStorage.setItem('current_user', JSON.stringify(agent))
       sessionStorage.setItem('availability', agent.available)
       sessionStorage.setItem('tenant', agent.tenant_id)
@@ -95,7 +107,6 @@ Main.checkSignUpState = ->
 
 Main.emailValidation = ->
   b = Main.emailPattern.test Main.$emailNew.val()
-  console.log b + " : " + Main.$emailNew.val()
   return b
 
 Main.validatePasswordConfirmation = ->
@@ -147,5 +158,8 @@ Main.signOut = ->
     )
   )
 
-#Main.search = $('#search')
-#Main.search.on 'click' = (event) ->
+Main.switchPanel = (objStr) ->
+  panelName = "panel-" + objStr
+  $('.menu-panel').slideUp()
+  $('#' + panelName).slideDown()
+  window["Panel" + objStr.capitalize()].init()
