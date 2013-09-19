@@ -38,12 +38,11 @@ class MessagesController < ApplicationController
   end
 
   def index
-    opts = {}
-    opts.reverse_merge({:order => 'created_at desc', :limit => params[:limit]}) if params[:limit] && params[:limit].to_i != -1
-    @messages = Message.by_tenant(current_agent.tenant).by_conversation(params[:conversation]).since(params[:since]).order('created_at desc')
+    scope = Message.by_tenant(current_agent.tenant).by_conversation(params[:conversation]).since(params[:since])
     if params[:limit].to_i > 0
-      @messages = @messages.limit(params[:limit].to_i)
+      scope = scope.limit(params[:limit].to_i)
     end
+    @messages = scope.order('created_at desc')
 
     return render json: @messages,
       :methods => [:author_display_name, :author_role]
