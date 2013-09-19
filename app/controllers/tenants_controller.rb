@@ -35,6 +35,7 @@ class TenantsController < ApplicationController
   end
 
   def new
+    @search_results = []
     @conversations = []
     if current_agent
       @conversations = Conversation.by_tenant(current_agent.tenant).unresolved.includes(:messages).order('conversations.updated_at desc')

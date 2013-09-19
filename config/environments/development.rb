@@ -31,6 +31,7 @@ Rio::Application.configure do
   config.assets.debug = true
 
   Tire.configure do
+    #logger STDERR, :level => 'debug'
     url 'http://localhost:9200'
   end
 end

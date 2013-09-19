@@ -23,6 +23,7 @@ class Conversation < ActiveRecord::Base
 
   after_create :send_message_to_clients
 
+  scope :by_id, lambda { |ids| where('conversations.id in (?)', ids) }
   scope :by_tenant, lambda { |tenant| where('conversations.tenant_id = ?', tenant.id) }
   scope :unresolved, lambda { where('conversations.resolved = 0') }
   scope :resolved, lambda { where('conversations.resolved = 1') }

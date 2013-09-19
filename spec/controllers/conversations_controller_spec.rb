@@ -16,10 +16,13 @@ describe ConversationsController do
     @customer2 = create(:customer, :tenant => @tenant2)
 
     @conversation1 = create(:conversation, :tenant => @tenant1, :customer => @customer1)
-    @message1 = create(:message, :tenant => @tenant1, :conversation => @conversation1, :agent => nil)
+    @message1 = create(:message, :tenant => @tenant1, :conversation => @conversation1, :text => 'Nothing special', :agent => nil)
 
     @conversation2 = create(:conversation, :tenant => @tenant2, :customer => @customer2)
-    @message2 = create(:message, :tenant => @tenant2, :conversation => @conversation2, :agent => nil)
+    @message2 = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'Nothing special', :agent => nil)
+
+    @conversation3 = create(:conversation, :tenant => @tenant2, :customer => @customer2)
+    @message3 = create(:message, :tenant => @tenant2, :conversation => @conversation3, :text => 'Nothing special', :agent => nil)
 
     @conversations = [@conversation1, @conversation2] + (1..10).map { |n|
       tenant = [@tenant1, @tenant2, @tenant3][rand(3)]
@@ -30,6 +33,65 @@ describe ConversationsController do
     }
   }
 
+  describe 'GET :search' do
+    before {
+      # recreate the elasticsearch index
+      Tire.index 'messages' do
+        delete
+        create
+      end
+
+      sign_in @agent2
+
+      @searchmessage1 = create(:message, :tenant => @tenant1, :conversation => @conversation1, :text => 'I would like to eat 3 persimmons and 2 rubyfruits, please.', :agent => nil)
+      @searchmessage2 = create(:message, :tenant => @tenant1, :conversation => @conversation1, :text => 'I dislike persimmons.', :agent => nil)
+      @searchmessage3a = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'one persimmon, two persimmon', :agent => nil)
+      @searchmessage3b = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'more nothing', :agent => nil)
+      @searchmessage3c = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'I have a starfruit!', :agent => nil)
+      @searchmessage3d = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'nothing going on here', :agent => nil)
+      @searchmessage3e = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'I also have starfruit on my person', :agent => nil)
+      @searchmessage3f = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'a whole lot of nothing', :agent => nil)
+      @searchmessage3g = create(:message, :tenant => @tenant2, :conversation => @conversation2, :text => 'even more nothing', :agent => nil)
+      @searchmessage4 = create(:message, :tenant => @tenant2, :conversation => @conversation3, :text => 'Give me your persimmon!', :agent => nil)
+      Tire.index 'messages' do
+        refresh # force an index refresh so we get immediate results
+      end
+    }
+
+    it 'should return a success' do
+      get :search, :format => :json, :q => 'persimmon'
+      expect(response.status).to eq 200
+    end
+
+    it 'should find all occurrences of persimmon in tenant2 conversations, but not in tenant1 conversations' do
+      get :search, :format => :json, :q => 'persimmon'
+      (assigns(:search_results).map { |a| a.id } - [@conversation2.id, @conversation3.id]).should eq []
+    end
+
+    it 'should return json' do
+      get :search, :format => :json, :q => 'persimmon'
+      JSON.parse(response.body).should_not be_nil
+    end
+
+    it 'should return the correct subset of relevant messages with the conversation' do
+      get :search, :format => :json, :q => 'starfruit'
+      assigns(:search_results)[0].messages.should eq [@searchmessage3b, @searchmessage3c, @searchmessage3d, @searchmessage3e, @searchmessage3f]
+    end
+
+    it 'should surround the query term with <span class=search_term>' do
+      get :search, :format => :json, :q => 'starfruit'
+      puts assigns(:search_results)[0].messages[1].text
+      /<span class='search-term'>starfruit!<\/span>/.match(assigns(:search_results)[0].messages[1].text).should be_true
+    end
+
+    it 'should return html when requested' do
+      get :search, :format => :html, :q => 'persimmon'
+      expect(response.status).to eq 200
+    end
+
+    # TODO a test to ensure that the order of conversations returned matches the order of messages returned by elasticsearch
+  end
+
   describe 'GET :index' do
     before {
       sign_in @agent1
@@ -37,8 +99,8 @@ describe ConversationsController do
 
     it 'should get all and only all of the conversations the user is permitted to see' do
       get :index, :format => :json
-      expect(response.status).to eq(200)
-      assigns(:conversations).map { |a| a.id }.should eq @conversations.select { |a| a.tenant == @conversation1.tenant }.map { |a| a.id }
+      expect(response.status).to eq 200
+      assigns(:conversations).map { |c| c.id }.should eq @conversations.select { |a| a.tenant == @conversation1.tenant }.map { |a| a.id }
     end
   end
 

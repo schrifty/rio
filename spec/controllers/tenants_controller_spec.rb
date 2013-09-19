@@ -26,7 +26,7 @@ describe TenantsController do
       sign_in @agent
     }
 
-    it 'should load 2 conversations and 5 messages' do
+    it 'should load correct conversations and messages' do
       get :new
       #expect (response.status).to eq 200
       convs = assigns(:conversations)
@@ -34,6 +34,12 @@ describe TenantsController do
       convs[0].messages.map {|m| m.id}.should eq [@message1.id, @message2.id]
       convs[1].id.should eq @conversation2.id
       convs[1].messages.map {|m| m.id}.should eq [@message3.id, @message4.id, @message5.id, @message6.id]
+    end
+
+    it 'should load no search results' do
+      get :new
+      assigns(:search_results).size.should_not be_nil
+      assigns(:search_results).size.should eq 0
     end
   end
 

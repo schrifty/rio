@@ -15,20 +15,22 @@ class Message < ActiveRecord::Base
 
   after_create :update_conversation_after_create
   after_create :send_message_to_clients
+  after_create :index_after_create
 
-  # elasticsearch
+  # elasticsearch BEGIN
   def type
     'message'
   end
 
   def to_indexed_json
-    self.to_json( { :only => [:display_name, :email] } )
+    self.to_json( { :only => [:text, :conversation_id] } )
   end
 
   mapping do
-    indexes :display_name
-    indexes :email
+    indexes :text
+    indexes :conversation_id
   end
+  # elasticsearch END
 
   def author_role
     self.agent_id ? 'agent' : 'customer'
@@ -53,5 +55,12 @@ class Message < ActiveRecord::Base
   def send_message_to_clients
     channel_name = "messages-tenant-#{self.tenant.id}"
     WebsocketRails[channel_name.to_sym].trigger 'new', self.to_json( {:methods => [:author_role, :author_display_name]} )
+  end
+
+  def index_after_create
+    message = self
+    Tire.index 'messages' do
+      store message
+    end
   end
 end

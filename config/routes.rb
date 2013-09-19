@@ -3,7 +3,11 @@ Rio::Application.routes.draw do
 
   resources :invites, only: [:create, :destroy, :show, :index], :defaults => { :format => 'json' }
   resources :messages, only: [:create, :update, :show, :index ], :defaults => { :format => 'json' }
-  resources :conversations, only: [:new, :create, :update, :show, :index], :defaults => { :format => 'json' }
+  resources :conversations, only: [:new, :create, :update, :show, :index], :defaults => { :format => 'json' } do
+    collection do
+      get :search, :defaults => { :format => 'html' }
+    end
+  end
   resources :agents, only: [:create, :destroy, :update, :show, :index, :current_agent], :defaults => { :format => 'json' }
   resources :customers, only: [:create, :update, :show, :index], :defaults => { :format => 'json' }
   resources :tenants, only: [:new, :create, :update, :show, :index], :defaults => { :format => 'json' }

@@ -33,4 +33,9 @@ Rio::Application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  Tire.configure do
+    #logger STDERR, :level => 'error'
+    url 'http://localhost:9200'
+  end
 end
