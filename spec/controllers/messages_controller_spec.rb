@@ -34,7 +34,18 @@ describe MessagesController do
     it 'should get all and only all of the messages the user is permitted to see' do
       get :index
       expect(response.status).to eq 200
-      assigns(:messages).map { |m| m.id }.should eq @messages.select { |m| m.tenant == @tenant1 }.map { |m| m.id }
+      (assigns(:messages).map { |m| m.id } - @messages.select { |m| m.tenant == @tenant1 }.map { |m| m.id }).should eq []
+    end
+
+    it 'should get messages in order of created_at desc' do
+      get :index
+      expect(response.status).to eq 200
+      puts @messages.select{|m| m.tenant == @tenant1}.sort{|a, b| b.created_at <=> a.created_at}.map{ |m| m.created_at }.inspect
+      last_created_at = nil
+      assigns(:messages).each{|m|
+        m.created_at.should be <= last_created_at if last_created_at
+        last_created_at = m.created_at
+      }
     end
   end
 
