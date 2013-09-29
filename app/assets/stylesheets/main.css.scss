@@ -15,7 +15,8 @@ html {
     font-style: normal;
     background-color: $colorBodyBackground;
     overflow: hidden;
-    margin-top: 10px;
+    margin: 0px;
+    padding: 0px;
   }
 
   label {
@@ -29,11 +30,11 @@ html {
     }
 
     #big-row {
-      //display: none;
-
       #left-sidebar, #right-sidebar {
-        border-width: 4px;
+        -moz-border-radius: 35px;
+        border-radius: 35px;
         height: 623px;
+        background-color: white;
       }
 
       #left-sidebar {
@@ -66,12 +67,13 @@ html {
       }
 
       #right-sidebar {
+        z-index: 3;
         margin-right: 10px;
         #availability-widget {
           width: 100%;
           margin-left: 0px;
           margin-right: 0px;
-          margin-top: 3px;
+          margin-top: 50px;
           margin-bottom: 3px;
           padding: 6px;
           #availability-button {

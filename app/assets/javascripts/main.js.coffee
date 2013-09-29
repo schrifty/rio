@@ -2,30 +2,34 @@ window.Main or= {}
 
 $(document).ready ->
   Main.$email = $('#email')
-  Main.$email.on 'keyup', (event) -> Main.checkSignInState()
+  Main.$email.on 'keyup', (event) ->
+    Main.checkSignInState()
 
   Main.$password = $('#password')
-  Main.$password.on 'keyup', (event) -> Main.checkSignInState()
+  Main.$password.on 'keyup', (event) ->
+    Main.checkSignInState()
 
   Main.$signinButton = $('#signin-button')
-  Main.$signinButton.on 'click', (event) -> Main.signIn(
-    (->
-      AvailabilityWidget.show()
-      DemoWidget.show()
-      MenuMain.show()
-      $('#signin').slideUp()
+  Main.$signinButton.on 'click', (event) ->
+    Main.signIn(
+      (->
+        AvailabilityWidget.show()
+        DemoWidget.show()
+        MenuMain.show()
+        $('#signin').slideUp()
+      )
     )
-  )
 
   Main.$signupButton = $('#signup-button')
-  Main.$signupButton.on 'click', (event) -> Main.signUp(
-    (->
-      AvailabilityWidget.show()
-      DemoWidget.show()
-      MenuMain.show()
-      $('#signup').slideUp()
+  Main.$signupButton.on 'click', (event) ->
+    Main.signUp(
+      (->
+        AvailabilityWidget.show()
+        DemoWidget.show()
+        MenuMain.show()
+        $('#signup').slideUp()
+      )
     )
-  )
 
   Main.$showSignupButton = $('#show-signup-button')
   Main.$showSignupButton.on 'click', (event) ->
@@ -38,39 +42,48 @@ $(document).ready ->
     $('#signin').slideDown()
 
   Main.$emailNew = $('#email-new')
-  Main.$emailNew.on 'keyup', (event) -> Main.checkSignUpState()
+  Main.$emailNew.on 'keyup', (event) ->
+    Main.checkSignUpState()
 
   Main.$passwordNew = $('#password-new')
-  Main.$passwordNew.on 'keyup', (event) -> Main.checkSignUpState()
+  Main.$passwordNew.on 'keyup', (event) ->
+    Main.checkSignUpState()
 
   Main.$passwordConfirm = $('#password-confirm')
-  Main.$passwordConfirm.on 'keyup', (event) -> Main.checkSignUpState()
+  Main.$passwordConfirm.on 'keyup', (event) ->
+    Main.checkSignUpState()
 
-  $('#menu-main li').on 'click', (event) -> MenuMain.switchMenuContext(event)
-  $('#menu-dashboard li').on 'click', (event) -> MenuDashboard.switchMenuContext(event)
+  $('#menu-main li').on 'click', (event) ->
+    MenuMain.switchMenuContext(event)
+  $('#menu-dashboard li').on 'click', (event) ->
+    MenuDashboard.switchMenuContext(event)
 
   Main.search = $('#search-submit')
-  Main.search.on 'click', (event) -> SearchAPI.query($('#search-text').val(),
-    ( (data) ->
-      $('#panel-results').html(data)
-      Main.switchPanel('results')
-    ),
-    ( (message) -> console.log "Search failed: " + message )
-  )
-
-  Main.cacheAgentInfo(
-    ( ->
-      AvailabilityWidget.show()
-      DemoWidget.show()
-      MenuMain.show()
-    ),
-    ( ->
-      AvailabilityWidget.hide()
-      DemoWidget.hide()
-      MenuMain.hide()
-      $('#signin').slideDown()
+  Main.search.on 'click', (event) ->
+    SearchAPI.query($('#search-text').val(),
+      ( (data) ->
+        $('#panel-results').html(data)
+        Main.switchPanel('results')
+      ),
+      ( (message) ->
+        console.log "Search failed: " + message )
     )
-  )
+
+  if $("body").data("page") != "conversations#new"
+    console.log "IN " + $("body").data("page")
+    Main.cacheAgentInfo(
+      ( ->
+        AvailabilityWidget.show()
+        DemoWidget.show()
+        MenuMain.show()
+      ),
+      ( ->
+        AvailabilityWidget.hide()
+        DemoWidget.hide()
+        MenuMain.hide()
+        $('#signin').slideDown()
+      )
+    )
 
 Main.cacheAgentInfo = (onsuccess, onfail) ->
   AgentAPI.getCurrentAgent(
@@ -117,7 +130,8 @@ Main.signIn = (onsuccess, onfail) ->
     $('#signin-spinner').slideUp('fast')
     if authed
       Main.cacheAgentInfo(
-        ( -> onsuccess() ),
+        ( ->
+          onsuccess() ),
         ( ->
           console.log "Agent was logged in but no agent info was returned"
           onfail()
@@ -134,7 +148,8 @@ Main.signUp = (onsuccess, onfail) ->
     $('#signup-spinner').slideUp('fast')
     if agent
       Main.cacheAgentInfo(
-        ( -> onsuccess() ),
+        ( ->
+          onsuccess() ),
         ( ->
           console.log "Agent was registered but no agent info was returned"
           onfail()

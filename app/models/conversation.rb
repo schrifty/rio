@@ -21,6 +21,7 @@ class Conversation < ActiveRecord::Base
   validates_presence_of :tenant, :customer
   validates_with FKValidator, fields: [:customer, :engaged_agent, :target_agent, :first_message, :last_message]
 
+  before_validation :ensure_customer
   after_create :send_message_to_clients
 
   scope :by_id, lambda { |ids| where('conversations.id in (?)', ids) }
@@ -37,6 +38,14 @@ class Conversation < ActiveRecord::Base
     joins(:last_message).
     where('conversations.resolved = ? AND conversations.customer_id = ? AND messages.agent_id IS NOT NULL', 0, customer.id)}
 
+  attr_accessor :new_customer_display_name
+
+  def ensure_customer
+    unless self.customer
+      self.customer = Customer.create!({:tenant => self.tenant, :display_name => self.new_customer_display_name})
+    end
+  end
+
   def send_message_to_clients
     channel_name = "conversations-tenant-#{self.tenant.id}"
     WebsocketRails[channel_name.to_sym].trigger 'new', self.to_json(:methods => [:customer_display_name, :engaged_agent_name] )
@@ -47,7 +56,7 @@ class Conversation < ActiveRecord::Base
   end
 
   def customer_display_name
-    self.customer.display_name
+    self.customer && self.customer.display_name
   end
 
   def engaged_agent_name

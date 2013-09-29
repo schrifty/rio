@@ -1,0 +1,168 @@
+#chat-div {
+  //width: 100%;
+}
+
+#chat-table {
+  font-size: 12px;
+  text-align: left;
+  border-collapse: collapse;
+  position: absolute;
+  bottom: 58px;
+  width: 100%;
+
+  tbody tr:hover td {
+    background: #d0dafd url('/assets/gradhover.png') repeat-x;
+    color: #339;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: content-box;
+  }
+
+  .message-summary {
+    p {
+      margin: 0 10px;
+      font-size: 12px;
+      line-height: 20px;
+    }
+
+    &.role-customer {
+      background-color: #fff;
+    }
+
+    &.role-system {
+      background-color: #FFFBE8;
+      border-top: 1px solid #BDE18C;
+      border-right: 1px solid #FFFAEA;
+      .name-block {
+        background-color: #DFF3CD;
+        border-top: 1px solid #FFFAEA;
+        border-right: 1px solid #FFFAEA;
+        color: #75510F;
+      }
+      .message-block {
+        background-color: #F5F8E7;
+        border-left: 1px solid #BDE18C;
+        margin-bottom: 4px;
+      }
+    }
+
+    &.role-agent {
+      background-color: #F3F7FB;
+      border-top: 1px solid #BED6EB;
+
+      .name-block {
+        background-color: #E4ECF6;
+        border-top: 1px solid #F3F7FB;
+        border-right: 1px solid #F3F7FB;
+        color: #f0556A
+      }
+      .message-block {
+        vertical-align: middle;
+        margin-bottom: 4px;
+        border-left: 1px solid #BED6EB;
+      }
+    }
+
+    .name-block {
+      padding: 3px 0;
+      width: 110px;
+      background-color: #f7f7f7;
+      border-top: 1px solid #fff;
+      border-right: 1px solid #fff;
+      vertical-align: top;
+      font-weight: bold;
+      text-align: right;
+
+      p {
+        color: #636363;
+        width: 110px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-weight: bold;
+      }
+    }
+
+    .message-block {
+      padding: 3px 0;
+      border-left: 1px solid #e1e1e1;
+
+      p.time-block {
+        color: #999;
+        text-align: right;
+        verical-align: top;
+        float: right;
+        font-size: 11px;
+      }
+
+      p.message-text {
+        clear: left;
+      }
+    }
+
+  }
+}
+
+.message-soapbox {
+  background-color: #e0e0e0;
+  padding: 5px;
+  border-top: 1px solid #efefef;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  //right: 0;
+
+  #post-bar {
+    width: 100%;
+    textarea {
+      height: 37px;
+      width: 100%;
+      border: none;
+      padding: 0;
+      font-size: 12px;
+    }
+    td:nth-child(2), td:nth-child(3) {
+      width: 1%;
+    }
+    .textwrapper {
+      border: 1px solid #9d9d9d;
+      padding: 5px;
+      background-color: #fff;
+    }
+    input[type=text] {
+      -moz-border-radius: 3px;
+      -webkit-border-radius: 3px;
+    }
+
+    #upload-button {
+      background: #6f6f6f url(/assets/big_background.png) repeat-x;
+      height: 47px;
+      margin-left: -1px;
+      -moz-border-radius: 0;
+      -webkit-border-radius: 0;
+      border-radius: 0;
+      border: 1px solid #AAABAB;
+      color: #333;
+      cursor: pointer;
+      img {
+        border: 0;
+      }
+    }
+    #send-message-button {
+      background: #6f6f6f url(/assets/big_background.png) repeat-x;
+      padding: 0 13px;
+      height: 47px;
+      border: 1px solid #AAABAB;
+      color: #333;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+  }
+}
+
+#conversation-template, #message-template {
+  display: none
+}

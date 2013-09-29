@@ -1,15 +1,15 @@
 class MessagesController < ApplicationController
-  before_filter :authenticate_agent!
+  before_filter :authenticate_agent!, :except => [:create]
 
   def create
     Message.transaction do
       begin
-        unless params[:message][:conversation_id] && !params[:message][:conversation_id].empty?
-          display_name = params[:message][:display_name] || "Unknown"
-          customer = Customer.create!({:tenant_id => params[:message][:tenant_id], :display_name => display_name})
-          conversation = Conversation.create!({:tenant_id => params[:message][:tenant_id], :customer_id => customer.id, :resolved => false, :referer_url => params[:message][:referer_url]})
-          params[:message][:conversation_id] = conversation.id
-        end
+        #unless params[:message][:conversation_id] && !params[:message][:conversation_id].empty?
+        #  display_name = params[:message][:display_name] || "Unknown"
+        #  customer = Customer.create!({:tenant_id => params[:message][:tenant_id], :display_name => display_name})
+        #  conversation = Conversation.create!({:tenant_id => params[:message][:tenant_id], :customer_id => customer.id, :resolved => false, :referer_url => params[:message][:referer_url]})
+        #  params[:message][:conversation_id] = conversation.id
+        #end
 
         new_message = Message.create!(message_params)
         if params[:message][:since]
@@ -19,9 +19,11 @@ class MessagesController < ApplicationController
         end
         return render json: @messages, status: 201
       rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error { ([e.message] + e.backtrace).join("\n") }
         render text: e.message, status: 422
         raise ActiveRecord::Rollback
       rescue Exception => e
+        Rails.logger.error { ([e.message] + e.backtrace).join("\n") }
         render text: e.message, status: 500
         raise ActiveRecord::Rollback
       end

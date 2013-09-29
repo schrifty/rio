@@ -1,78 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<title>ReplyCycle</title>
+<title>ReplyStyle</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<head>
-  <link href="/assets/bootstrap.min.css" rel="stylesheet">
-  <script src="/assets/bootstrap.min.js"></script>
-  <link href="/assets/font-awesome-3.2.1.css.scss.erb" rel="stylesheet">
-</head>
-<body>
-<div id="conversation_id" hidden="true"></div>
-<div id="agent_id" hidden="true"></div>
-<div>
-  <div id="customer-main">
-    <div id="greeting" class="row">
-      <hgroup class="col-lg-4 col-offset-6">
-        <h1>There are 9 agents<br>waiting for your call</h1>
-      </hgroup>
-    </div>
-    <div id="submit-button-div">
-      <div class="row">
-        <input id="username" class="col-lg-4 col-offset-2" type="text" placeholder="Name"/>
-      </div>
-      <div class="row">
-        <textarea id="question" rows="3" class="col-lg-4 col-offset-2" placeholder="Question"></textarea>
-      </div>
-      <div class="row">
-        <button id="submit-button" class="col-lg-4 col-offset-2 btn btn-large btn-primary" onclick="MessageAPI.sendMessage('#question')">Get
-          an answer!
-        </button>
-      </div>
-    </div>
-  </div>
-  <div id="chat-table-div">
-    <div class="row">
-      <table id="chat-table" class="col-lg-4 col-offset-2">
-        <tbody>
-        <tr>
-          <td class="author-block"><p>Peter</p></td>
-          <td class="message-block"><p>Hi there!</p></td>
-        </tr>
-        <tr>
-          <td class="author-block"><p>Paul</p></td>
-          <td class="message-block"><p>What's up?</p></td>
-        </tr>
-        <tr>
-          <td class="author-block"><p>Mary</p></td>
-          <td class="message-block"><p>I dunno</p></td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="row">
-      <table id="post-bar" class="col-lg-4 col-offset-2">
-        <tbody>
-          <tr>
-            <td>
-              <div class="textwrapper">
-                <textarea rows="3"></textarea>
-              </div>
-            </td>
-            <td>
-              <button id="upload-button">
-                <img src="/assets/paperclip.png" width="16" height="16"/>
-              </button>
-            </td>
-            <td>
-              <input id="send-message-button" type="submit" onclick="MessageAPI.sendMessage('#post-bar textarea')" value="send"/>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div id="chat-div">
+  <table id="chat-table" class="table-condensed">
+    <tbody id="messages-body">
+    <%= render :partial => 'conversations/conversation', locals: {sample: false, conv: @conversation} if @conversation %>
+    <%= render :partial => 'conversations/message', locals: {sample: true} %>
+    </tbody>
+  </table>
+  <%= render :partial => 'conversations/soapbox' %>
 </div>
 
 </body>

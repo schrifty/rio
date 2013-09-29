@@ -32,9 +32,24 @@ describe Conversation do
       @conversation1.should_not be_valid
     end
 
-    it 'should not be valid without a customer' do
-      @conversation1.customer = nil
-      @conversation1.should_not be_valid
+    it 'should implicitly create a customer if one is bot passed in with the conversation' do
+      @conversation2.customer = nil
+      @conversation2.save!
+      @conversation2.customer.should_not be_nil
+    end
+
+    it 'should set the correct display name for the implicitly created customer' do
+      display_name = 'Mickey Rourke'
+      @conversation2.new_customer_display_name = display_name
+      @conversation2.customer = nil
+      @conversation2.save!
+      @conversation2.customer_display_name.should eq display_name
+    end
+
+    it 'should set the correct tenant for the implicitly created customer' do
+      @conversation2.customer = nil
+      @conversation2.save!
+      @conversation2.tenant.should eq @conversation2.tenant
     end
 
     it 'should not be valid with an invalid tenant id' do

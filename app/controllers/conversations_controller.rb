@@ -1,7 +1,7 @@
 class ConversationsController < ApplicationController
-  before_filter :authenticate_agent!
+  before_filter :authenticate_agent!, :except => [:create, :new]
   respond_to :json
-  respond_to :html, :only => [:search]
+  respond_to :html, :only => [:search, :new]
 
   def create
     Conversation.transaction do
@@ -9,9 +9,11 @@ class ConversationsController < ApplicationController
         @conversations = [Conversation.create!(create_params)]
         return render json: @conversations, status: 201
       rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error { ([e.message] + e.backtrace).join('\n') }
         return render text: e.message, status: 422
         raise ActiveRecord::Rollback
       rescue Exception => e
+        Rails.logger.error { ([e.message] + e.backtrace).join('\n') }
         render text: e.message, status: 500
         raise ActiveRecord::Rollback
       end
@@ -48,6 +50,7 @@ class ConversationsController < ApplicationController
   end
 
   def new
+    @conversations = []
   end
 
   # main use case is the poller - tenant wants to see all unresolved conversations (i.e. resolved == false)
@@ -90,12 +93,12 @@ class ConversationsController < ApplicationController
   def create_params
     params.require(:conversation).permit(:tenant_id, :resolved, :customer_id, :referer_url, :location, :customer_data,
                                          :first_message_id, :last_message_id, :engaged_agent_id, :target_agent_id,
-                                         :preferred_response_channel, :preferred_response_channel_info)
+                                         :preferred_response_channel, :preferred_response_channel_info, :new_customer_display_name)
   end
 
   def update_params
     params.require(:conversation).permit(:resolved, :referer_url, :location, :customer_data,
                                          :first_message_id, :last_message_id, :engaged_agent_id, :target_agent_id,
-                                         :preferred_response_channel, :preferred_response_channel_info)
+                                         :preferred_response_channel, :preferred_response_channel_info, :new_customer_display_name)
   end
 end

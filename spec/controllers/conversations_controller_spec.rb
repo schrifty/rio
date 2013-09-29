@@ -80,7 +80,6 @@ describe ConversationsController do
 
     it 'should surround the query term with <span class=search_term>' do
       get :search, :format => :json, :q => 'starfruit'
-      puts assigns(:search_results)[0].messages[1].text
       /<span class='search-term'>starfruit!<\/span>/.match(assigns(:search_results)[0].messages[1].text).should be_true
     end
 
@@ -101,6 +100,13 @@ describe ConversationsController do
       get :index, :format => :json
       expect(response.status).to eq 200
       assigns(:conversations).map { |c| c.id }.should eq @conversations.select { |a| a.tenant == @conversation1.tenant }.map { |a| a.id }
+    end
+  end
+
+  describe 'GET :new' do
+    it 'should return a 200' do
+      get :new
+      expect(response.status).to eq 200
     end
   end
 
@@ -138,6 +144,13 @@ describe ConversationsController do
       expect(response.status).to eq(201)
     end
 
+    it 'should implictly create a new customer if one is not provided' do
+      expect {
+        post :create, :conversation => {:tenant_id => @tenant1.id, :resolved => false, :referer_url => 'http:'}
+      }.to change(Customer, :count).by(1)
+      expect(response.status).to eq(201)
+    end
+
     it 'should not create a conversation without a tenant' do
       expect {
         post :create, conversation: {:customer_id => @customer1.id, :resolved => false, :referer_url => 'http:'}
@@ -159,7 +172,7 @@ describe ConversationsController do
       expect(response.status).to eq 422
     end
 
-    # FYI how does this work?
+    # TBD how does this work?
     it 'should not create a conversation with a forbidden tenant' do
       expect {
         post :create, conversation: {:tenant_id => @tenant2.id, :customer_id => @customer1.id, :resolved => false, :referer_url => 'http:'}

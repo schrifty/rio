@@ -34,7 +34,6 @@ PanelQuestions.messageNotificationHandler = (message) ->
   # build the HTML for the new message, starting with the template we get from the server so we don't have to keep the
   # server and the client in sync on the correct DOM structure
   newMessageRow = $('#message-template').clone()
-#  newMessageRow.hide()
   newMessageRow.removeAttr('id')
   newMessageHTML = newMessageRow.get(0).outerHTML.
     replace(/MESSAGEAUTHORROLE/g, messageJSON.author_role).
