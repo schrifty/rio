@@ -15,8 +15,7 @@ class Conversation < ActiveRecord::Base
   belongs_to :target_agent, :class_name => Agent
   belongs_to :first_message, :class_name => Message
   belongs_to :last_message, :class_name => Message
-  # TODO figure out why limit(3) doesn't work - in its absence, we'll have to do a lot of seemingly unnecessary work
-  has_many :messages # , -> { order('id desc').limit(3) }
+  has_many :messages
 
   validates_presence_of :tenant, :customer
   validates_with FKValidator, fields: [:customer, :engaged_agent, :target_agent, :first_message, :last_message]
@@ -26,17 +25,18 @@ class Conversation < ActiveRecord::Base
 
   scope :by_id, lambda { |ids| where('conversations.id in (?)', ids) }
   scope :by_tenant, lambda { |tenant| where('conversations.tenant_id = ?', tenant.id) }
-  scope :unresolved, lambda { where('conversations.resolved = 0') }
+  scope :claimed_by, lambda { |id| where("conversations.lock = #{id}") }
+  scope :unresolved, lambda { where('conversations.resolved = 0 OR conversations.resolved is null') }
   scope :resolved, lambda { where('conversations.resolved = 1') }
   scope :by_engaged, lambda { |b| where("conversations.engaged_agent_id is #{b ? 'not' : ''} null") }
-  scope :needs_assignment, lambda { | | where('conversations.resolved = 0 AND conversations.engaged_agent_id is null').order('conversations.updated_at desc') }
+  scope :needs_assignment, lambda { | | where('(conversations.resolved is null OR conversations.resolved = 0) AND conversations.engaged_agent_id is null').order('conversations.updated_at desc') }
   scope :agent_inbox, lambda { |agent|
     joins(:last_message).
-    where('conversations.resolved = ? AND (conversations.engaged_agent_id IS NULL OR (conversations.engaged_agent_id = ? AND messages.agent_id IS NULL))', 0, agent.id).
+    where('(conversations.resolved is null OR conversations.resolved = 0) AND (conversations.engaged_agent_id IS NULL OR (conversations.engaged_agent_id = ? AND messages.agent_id IS NULL)) AND conversations.lock IS NULL', agent.id).
     select('conversations.*')}
   scope :customer_inbox, lambda { |customer|
     joins(:last_message).
-    where('conversations.resolved = ? AND conversations.customer_id = ? AND messages.agent_id IS NOT NULL', 0, customer.id)}
+    where('(conversations.resolved is null OR conversations.resolved = 0) AND conversations.customer_id = ? AND messages.agent_id IS NOT NULL', customer.id)}
 
   attr_accessor :new_customer_display_name
 
@@ -44,6 +44,11 @@ class Conversation < ActiveRecord::Base
     unless self.customer
       self.customer = Customer.create!({:tenant => self.tenant, :display_name => self.new_customer_display_name})
     end
+  end
+
+  def claim(id)
+    self.lock = id
+    self.save!
   end
 
   def send_message_to_clients
@@ -60,7 +65,7 @@ class Conversation < ActiveRecord::Base
   end
 
   def engaged_agent_name
-    (self.engaged_agent && self.engaged_agent.display_name) || ""
+    (self.engaged_agent && self.engaged_agent.display_name) || ''
   end
 
   def last_message_author_role

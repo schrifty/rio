@@ -1,8 +1,42 @@
 #!/usr/bin/env ruby
+#
+# DEMO
+#
+#   demos both agents and customers
+#
+# DEMO agent
+#
+#   demos only agents
+#
+# DEMO customer
+#
+#   demos only customers
+#
+# DEMO agent 2
+#
+#   demos only agents for tenant 2 - NOT AUTOMATED - must be started and ended manually
+#
+# DEMO customer 4
+#
+#   demos only customers for tenant 4 - NOT AUTOMATED - must be started and ended manually
+
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 
-AGENT_COUNT = 1 + rand(3)
-CUSTOMER_COUNT = 5 + rand(7)
+case ARGV[0].downcase
+  when "agent"
+    RIO_DEMO_CUSTOMERS = false
+    RIO_DEMO_AGENTS = true
+  when "customers"
+    RIO_DEMO_CUSTOMERS = true
+    RIO_DEMO_AGENTS = false
+  else
+    RIO_DEMO_CUSTOMERS = true
+    RIO_DEMO_AGENTS = true
+end
+RIO_DEMO_TENANT = ARGV[1] ? ARGV[1].to_i : nil
+
+RIO_AGENT_COUNT = 3 + rand(3)
+RIO_CUSTOMER_COUNT = 5 + rand(7)
 
 # thread-safe screen logging
 MUTEX = Mutex.new
@@ -13,26 +47,46 @@ def mlog(str)
 end
 
 # thread-safe counter
-@counter = 0
+@@counter = 0
 COUNTER_MUTEX = Mutex.new
 def inc_counter
-  MUTEX.synchronize do
-    @counter = @counter + 1
+  COUNTER_MUTEX.synchronize do
+    @@counter = @@counter + 1
   end
-  @counter
+  @@counter
 end
 
 # thread-safe AR
 def safely
-  ActiveRecord::Base.connection_pool.with_connection do |connection|
-    yield
+  t1 = Time.new
+  n = 2
+  val = nil
+  continue = true
+  while continue do
+    begin
+      ActiveRecord::Base.connection_pool.with_connection do |connection|
+        val = yield
+      end
+      continue = false
+    rescue Exception => e
+      n = n - 1
+      if continue = (n > 0)
+        mlog e.message
+      else
+        mlog ([e.message] + e.backtrace).join("\n")
+      end
+    end
   end
+  val
+ensure
+  t2 = Time.new
+  mlog "safely took #{t2 - t1}s"
 end
 
 def run_customer(tenant, customer)
   begin
     sleep(rand(60))
-    mlog "Customer [#{customer.id}] is alive!"
+    mlog "Cyber-Customer [#{customer.id}] is online!"
     conversation = nil
     in_demo_mode = true
     while in_demo_mode do
@@ -44,25 +98,25 @@ def run_customer(tenant, customer)
 
           # 10% chance this is the last message in the conversation and it's resolved
           if (rand(10) == 1)
-            mlog "Customer [#{customer.id}] is resolving conversation ##{conversation.id}"
+            mlog "Cyber-Customer [#{customer.id}] is resolving conversation ##{conversation.id}"
             safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil, :text => 'Thank you!') }
             safely { conversation.update_attributes!(:resolved => 1) }
             conversation = nil
           else
-            mlog "Customer [#{customer.id}] is replying to conversation ##{conversation.id}"
+            mlog "Cyber-Customer [#{customer.id}] is replying to conversation ##{conversation.id}"
             safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil) }
           end
         end
       else
         conversation = safely { FactoryGirl.create(:conversation, :tenant => tenant, :customer => customer, :resolved => false, :engaged_agent => nil) }
-        mlog "Customer [#{customer.id}] opening ticket ##{conversation.id}"
+        mlog "Cyber-Customer [#{customer.id}] is opening ticket ##{conversation.id}"
         safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => nil) }
       end
       ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
       sleep(10 + rand(20))
       safely { in_demo_mode = (tenant.reload.demo_mode == 1) }
     end
-    mlog "Customer [#{customer.id}] is dying!"
+    mlog "Killing Cyber-Customer [#{customer.id}]!"
   rescue Exception => e
     mlog ([e.message] + e.backtrace).join("\n")
   end
@@ -70,34 +124,42 @@ end
 
 def run_agent(tenant, agent)
   begin
-    sleep(rand(60))
-    mlog "Agent [#{agent.id}] is alive!"
+    #sleep(rand(60))
+    mlog "Cyber-Agent [#{agent.id}] is online!"
     in_demo_mode = true
     while in_demo_mode do
       if agent.available == 1
-        mlog "Agent [#{agent.id}] is checking his inbox!"
-        conversation = safely { Conversation.by_tenant(tenant).agent_inbox(agent).first }
-        if conversation
-          mlog "Agent [#{agent.id}] is responding to conversation ##{conversation.id}"
-          safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => agent) }
+        mlog "Cyber-Agent [#{agent.id}] is checking his inbox"
+        conversation = nil
+        begin
+          safely { Conversation.by_tenant(tenant).agent_inbox(agent).limit(1).update_all(:lock => agent.id) }
+          conversation = safely { Conversation.by_tenant(tenant).claimed_by(agent.id).first }
+          if conversation
+            mlog "Cyber-Agent [#{agent.id}] responding to conversation ##{conversation.id}"
+            safely { FactoryGirl.create(:message, :tenant => tenant, :conversation => conversation, :agent => agent) }
+          else
+            mlog "Cyber-Agent [#{agent.id}] inbox is empty"
+          end
+        ensure
+          safely { Conversation.by_tenant(tenant).claimed_by(agent.id).update_all(:lock => nil) } if conversation
         end
         sleep(15 + rand(20))
         if rand(20) == 1
-          mlog "Agent [#{agent.id}] has gone offline"
+          mlog "Cyber-Agent [#{agent.id}] has gone offline"
           safely { agent.update_attributes!(:available => 0) }
           sleep(15 + rand(40))
         end
       else
         if rand(20) == 1
-          mlog "Agent [#{agent.id}] has come online"
+          mlog "Cyber-Agent [#{agent.id}] has come online"
           safely { agent.update_attributes!(:available => 1) }
         end
         sleep(10 + rand(40))
       end
       ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
-      safely { in_demo_mode = (tenant.reload.demo_mode == 1)}
+      safely { in_demo_mode = (RIO_DEMO_TENANT || tenant.reload.demo_mode == 1) }
     end
-    mlog "Agent [#{agent.id}] is dying!"
+    mlog "Killing Cyber-Agent [#{agent.id}]!"
   rescue Exception => e
     mlog ([e.message] + e.backtrace).join("\n")
   end
@@ -118,48 +180,66 @@ def cleanup_after_demo(tenant)
   }
 end
 
-def start_demo(tenant)
-  mlog "Creating #{AGENT_COUNT} agents and #{CUSTOMER_COUNT} customers for tenant #{tenant.id}"
+def start_demo_for_tenant(tenant)
+  mlog "Starting demo for tenant #{tenant.id}"
+
+  threads = []
 
   # create agents
-  agents = (1..AGENT_COUNT).collect { |n|
-    cont = true
-    girl = nil
-    while cont
-      begin
-        girl = FactoryGirl.create(:agent, :tenant => tenant, :available => true, :password => 'cheyenne')
-        cont = false
-      rescue Exception => e
-        mlog ([e.message] + e.backtrace).join('\n')
+  if RIO_DEMO_AGENTS
+    mlog "Spinning up #{RIO_AGENT_COUNT} cyber-agents"
+    agents = (1..RIO_AGENT_COUNT).collect { |n|
+      cont = true
+      girl = nil
+      while cont
+        begin
+          girl = safely { FactoryGirl.create(:agent, :tenant => tenant, :available => true, :password => 'cheyenne') }
+          cont = false
+        rescue Exception => e
+          mlog([e.message] + e.backtrace).join('\n')
+        end
       end
-    end
-    girl
-  }
+      girl
+    }.compact
+    mlog "Spinning up #{agents.size} threads"
+    threads += agents.collect { |agent|
+      t = Thread.new { run_agent(tenant, agent) }
+      t["id"] = "agent-#{inc_counter}"
+      threads << t
+      t
+    }
+  end
 
   # create customers
-  customers = (1..CUSTOMER_COUNT).collect { |n| FactoryGirl.create(:customer, :tenant => tenant) }
+  if RIO_DEMO_CUSTOMERS
+    mlog "Spinning up #{RIO_CUSTOMER_COUNT} cyber-customers"
+    customers = (1..RIO_CUSTOMER_COUNT).collect { |n| safely { FactoryGirl.create(:customer, :tenant => tenant) } }.compact
+    mlog "Spinning up #{customers.size} threads"
+    threads += customers.collect { |customer|
+      t = Thread.new { run_customer(tenant, customer) }
+      t["id"] = "customer-#{inc_counter}"
+      threads << t
+      t
+    }
+  end
 
-  mlog "Spinning up agent and customer threads"
+  # wait for all agent and customer threads to die and then end
+  threads.each { |t| t.join }
+end
 
-  # spin up the customer threads
-  customer_threads = customers.collect { |customer|
-    t = Thread.new { run_customer(tenant, customer) }
-    t["id"] = "customer-#{inc_counter}"
-    t
-  }
-  # spin up the agent threads
-  agent_threads = agents.collect { |agent|
-    t = Thread.new { run_agent(tenant, agent) }
-    t["id"] = "agent-#{inc_counter}"
-    t
-  }
-
-  # waiting for all of the agent and customer threads to end
-  (customer_threads + agent_threads).each { |t| t.join }
+def watch_tenant
+  if tenant = Tenant.find(RIO_DEMO_TENANT)
+    t = Thread.new { start_demo_for_tenant(tenant) }
+    t["id"] = "watch-#{inc_counter}"
+    while true do
+      # noop
+    end
+  else
+    mlog "Cannot find tenant #{RIO_DEMO_TENANT}"
+  end
 end
 
 def watch
-  Thread.current["id"] = "main-#{inc_counter}"
   currently_demoing = []
   while true do
     in_demo_mode = nil
@@ -169,7 +249,7 @@ def watch
     }
     (in_demo_mode - currently_demoing).each { |tenant|
       currently_demoing << tenant
-      t = Thread.new { start_demo(tenant) }
+      t = Thread.new { start_demo_for_tenant(tenant) }
       t["id"] = "watch-#{inc_counter}"
     }
     (currently_demoing - in_demo_mode).each { |tenant|
@@ -181,4 +261,14 @@ def watch
   end
 end
 
-watch
+Thread.current["id"] = "main-#{inc_counter}"
+
+Module.constants.each { |c|
+  mlog "#{c.to_s}: #{Module.const_get(c)}" if /^RIO_/.match(c.to_s)
+}
+
+if RIO_DEMO_TENANT
+  watch_tenant
+else
+  watch
+end

@@ -2,7 +2,7 @@ class CreateConversations < ActiveRecord::Migration
   def change
     create_table :conversations do |t|
       t.string :tenant_id
-      t.boolean :resolved
+      t.boolean :resolved, :default => 0
       t.string :customer_id
       t.string :referer_url
       t.string :location
@@ -13,6 +13,7 @@ class CreateConversations < ActiveRecord::Migration
       t.integer :engaged_agent_id
       t.string :preferred_response_channel
       t.string :preferred_response_channel_info
+      t.string :lock
 
       t.timestamps
     end
