@@ -6,11 +6,11 @@ $(document).ready ->
   channel_name = 'conversations-tenant-' + tenant_id
   channel = dispatcher.subscribe(channel_name)
   channel.bind('new', (conversation) ->
-#    console.log 'a new conversation has arrived! ' + JSON.stringify(conversation)
+    console.log 'a new conversation has arrived! ' + JSON.stringify(conversation)
     for element in $('.menu-panel')
       classname = "Panel" + element.id.match(/panel-(.*)/)[1].capitalize()
       window[classname].conversationNotificationHandler(conversation)
-    Widget.messageNotificationHandler(conversation)
+    Widget.conversationNotificationHandler(conversation)
   )
 
   # Subscribe to messages
@@ -28,9 +28,9 @@ $(document).ready ->
   channel_name = 'agents-tenant-' + tenant_id
   channel = dispatcher.subscribe(channel_name)
   channel.bind('new', (agent) ->
-#    console.log 'a new agent has arrived! ' + JSON.stringify(agent)
+    console.log 'a new agent has arrived! ' + JSON.stringify(agent)
     for element in $('.menu-panel')
       classname = "Panel" + element.id.match(/panel-(.*)/)[1].capitalize()
       window[classname].agentNotificationHandler(agent)
-    Widget.messageNotificationHandler(agent)
+    Widget.agentNotificationHandler(agent)
   )

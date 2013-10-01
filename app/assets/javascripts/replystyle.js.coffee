@@ -35,7 +35,6 @@ ReplyStyle.init = (opts) ->
 
   $replyStyleTab = document.getElementById('replystyle_tab')
   $replyStyleTab.addEventListener('click', (event) ->
-#    overlay = document.getElementById('overlay')
     if o.style.display != "none"
       o.style.display = "none"
     else

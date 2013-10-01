@@ -4,10 +4,12 @@ Widget.initted = false
 Widget.conversation_id = null
 
 $(document).ready ->
+  Widget.$textarea = $('#post-bar .textwrapper textarea')[0]
   Widget.$sendMessageButton = $('#send-message-button')
   Widget.$sendMessageButton.on 'click', (event) ->
     # display spinner
     Widget.createMessage()
+    Widget.$textarea.value = ''
 
   if $("body").data("page") == "conversations#new"
     Widget.init()
@@ -32,7 +34,6 @@ Widget.createConversation = (onsuccess, onfail) ->
   )
 
 Widget.createMessage = () ->
-  console.log "HERE: " +  $(".textwrapper textarea")[0].value
   data = {tenant_id: sessionStorage.getItem('tenant'), conversation_id: sessionStorage.getItem('conversation'), text: $(".textwrapper textarea")[0].value }
   MessageAPI.sendMessage(data,
     ( (message) ->
@@ -76,3 +77,7 @@ Widget.init = ->
 
 Widget.messageNotificationHandler = (message) ->
   Widget.displayMessage(JSON.parse(message))
+
+Widget.conversationNotificationHandler = (message) -> # noop
+Widget.agentNotificationHandler = (message) -> # noop
+

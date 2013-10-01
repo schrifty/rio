@@ -3,7 +3,7 @@
 <title>ReplyStyle</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div id="chat-div">
+<div>
   <table id="chat-table" class="table-condensed">
     <tbody id="messages-body">
     <%= render :partial => 'conversations/conversation', locals: {sample: false, conv: @conversation} if @conversation %>
