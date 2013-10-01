@@ -30,6 +30,10 @@ Rio::Application.configure do
   # number of complex assets.
   config.assets.debug = true
 
+  # Adding this to deal with Unexpected error while processing request: deadlock; recursive locking on every other load
+  # https://github.com/websocket-rails/websocket-rails/pull/51
+  config.middleware.delete Rack::Lock
+
   Tire.configure do
     #logger STDERR, :level => 'debug'
     url 'http://localhost:9200'
